@@ -1,0 +1,20 @@
+{
+  "files": [],
+  
+  
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      
+    },
+    "skipLibCheck": true, 
+    "types": ["./src/types.d.ts"]
+    
+  },
+  "include": ["src","src/types.d.ts"]
+}
