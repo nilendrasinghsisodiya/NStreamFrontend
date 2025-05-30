@@ -14,7 +14,7 @@ const Header = () => {
         NStream
       </Link>
       <div className="flex gap-4 justify-between xl:justify-around items-center md:w-full h-full md:flex-1 ">
-        <SearchBar />
+       <SearchBar />
          <div className="flex gap-6 justify-end items-center w-fit h-full ">
         <span className="xl:mr-6 max-h-12 max-w-12 lg:max-h-15 lg:max-w-15 outline-2 outline-yellow-300">
           

@@ -10,7 +10,7 @@ const RecommendedVideos = () => {
    
 
   return (
-  <MemoVideoList  data={data? data: []} isLoading={isLoading} isSuccess={isSuccess} />
+  <MemoVideoList  data={data? data: []} isLoading={isLoading} isSuccess={isSuccess} className="flex flex-col md:flex-row gap-4 items-center justify-around"/>
   )
 }
 

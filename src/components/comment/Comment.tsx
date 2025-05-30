@@ -76,7 +76,7 @@ const handleReplyBox = () => {
     <div className={`${className}`}>
       <div className="flex  gap-3 py-0.5 border-b-accent items-center border-b-2 ">
         <span className="max-h-15 max-w-15">
-          <SafeAvatar avatar={avatar} username={username} to={`channel?username=${username}`}/>
+          <SafeAvatar avatar={avatar} username={username} to={`/channel/home?username=${username}`}/>
         </span>
         <span className="text-foreground text-md text-bold tracking-wide">{username}</span>
       </div>

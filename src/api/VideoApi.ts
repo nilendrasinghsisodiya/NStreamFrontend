@@ -75,7 +75,7 @@ interface VideoBody extends Omit<IVideo, "owner"> {
   };
 }
 const useGetVideo = (videoId: string) => {
-  const {accessToken} = useSelector(selectUser);
+  const { accessToken } = useSelector(selectUser);
   const getVideoQuery = useQuery<VideoBody, AxiosError>({
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<VideoBody>>(
@@ -83,7 +83,7 @@ const useGetVideo = (videoId: string) => {
         {
           headers: {
             Optional: "true",
-            Authorization: accessToken? `Bearer ${accessToken}`:"",
+            Authorization: accessToken ? `Bearer ${accessToken}` : "",
           },
         }
       );
@@ -124,6 +124,9 @@ const usePopularVideo = ({ limit }: GetPopularVideoParams) => {
     initialPageParam: 1,
     getNextPageParam: (lastPage) =>
       lastPage.hasNextPage ? lastPage.nextPage : undefined,
+
+    getPreviousPageParam: (lastPage) =>
+      lastPage.hasPrevPage ? lastPage.prevPage : undefined,
   });
 
   return {

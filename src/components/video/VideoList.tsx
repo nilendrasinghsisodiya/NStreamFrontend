@@ -3,19 +3,19 @@ import { MemoVideoCard } from "./VideoCard";
 import {  memo } from "react";
 
 type Props = {
-  
+  className?:string;
   isSuccess?: boolean;
   isLoading?: boolean;
   data?: IVideo[];
   
 };
 
-const VideoList = ({  isSuccess, data, isLoading }: Props) => {
+const VideoList = ({  isSuccess, data, isLoading ,className}: Props) => {
   return (
-    <div className="flex flex-col md:flex-row w-full gap-7 flex-wrap justify-center md:gap-6">
+    <div className={className}>
       { data && !isLoading && isSuccess ? (
         data.map((ele,index) => (
-          <div className=" max-w-[420px] xl:max-w-[600px] w-full min-h-[350px]" key={index}>
+          <div className=" max-w-[420px] xl:max-w-[600px] w-full min-h-[350px] min-w-[450px]" key={index}>
           <MemoVideoCard
             isLoading={isLoading?isLoading:false}
             title={ele.title}

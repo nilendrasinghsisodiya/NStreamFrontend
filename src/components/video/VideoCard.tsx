@@ -18,6 +18,7 @@ type Props = {
   videoId: string;
   isSuccess: boolean;
   lazyLoading: boolean;
+  noHover?:boolean;
 };
 
 const VideoCard = ({
@@ -29,6 +30,7 @@ const VideoCard = ({
   videoId,
   lazyLoading,
   isSuccess,
+  noHover,
 }: Props) => {
   const navigate = useNavigate();
 
@@ -41,7 +43,7 @@ const VideoCard = ({
           tabIndex={0}
           style={style}
           onClick={() =>{  navigate(`/watch?videoId=${videoId}`); } }
-          className="flex flex-col cursor-pointer p-2 w-full max-h-full border-2 hover:scale-105 selection:border-foreground hover:shadow-[1px_1px_10px_rgba(23,23,255,0.5)] md:rounded-xl gap-2 my-5  "
+          className={`flex flex-col cursor-pointer p-2 w-full max-h-full border-2 ${!noHover && 'hover:scale-105 selection:border-foreground hover:shadow-[1px_1px_10px_rgba(23,23,255,0.5)]'} md:rounded-xl gap-2 my-5  `}
         >
           {isSuccess ? (
             <>

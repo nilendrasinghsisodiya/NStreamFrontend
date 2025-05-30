@@ -22,7 +22,7 @@ const ChannelPanel = ({ username, className }: props) => {
         <>
           <div className="flex justify-start items-center w-full gap-5 p-2">
             <span className="max-w-20 max-h-20">
-              <SafeAvatar avatar={data.avatar} username={data.username} to={`channel?username=${data.username}`}/>
+              <SafeAvatar avatar={data.avatar} username={data.username} to={`/channel/home?username=${data.username}`}/>
             </span>
             <span className="text-2xl tracking-wide">{data.username}</span>
             <span className="text-md text-accent-foreground/30  text-bold">{toKBMS(data.subscriberCount)}</span>

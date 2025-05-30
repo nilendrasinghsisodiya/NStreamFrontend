@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 
 const AuthPage = () => {
   const {data:registrationData,RegisterUser}= useRegisterUser();
-  const {data:loginData,loginUser,isError} = useLoginUser();
+  const {loginUser} = useLoginUser();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleRegistration = (formData: signUpFormDataType) => {
@@ -21,10 +21,10 @@ const AuthPage = () => {
     }
   };
 
-  const handleLogin = (formData: loginFormDataType) => {
-    loginUser(formData);
-   if(!isError && loginData){
-   dispatch(setUser(loginData));}
+  const handleLogin = async (formData: loginFormDataType) => {
+   const loginData = await loginUser(formData);
+   
+   dispatch(setUser(loginData));
     navigate("/");
    
   };

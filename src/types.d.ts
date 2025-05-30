@@ -101,6 +101,15 @@ interface IComment extends IBase{
     isLiked:boolean;
 }
 
+export interface IPaginatedBase {
+ totalPage: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  nextPage?: number; 
+  prevPage?: number;
+}
+
+
 
 }
 

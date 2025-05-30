@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { apiClient } from "./ApiClient";
 import { handleResponse } from "@/utils";
 import { useSelector } from "react-redux";
@@ -19,7 +19,8 @@ const useGetChannel = ({username,userId}:getChannelBody) => {
         queryParams.set("userId",userId);
       }
      
-      const response = await apiClient.get<ApiResponse<IChannel>>(`/user/channel?${queryParams.toString()}`);
+      const response = await apiClient.get<ApiResponse<IChannel>>(`/user/channel?${queryParams.toString()}`,{headers:{Optional:"true"
+      }});
       return handleResponse<IChannel>(response, "failed to fetch channel");
     },
     throwOnError:true,
@@ -50,29 +51,28 @@ const useChannelStats = () => {
 };
 
 interface ChannelVideosBody {
-  limit?: number;
-  page?: number;
-  sortBy?: string;
-  sortType?: string;
+  limit?:number,
+  sortBy?:string;
+  sortType:string;
   username:string;
 }
 
-interface channelVideoType extends IChannel{
+interface channelVideoType extends IPaginatedBase{
   videos:IVideo[]|[];
 }
 const useChannelVideos = ({
-  limit = 10,
-  page = 1,
+  limit = 5,
+
   sortBy = "createdAt",
   sortType = "asc",
   username
 }: ChannelVideosBody) => {
   const { accessToken } = useSelector(selectUser);
-  const { isLoading, isError, isSuccess, error, data } = useQuery({
-    queryKey: ["channelVideos", limit, page, sortBy, sortType], 
-    queryFn: async () => {
+  const channelVideoQuery= useInfiniteQuery<channelVideoType>({
+    queryKey: ["channelVideos", limit, sortBy, sortType], 
+    queryFn: async ({pageParam}) => {
       const response = await apiClient.get<ApiResponse<channelVideoType>>(
-        `/dashboard/videos?username=${username}&limit=${limit}&page=${page}&sortBy=${sortBy}&sortType=${sortType}`,
+        `/dashboard/videos?username=${username}&limit=${limit}&page=${pageParam}&sortBy=${sortBy}&sortType=${sortType}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -86,9 +86,12 @@ const useChannelVideos = ({
     },
     staleTime: 10000,
     refetchOnWindowFocus: false,
+    initialPageParam:1,
+    getNextPageParam:(lastPage)=> lastPage.hasNextPage? lastPage.nextPage : undefined,
+    getPreviousPageParam:(lastPage)=>lastPage.hasPrevPage? lastPage.prevPage:undefined,
     
   });
-  return { isError, error, isSuccess, isLoading, data };
+  return { ...channelVideoQuery};
 };
  const useSubscribe = ()=>{
 

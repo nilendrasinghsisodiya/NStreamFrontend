@@ -51,7 +51,7 @@ const ChannelAvatarBar = ({ avatar, username, subscriberCount }: Props) => {
     
         <div className="flex gap-6 justify-center items-center">
           <span className="flex max-h-16 max-w-16">
-            <SafeAvatar avatar={avatar} to={`channel?username=${username}`} username={username} />
+            <SafeAvatar avatar={avatar} to={`/channel/home?username=${username}`} username={username} />
           </span>
           <div className="flex flex-col">
             <span className="flex text-foreground text-xl">{username}</span>
@@ -94,12 +94,12 @@ const VideoAvatarStrip = ({
       </span>
       <div className="flex">
         <span className="flex   p-2.5 justify-center items-center  w-1/6">
-         <SafeAvatar avatar={avatar} username={username} to={`channel?username=${username}`} className="icons-lg"/>
+         <SafeAvatar avatar={avatar} username={username} to={`/channel/home?username=${username}`} className="icons-lg"/>
         </span>
         <div className="flex flex-col flex-3/4 text-foreground">
           <span
             className="flex flex-col justify-start items-start p-2"
-            onClick={() => navigate(`/channel?username=${username}`)}
+            onClick={() => navigate(`/channel/home?username=${username}`)}
           >
             <span className="text-xl tracking-wide">{username}</span>
             <span className="text-foreground/60 text-md">{toKBMS(subsCount)}</span>

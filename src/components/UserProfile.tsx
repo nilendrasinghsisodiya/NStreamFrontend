@@ -21,16 +21,21 @@ import { presister } from "@/ContextStore";
 const UserProfileTab = () => {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
-  const { logout,isError } = useLogoutUser();
+  const { logout } = useLogoutUser();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    await logout();
-    console.log(user);
-    dispatch(userReset());
-    if (!isError)
-    presister.purge();
-    navigate("/");
+    try {
+      await logout();
+      console.log(user);
+      dispatch(userReset());
+
+      presister.purge();
+      navigate("/");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      console.warn(e.message);
+    }
   };
   return (
     <>
@@ -47,27 +52,35 @@ const UserProfileTab = () => {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          className="outline-2 outline-green-200 z-50 border-2xl border-white"
+          className="outline-2 outline-green-200 z-50 border-2 border-accent-foreground/40 bg-accent p-2 rounded-xl"
           alignOffset={23}
           align="start"
           sideOffset={20}
         >
           <DropdownMenuLabel>My Profile</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
+          <DropdownMenuSeparator className="text-accent-foreground/45" />
+          {user.accessToken ? (
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                <Link to={`/channel/home?username=${user?.username}`}>Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to={`setting/?username=${user?.username}`}>
+                  Setting
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem></DropdownMenuItem>
+              <DropdownMenuItem>
+                <Button variant="ghost" onClick={handleLogout}>
+                  Logout <LogOut className="icons-sm" />
+                </Button>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          ) : (
             <DropdownMenuItem>
-              <Link to={user?`channel?username=${user?.username}`:'/auth'}>Profile</Link>
+              <Link to={"/auth"}>LogIn</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link to={`channel?username=${user?.username}/setting`}>
-                Setting
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem></DropdownMenuItem>
-          </DropdownMenuGroup>
-          <Button variant="ghost" onClick={handleLogout}>
-            Logout <LogOut className="icons-sm" />
-          </Button>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </>

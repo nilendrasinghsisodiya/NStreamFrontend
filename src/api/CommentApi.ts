@@ -9,7 +9,7 @@ import { selectUser } from "@/contexts/auth/authSlice";
 type createCommentBody = Pick<IComment, "content" | "videoId" | "commentId">;
 
 export const useCreateComment = () => {
- const {accessToken} = useSelector(selectUser);
+  const { accessToken } = useSelector(selectUser);
   const {
     data,
     isError,
@@ -21,32 +21,28 @@ export const useCreateComment = () => {
     mutationFn: async (props: createCommentBody) => {
       const response = await apiClient.post<ApiResponse<IComment>>(
         "/comment/",
-        props,{
-         headers:{
-            Authorization:`Bearer ${accessToken}`
-        }}
-        
+        props,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       );
       return handleResponse(response, "failed to comment");
     },
-    onSuccess:(_,vars)=>{
-      queryClient.invalidateQueries({queryKey:["videoComments",vars.videoId]})
-    }
-  
+    onSuccess: (_, vars) => {
+      queryClient.invalidateQueries({
+        queryKey: ["videoComments", vars.videoId],
+      });
+    },
   });
 
   return { data, isError, isSuccess, error, createComment };
 };
 
-export interface IPaginatedComments {
+interface IPaginatedComments extends IPaginatedBase {
   comments: IComment[];
   totalComments: number;
-  currentPage: number;
-  totalPage: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
-  nextPage?: number; 
-  prevPage?: number;
 }
 
 interface GetVideoCommentsParams {
@@ -58,8 +54,6 @@ export const useGetVideoComments = ({
   videoId,
   limit,
 }: GetVideoCommentsParams) => {
-
-
   const {
     data,
     refetch,
@@ -70,20 +64,23 @@ export const useGetVideoComments = ({
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery<IPaginatedComments, AxiosError>({
-    queryKey: ["videoComments", videoId,limit],
+    queryKey: ["videoComments", videoId, limit],
     queryFn: async ({ pageParam = 1 }) => {
       const response = await apiClient.get<ApiResponse<IPaginatedComments>>(
         `/video/comments?videoId=${videoId}&page=${pageParam}&limit=${limit}`,
         {
-          headers: {  Optional: "true" },
+          headers: { Optional: "true" },
         }
       );
       return handleResponse(response, "failed to fetch video comment");
     },
-   initialPageParam:1,
+    initialPageParam: 1,
 
     getNextPageParam: (lastPage) =>
       lastPage.hasNextPage ? lastPage.nextPage : undefined,
+
+    getPreviousPageParam: (lastPage) =>
+      lastPage.hasPrevPage ? lastPage.prevPage : undefined,
   });
 
   return {
@@ -94,12 +91,11 @@ export const useGetVideoComments = ({
     isLoading,
     fetchNextPage,
     hasNextPage,
-    refetch
+    refetch,
   };
 };
 
 export const useDeleteComment = () => {
- 
   const {
     data,
     isError,
@@ -113,7 +109,8 @@ export const useDeleteComment = () => {
         `/comment/${commentId}`
       );
       return handleResponse(response, "failed to comment");
-    }});
+    },
+  });
 
   return { data, isError, isSuccess, error, deleteComment };
 };

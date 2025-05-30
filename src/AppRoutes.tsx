@@ -3,9 +3,12 @@ import { Routes, Route } from "react-router";
 import { VideoPage } from "./pages/Video/VideoPage";
 import { AuthPage } from "./pages/Auth/AuthPage";
 import { HomePage } from "./pages/Main/HomePage";
-import { TestComponent, TestPage } from "./components/TestComponent";
 import { UserProfileForm } from "./forms/UserProfile";
 import { ChannelPage } from "./pages/Channel/ChannelPage";
+import { PlaylistPage } from "./pages/Playlist/PlaylistPage";
+import { ChannelPlaylistPage } from "./pages/Channel/ChannelPlaylist";
+import { ChannelVideoPage } from "./pages/Channel/ChannelVideoPage";
+import { ChannelHomePage } from "./pages/Channel/ChannelHomePage";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -33,29 +36,33 @@ const AppRoutes = () => {
           </Layout>
         }
       />
-      <Route path="channel" element={
-            <Layout>
-              <ChannelPage />
-            </Layout>
-          }>
-        
-
+      <Route
+        path="channel"
+        element={
+          <Layout>
+            <ChannelPage />
+          </Layout>
+        }
+      >
         <Route
-          path="user-profile"
+          path="user-reg-profile"
           element={
             <Layout>
               <UserProfileForm isLoading={false} onSave={() => {}} />
             </Layout>
           }
         />
+        <Route path="home" element={<ChannelHomePage/>} />
+        <Route path="playlists" element={<ChannelPlaylistPage/>}/>
+        <Route path="videos" element={<ChannelVideoPage/>}/>
       </Route>
 
       <Route
-        path="test"
+        path="playlist"
         element={
-          <TestComponent>
-            <div>test</div>
-          </TestComponent>
+          <Layout>
+            <PlaylistPage />
+          </Layout>
         }
       />
     </Routes>
