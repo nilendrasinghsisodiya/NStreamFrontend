@@ -4,7 +4,6 @@ import { generateSrcSet, toKBMS } from "@/utils";
 import { User } from "lucide-react";
 import { CSSProperties } from "react";
 import { Link, useNavigate } from "react-router";
-import { VideoOptions } from "../video/VideoOptions";
 import { Button } from "../ui/button";
 type avatarProps = {
   avatar?: string;
@@ -100,7 +99,6 @@ const VideoAvatarStrip = ({
   subsCount,
   style,
   className,
-  videoId,
   videoTitle,
 }: VideoAvatarStripProps) => {
   const navigate = useNavigate();
