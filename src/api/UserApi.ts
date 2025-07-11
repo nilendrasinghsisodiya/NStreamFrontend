@@ -220,8 +220,8 @@ export const useLogoutUser = () => {
   });
   return { logout, isError, isSuccess };
 };
-type getUserPlaylistData = 
-  [Pick<IPlaylist, "_id" | "name" | "view"|"cover">];
+type getUserPlaylistData ={ 
+  playlists:[Pick<IPlaylist, "_id" | "name" | "view"|"cover">];}
   
 export  const useGetUserPlaylists = ({ username ,isOpen}: { username: string; isOpen:boolean}) =>{
   const {
