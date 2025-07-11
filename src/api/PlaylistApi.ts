@@ -106,6 +106,7 @@ interface IPaginatedPlaylist extends IPaginatedBase {
     view: number;
     owner: string;
     videos: IVideo[];
+    description:string;
     totalVideos: number;
   };
 }
