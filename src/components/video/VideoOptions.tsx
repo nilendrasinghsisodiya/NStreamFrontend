@@ -12,7 +12,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "../ui/button";
 
 type videoOptionsProps = {
   videoId: string;
@@ -27,9 +26,10 @@ export const VideoOptions = ({ videoId }: videoOptionsProps) => {
       toast.success("link copied to clipboard");
     });
   };
+
   return (
     
-      <Popover >
+      <Popover  >
         <PopoverTrigger asChild>
           <button  className="w-10 h-7 bg-transparent"onClick={(e)=>{e.stopPropagation()}}><EllipsisVertical /></button>
         </PopoverTrigger>
