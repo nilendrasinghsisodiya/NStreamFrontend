@@ -1,6 +1,3 @@
-// import { useEffect, useState } from "react";
-// import { useQuery } from "@tanstack/react-query";
-import { useGetVideo } from "@/api/VideoApi";
 import { VideoCardSkeleton } from "./VideoCardSkeleton";
 import { generateSrcSet } from "@/utils";
 import { VideoAvatarStrip } from "../avatar/Avatars";
