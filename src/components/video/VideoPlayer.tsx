@@ -200,28 +200,28 @@ const VideoPlayer = ({ url, style, className }: Props) => {
     >
       <div
         tabIndex={0}
-        className=" relative main_shadow flex justify-center contain-content items-center aspect-video"
+        className=" relative flex justify-center contain-content items-center aspect-video"
       >
         <video
           ref={videoRef}
           className="
-        flex-1 z-10  contain-content lg:rounded-2xl aspect-video max-h-full"
+        flex-1 z-10  contain-content  aspect-video max-h-full"
           style={style}
         />
 
         {controls && (
-          <div className="absolute bottom-0 controls z-20 flex flex-col w-full p-2">
-            <div className="flex control-icons h-2 my-0.5 self-end p-5 gap-3">
-              <div className="volumeControls  flex w-[50%] p-0 justify-center items-center  self-baseline gap-3">
-                <Button variant="ghost"onClick={handleVolumeClick}>
+          <div className="absolute bottom-0 z-20 flex flex-col w-full pb-1 max-w-full">
+            
+                  <div className="flex items-basline justify-end gap-0.5 px-2 -mb-1.5">
+                <button onClick={handleVolumeClick}>
                   {volume === 0 ? (
-                    <VolumeOff className=" icons-s" />
+                    <VolumeOff className=" h-3 xl:h-6" />
                   ) : (
-                    <Volume2 className=" icons-s" />
+                    <Volume2 className=" h-3 xl:h-6" />
                   )}
-                </Button>
+                </button>
                 <input
-                  className="slider bg-foreground h-[2px] flex-1 max-w-[80px]"
+                  className="slider bg-foreground h-0.5 rounded-2xl max-w-12 xl:max-w-15 p-0 self-end m-1 "
                   type="range"
                   name="volume"
                   min={0}
@@ -230,14 +230,28 @@ const VideoPlayer = ({ url, style, className }: Props) => {
                   onChange={handleVolumeChange}
                   value={volume}
                 />
-              </div>
+              
 
-              <div className="flex items-center self-baseline md:m-0 justify-end gap-2">
-                <DropdownMenu modal>
-                  <DropdownMenuTrigger>
-                    <div className="flex gap-3 p-0 justify-center items-center text-accent-foreground md:text-md text-2xl outline-2 outline-red-300 ">
-                      <Settings className="text-foreground  icons-s  items-center " />
-                    </div>
+            
+              
+             
+                <span className="text-[.5rem]">{toHms(currentTime)}/</span>
+                <span className="text-[.5rem]">{toHms(totalTime)}</span>
+                <button
+                className="bg-transparent"
+                  onClick={() => {
+                    if (videoRef.current) {
+                      videoRef.current.requestFullscreen();
+                      dispatch(toggleFullScreen());
+                    }
+                  }}
+                >
+                  <Maximize className="h-3 xl:h-6" />
+                </button>
+                 
+                <DropdownMenu >
+                  <DropdownMenuTrigger asChild>
+                    <button className="bg-transparent "><Settings className="h-3 xl:h-6" /></button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="min-w-20">
                     <DropdownMenuLabel>Settings</DropdownMenuLabel>
@@ -255,7 +269,7 @@ const VideoPlayer = ({ url, style, className }: Props) => {
                         <DropdownMenuSubContent>
                           {avalQuality ? (
                             avalQuality.map((qual: Quality, index) => (
-                              <DropdownMenuItem
+                              <DropdownMenuItem key={index}
                               >
                                 <Button variant="ghost" onClick={() => {
                                   dispatch(setQuality(qual));
@@ -297,33 +311,17 @@ const VideoPlayer = ({ url, style, className }: Props) => {
                     </DropdownMenuGroup>
                   </DropdownMenuContent>
                 </DropdownMenu>
+              
               </div>
-              <div className="self-baseline p-2 text-xs md:text-md lg:text-xl mx-3">
-                <span>{toHms(currentTime)}/</span>
-                <span>{toHms(totalTime)}</span>
-              </div>
-              <div className="maximize">
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    if (videoRef.current) {
-                      videoRef.current.requestFullscreen();
-                      dispatch(toggleFullScreen());
-                    }
-                  }}
-                >
-                  <Maximize className="flex items-center self-baseline" />
-                </Button>
-              </div>
-            </div>
+           
 
-            <div className="flex w-[95%] items-center gap-2">
+            <div className="flex max-w-full px-2 pb-0.5 items-center gap-2">
               
                 <button className="text-foreground" onClick={handlePlayPause}>
                   {isPlaying ? (
-                    <Pause className="icons-m" />
+                    <Pause className="h-3 xl:h-3" />
                   ) : (
-                    <Play fill={"#fff"} className=" icons-m" />
+                    <Play fill={"#fff"} className=" h-4 xl:h-6 " />
                   )}
                 </button>
             

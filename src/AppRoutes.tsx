@@ -1,15 +1,22 @@
 import { Layout } from "./layouts/Layout";
-import { Routes, Route } from "react-router";
+import { Routes, Route, useNavigate } from "react-router";
 import { VideoPage } from "./pages/Video/VideoPage";
 import { AuthPage } from "./pages/Auth/AuthPage";
 import { HomePage } from "./pages/Main/HomePage";
 import { UserProfileForm } from "./forms/UserProfile";
 import { ChannelPage } from "./pages/Channel/ChannelPage";
 import { PlaylistPage } from "./pages/Playlist/PlaylistPage";
-import { ChannelPlaylistPage } from "./pages/Channel/ChannelPlaylist";
+import { PlaylistPage as MainPlaylistPage } from "./pages/Main/PlaylistPage";
 import { ChannelVideoPage } from "./pages/Channel/ChannelVideoPage";
 import { ChannelHomePage } from "./pages/Channel/ChannelHomePage";
+import { useEffect } from "react";
+import { setNavigateGlobal } from "./utils";
+import { ChannelPlaylistPage } from "./pages/Channel/ChannelPlaylistPage";
 const AppRoutes = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    setNavigateGlobal(navigate);
+  }, [navigate]);
   return (
     <Routes>
       <Route
@@ -17,6 +24,14 @@ const AppRoutes = () => {
         element={
           <Layout>
             <HomePage />
+          </Layout>
+        }
+      />
+      <Route
+        path="user-playlists"
+        element={
+          <Layout>
+            <MainPlaylistPage />
           </Layout>
         }
       />
@@ -52,9 +67,9 @@ const AppRoutes = () => {
             </Layout>
           }
         />
-        <Route path="home" element={<ChannelHomePage/>} />
-        <Route path="playlists" element={<ChannelPlaylistPage/>}/>
-        <Route path="videos" element={<ChannelVideoPage/>}/>
+        <Route path="home" element={<ChannelHomePage />} />
+        <Route path="playlists" element={<ChannelPlaylistPage />} />
+        <Route path="videos" element={<ChannelVideoPage />} />
       </Route>
 
       <Route

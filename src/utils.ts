@@ -31,27 +31,32 @@ export const handleResponse = <T>(
  *
  * @returns Promise<IUser>
  */
-export const refreshAccessToken = () => {
-  
-
-  return new Promise<IUser>((resolve, reject) => {
-    try {
-      const res = apiClient.post<ApiResponse<IUser>>("/user/refresh-token", {
+export const refreshAccessToken = async (): Promise<IUser> => {
+  try {
+    const res = await apiClient.post<ApiResponse<IUser>>(
+      "/user/refresh-token",
+      {},
+      {
         withCredentials: true,
-      });
-      res.then((val) => {
-        if (val.status === 200) {
-          
-          console.log("refreshing token");
-          resolve(val.data.data);
-        } else {
-          reject(val.data.data);
-        }
-      });
-    } catch (error) {
-      reject(error);
+        headers: {
+          Optional: "true", // assuming your backend checks this header
+        },
+      }
+    );
+
+    if (res.status === 200) {
+      console.log("Token refreshed");
+      return res.data.data;
+    } else {
+      console.log("Refresh token failed with non-200 status");
+      navigateGlobal("/auth");
+      throw new Error("Refresh failed");
     }
-  });
+  } catch (error) {
+    console.log("Refresh token request failed:", error);
+    navigateGlobal("/auth");
+    throw error; // propagate to caller
+  }
 };
 
 /**
@@ -122,4 +127,18 @@ export const generateSrcSet = (url: string): string => {
   const url1080p = url.replace("/upload/", "/upload/w_1080/").concat(" 1080w ");
 
   return url360p.concat(url480p).concat(url720p).concat(url1080p);
+};
+
+export const getHomeUrl=()=>("http:://localhost:5173");
+
+
+let navigateFunction: (path: string) => void;
+
+export const setNavigateGlobal = (navFn: (path: string) => void) => {
+  navigateFunction = navFn;
+};
+
+export const navigateGlobal = (path: string) => {
+  if (navigateFunction) navigateFunction(path);
+  else console.error("Navigate function not initialized!");
 };

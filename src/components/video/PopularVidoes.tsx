@@ -3,8 +3,8 @@ import { usePopularVideo } from "@/api/VideoApi";
 import React, { useEffect, useState } from "react";
 import { VirtuosoGrid, GridComponents } from "react-virtuoso";
 
-import { VideoCard } from "./video/VideoCard";
-import { VideoCardSkeleton } from "./video/VideoCardSkeleton";
+import { VideoCard } from "./VideoCard";
+import { VideoCardSkeleton } from "./VideoCardSkeleton";
 
 // flex flex-col w-full md:flex-row flex-wrap  justify-center contain-content gap-4
 const GridList: GridComponents["List"] = React.forwardRef(
@@ -13,8 +13,7 @@ const GridList: GridComponents["List"] = React.forwardRef(
       style={{ ...style }}
       {...props}
       ref={ref}
-      className="flex flex-col  md:flex-row flex-wrap  max-w-full justify-center md:items-center contain-content md:gap-10  "
-    >
+      className="grid grid-cols-1 grid-rows-1  md:grid-cols-2 justify-items-center gap-2 ">
       {children}
     </div>
   )

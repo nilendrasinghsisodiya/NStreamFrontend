@@ -7,14 +7,15 @@ const VideoPage = () => {
   const videoId = searchParams.get("videoId") as string;
   return (
     <>
-      <div className="flex flex-col p-5 gap-y-10 w-full items-center justify-center h-full ">
+      <div className="flex flex-col  p-4 gap-2 items-center 
+      min-w-screen overflow-y-scroll min-h-screen ">
         <Video
           videoId={videoId}
-          className="flex w-full   h-full  max-h-110 md:max-h-150 xl:max-h-165 outline-1  outline-amber-300 z-10   items-center xl:max-w-2/3 max-w-full p-2 "
-        />
+          className=" max-w-full min-w-[350px]  " />
         <CommentPanel
           videoId={videoId}
-          className="w-full outline-1 outline-green-500 p-5 min-h-400  "
+          className="  border-3 h-250 rounded-2xl border-accent  min-w-full p-6
+          "
         />
       </div>
     </>

@@ -1,6 +1,5 @@
-import { Home, Layers } from "lucide-react";
+import { Home, Layers, Video } from "lucide-react";
 import { memo } from "react";
-import { SafeAvatar } from "../avatar/Avatars";
 import { Link } from "react-router";
 const Footer = () => {
   const items = [
@@ -12,14 +11,14 @@ const Footer = () => {
       Link: true,
     },
     {
-      title: "You",
-      url: "",
-      icon: SafeAvatar,
-      Link: false,
+      title: "Upload",
+      url: "/video/upload",
+      icon: Video,
+      Link: true,
     },
   ];
   return (
-    <div className="flex md:hidden  py-2 fixed bottom-0 bg-background bg-blend-normal z-[50] gap-4 dark:border-t-white border-1 border-t-accent w-full justify-between items-center">
+    <div className="flex md:hidden  row-span-1 py-2 fixed bottom-0 bg-background bg-blend-normal z-[50] gap-4 dark:border-t-white border-1 border-t-accent w-full justify-between items-center">
       {items.map((item) => (
         <div
           tabIndex={0}

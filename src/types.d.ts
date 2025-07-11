@@ -69,6 +69,7 @@ interface IPlaylist extends  IBase{
     description:string;
     owner:string;
     view:number;
+    cover:string;
 
 };
 

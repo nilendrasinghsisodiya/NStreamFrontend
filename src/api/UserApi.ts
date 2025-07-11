@@ -14,7 +14,6 @@ export interface ICreateUserBody {
 }
 
 export const useCreateUser = () => {
-  
   const {
     isError,
     data,
@@ -35,10 +34,8 @@ export const useCreateUser = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-          
           },
-          withCredentials:true,
-          
+          withCredentials: true,
         }
       );
 
@@ -175,7 +172,6 @@ export const useRegisterUser = () => {
 };
 
 export const useUserRecommendation = () => {
-
   const user = useSelector(selectUser);
 
   const { isError, isLoading, isSuccess, data } = useQuery<
@@ -184,37 +180,65 @@ export const useUserRecommendation = () => {
   >({
     queryKey: ["userRecommendation"],
     queryFn: async () => {
-     
       const response = await apiClient.get<ApiResponse<IVideo[]>>(
-        "/user/recommendations",{withCredentials:true}
+        "/user/recommendations",
+        { withCredentials: true }
       );
       return handleResponse(response, "failed to get recommendations");
     },
     staleTime: 20 * 60 * 1000,
     retry: false,
-    enabled:!!user ,
+    enabled: !!user,
   });
-  if(!user){
-    return {isError:true,isLoading:false,isSuccess:false,data:null};
+  if (!user) {
+    return { isError: true, isLoading: false, isSuccess: false, data: null };
   }
 
   return { isError, isLoading, isSuccess, data };
 };
 
-export const useLogoutUser = ()=>{
-  const {accessToken}= useSelector(selectUser);
+export const useLogoutUser = () => {
+  const { accessToken } = useSelector(selectUser);
   console.log(accessToken);
-  const {mutateAsync:logout,isError,isSuccess} = useMutation<undefined,AxiosError>({
-    mutationKey:["userLogout"],
-    mutationFn:async()=>{
-      const response = await apiClient.post<ApiResponse<undefined>>("/user/logout",{withCredentials:true},{headers:{Authorization:`Bearer ${accessToken}`, }
-      });
-      return handleResponse<undefined>(response,"failed to logout");
+  const {
+    mutateAsync: logout,
+    isError,
+    isSuccess,
+  } = useMutation<undefined, AxiosError>({
+    mutationKey: ["userLogout"],
+    mutationFn: async () => {
+      const response = await apiClient.post<ApiResponse<undefined>>(
+        "/user/logout",
+        { withCredentials: true },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      return handleResponse<undefined>(response, "failed to logout");
     },
-    onSuccess:()=>{
+    onSuccess: () => {
       console.log("logout querry ranned sucessfully");
-    }
+    },
   });
-  return {logout,isError,isSuccess};
+  return { logout, isError, isSuccess };
 };
+type getUserPlaylistData = 
+  [Pick<IPlaylist, "_id" | "name" | "view"|"cover">];
+  
+export  const useGetUserPlaylists = ({ username ,isOpen}: { username: string; isOpen:boolean}) =>{
+  const {
+    data: playlists, isSuccess, isError, isLoading
+  } = useQuery<getUserPlaylistData, AxiosError>({
+    queryKey: ["userPlaylists", username],
+    queryFn: async () => {
+      const response = await apiClient.get<ApiResponse<getUserPlaylistData>>(
+        `/user/playlists?username=${username}`
+      );
+      return handleResponse<getUserPlaylistData>(
+        response,
+        "failed to fetch user playlist"
+      );
+    },
+    enabled:isOpen,
+  });
 
+  return { isError, isSuccess, playlists, isLoading };
+}

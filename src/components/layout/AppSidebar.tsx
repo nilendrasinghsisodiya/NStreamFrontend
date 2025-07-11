@@ -18,7 +18,7 @@ const items = [
   },
   {
     title: "Playlists",
-    url: "/playlists",
+    url: "/user-playlists",
     icon: ListVideo,
   },
 ];
@@ -30,11 +30,11 @@ const items = [
  */
 const AppSidebar = () => {
   return (
-    <Sidebar className="max-w-100  gap-12 justify-around" collapsible="icon" variant="sidebar">
+    <Sidebar className="max-w-100 col-span-1 gap-12 justify-around min-h-screen" collapsible="icon" variant="sidebar">
      
-      <SidebarContent  >
+      <SidebarContent className="min-h-screen"  >
         <SidebarGroup >
-          <SidebarGroupContent >
+          <SidebarGroupContent className="min-h-screen">
           <SidebarTrigger className="px-2 mb-12 text-bold"  />
             <SidebarMenu className="gap-12">
               {items.map((item) => (

@@ -40,19 +40,20 @@ const UserProfileTab = () => {
   return (
     <>
       <DropdownMenu modal>
-        <DropdownMenuTrigger>
-          <Button ref={null} variant={"ghost"} asChild>
+        <DropdownMenuTrigger className="flex items-center justify-center p-2 outline-2" >
+          <Button  variant={"ghost"} asChild >
             <SafeAvatar
               avatar={user?.avatar}
               username={user?.username}
               to={"#"}
-              failLink="/auth"
+              failLink="/auth" 
+              className=""
             />
           </Button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          className="outline-2 outline-green-200 z-50 border-2 border-accent-foreground/40 bg-accent p-2 rounded-xl"
+          className=" z-50 border-2 border-accent-foreground/40 bg-accent p-2 rounded-xl w-full h-full"
           alignOffset={23}
           align="start"
           sideOffset={20}

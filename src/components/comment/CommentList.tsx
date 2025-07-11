@@ -1,69 +1,51 @@
 import { useGetVideoComments } from "@/api/CommentApi";
-import { Virtuoso } from "react-virtuoso";
+import {  VirtuosoGrid } from "react-virtuoso";
 import type { GridComponents } from "react-virtuoso";
 import { Comment } from "./Comment";
-import React, { useEffect} from "react";
-import { selectComments, setComments  } from "@/contexts/comments/commentSlice";
+import React, { useEffect } from "react";
+import { selectComments, setComments } from "@/contexts/comments/commentSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-const GridList: GridComponents["List"] = React.forwardRef(
-  ({ style, children, ...props }, ref) => (
+
+
+const Item: GridComponents["Item"] = React.forwardRef(
+  ({ style, children, ...props },ref) => (
     <div
-      style={{ ...style }}
-      {...props}
       ref={ref}
-      className=" w-full h-full "
+      {...props}
+      style={{ ...style }}
+      className="  min-w-20 min-h-20"
     >
       {children}
     </div>
   )
 );
-const GridItem: GridComponents["Item"] = React.forwardRef(
-  ({ style, children, ...props }, ref) => (
-    <div
-      ref={ref}
-      {...props}
-      style={{ ...style }}
-      className=" outline-2 outline-blue-400 w-full"
-    >
-      {children}
-    </div>
-  )
-);
-const CommentList = ({
-  videoId,
-  
-}: {
-  videoId: string;
-  className?: string;
-}) => {
-  const { data, fetchNextPage, refetch,hasNextPage, isError, error } =
+const CommentList = ({ videoId }: { videoId: string; className?: string }) => {
+  const { data, fetchNextPage, refetch, hasNextPage, isError, error } =
     useGetVideoComments({ videoId, limit: 10 });
-const comments =  useSelector(selectComments)
-const dispatch = useDispatch();
-    
+  const comments = useSelector(selectComments);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (data) {
-      const fetchedComments = data.pages.flatMap((value)=>value.comments);
-      dispatch(setComments(fetchedComments))
+      const fetchedComments = data.pages.flatMap((value) => value.comments);
+      dispatch(setComments(fetchedComments));
       console.log(fetchedComments);
     }
-  }, [data,dispatch,comments]);
- 
-   
+  }, [data, dispatch, comments]);
 
   return (
     <>
-      {comments ? (
-        <Virtuoso
+      {comments.length > 0 ? (
+        <VirtuosoGrid
+        style={{height:"100%"}}
           aria-rowspan={4}
-          
+          className="flex overflow-scroll  outline-2 outline-red-200 "
           data={comments}
           overscan={5}
           components={{
-            List: GridList,
-            Item: GridItem,
+            Item: Item,
+            
           }}
           itemContent={(index, data) => (
             <Comment
@@ -77,8 +59,7 @@ const dispatch = useDispatch();
               key={data._id + index}
               videoId={videoId}
               refetch={refetch}
-              
-              className="flex flex-col w-full my-3 min-h-50 outline-1 outline-blue-400 border-[0px] border-[rgba(0,0,0,0)] border-b-foreground border-b-2"
+              className="flex flex-col w-full my-3 min-h-50 outline-1 outline-blue-400 border-[0px] border-transparent border-b-foreground border-b-2 z-50"
             />
           )}
           totalCount={comments.length}

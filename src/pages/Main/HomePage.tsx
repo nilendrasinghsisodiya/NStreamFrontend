@@ -1,5 +1,5 @@
-import { PopularVideos } from "@/components/PopularVidoes";
-import { RecommendedVideos } from "@/components/RecommendedVideos";
+import { PopularVideos } from "@/components/video/PopularVidoes";
+import { RecommendedVideos } from "@/components/video/RecommendedVideos";
 
 const HomePage = () => {
 

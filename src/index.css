@@ -141,8 +141,8 @@
 
 /* Icons with width and height of 2rem*/
 .icons-m{
-  width:2rem !important;
-  height: 2rem !important;
+  width:1.5rem !important;
+  height: 1.5rem !important;
 }
 
 .icons-lg{
@@ -151,8 +151,8 @@
 }
 
 .icons-s{
-  width:1.5rem !important;
-  height:1.5rem !important;
+  width:1.3rem !important;
+  height:1.3rem !important;
 }
 .main_shadow{
   box-shadow: -23px -8px 115px rgb(23, 72, 218);

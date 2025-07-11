@@ -26,6 +26,7 @@ const VideoList = ({  isSuccess, data, isLoading ,className}: Props) => {
             owner={ele.owner}
            isSuccess={isSuccess}
            lazyLoading={true}
+           noHover
           />
           </div>
         ))

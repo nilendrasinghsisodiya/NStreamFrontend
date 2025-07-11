@@ -5,7 +5,7 @@ const CommentPanel = ({videoId,className}:{videoId:string,className?:string;}) =
 return (
     <div className={`${className}`}>
         <CommentInput videoId={videoId} />
-        <CommentList videoId={videoId} className=""/>
+        <CommentList videoId={videoId} />
     </div>
 )
 }

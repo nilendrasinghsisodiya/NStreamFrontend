@@ -6,6 +6,7 @@ import { generateSrcSet } from "@/utils";
 import { VideoAvatarStrip } from "../avatar/Avatars";
 import { memo } from "react";
 import { useNavigate } from "react-router";
+import { VideoOptions } from "./VideoOptions";
 
 type Props = {
   thumbnail: string;
@@ -18,7 +19,7 @@ type Props = {
   videoId: string;
   isSuccess: boolean;
   lazyLoading: boolean;
-  noHover?:boolean;
+  noHover?: boolean;
 };
 
 const VideoCard = ({
@@ -42,8 +43,13 @@ const VideoCard = ({
         <div
           tabIndex={0}
           style={style}
-          onClick={() =>{  navigate(`/watch?videoId=${videoId}`); } }
-          className={`flex flex-col cursor-pointer p-2 w-full max-h-full border-2 ${!noHover && 'hover:scale-105 selection:border-foreground hover:shadow-[1px_1px_10px_rgba(23,23,255,0.5)]'} md:rounded-xl gap-2 my-5  `}
+          onClick={() => {
+            navigate(`/watch?videoId=${videoId}`);
+          }}
+          className={`flex flex-col cursor-pointer p-2 w-full max-h-full border-2 ${
+            !noHover &&
+            "hover:scale-105 selection:border-foreground hover:shadow-[1px_1px_10px_rgba(23,23,255,0.5)]"
+          } md:rounded-xl gap-2 my-5  `}
         >
           {isSuccess ? (
             <>
@@ -56,13 +62,19 @@ const VideoCard = ({
                 width="100%"
                 height="100%"
               />
-              <VideoAvatarStrip
-                avatar={owner.avatar}
-                subsCount={owner.subscriberCount}
-                username={owner.username}
-                videoTitle={title}
-                className="flex flex-col w-full  z-50 px-5"
-              />
+              <div className="flex w-full items-center justify-center">
+                <VideoAvatarStrip
+                  avatar={owner.avatar}
+                  subsCount={owner.subscriberCount}
+                  username={owner.username}
+                  videoTitle={title}
+                  videoId={videoId}
+                  className="flex flex-col w-full  z-40 px-5"
+                />{" "}
+                
+                  <VideoOptions videoId={videoId} />
+               
+              </div>
             </>
           ) : (
             <span>something went wrong</span>
@@ -79,7 +91,6 @@ type videoFetchProps = {
   style?: React.CSSProperties;
   className?: string;
 };
-
 
 const VideoCardFetch = ({ videoId, style, className }: videoFetchProps) => {
   const { data, isSuccess } = useGetVideo(videoId);

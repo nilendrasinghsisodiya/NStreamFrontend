@@ -2,7 +2,7 @@ import { useUserRecommendation } from "@/api/UserApi";
 
 
 
-import { MemoVideoList } from "./video/VideoList";
+import { MemoVideoList } from "./VideoList";
 
 const RecommendedVideos = () => {
   
