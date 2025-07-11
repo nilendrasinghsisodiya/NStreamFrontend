@@ -101,28 +101,21 @@ export const useUpdatePlaylist = () => {
   return { update, isError, isSuccess, error };
 };
 interface IPaginatedPlaylist extends IPaginatedBase {
-  name:string,
-  view:number,
-  owner:string,
-  videos: IVideo[];
-  totalVideos: number;
+  playlist: {
+    name: string;
+    view: number;
+    owner: string;
+    videos: IVideo[];
+    totalVideos: number;
+  };
 }
 type getPlaylistBody = {
   playlistId: string;
   limit: number;
- 
 };
-export const useGetPlaylist = ({
-  playlistId,
-  limit,
- 
-}: getPlaylistBody) => {
+export const useGetPlaylist = ({ playlistId, limit }: getPlaylistBody) => {
   const { accessToken } = useSelector(selectUser);
- const playlistQuery = useInfiniteQuery<
-    IPaginatedPlaylist,
-    AxiosError
- 
-  >({
+  const playlistQuery = useInfiniteQuery<IPaginatedPlaylist, AxiosError>({
     queryKey: ["playlists", playlistId, limit],
     queryFn: async ({ pageParam = 1 }) => {
       const response = await apiClient.get<ApiResponse<IPaginatedPlaylist>>(
@@ -147,7 +140,7 @@ export const useGetPlaylist = ({
       lastPage.hasPrevPage ? lastPage.prevPage : undefined,
   });
 
-  return {...playlistQuery};
+  return { ...playlistQuery };
 };
 
 type removeVideosFromPlaylistBody = {
