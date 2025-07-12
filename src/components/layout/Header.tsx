@@ -14,7 +14,7 @@ const Header = () => {
       className=" relative flex  w-full min-h-12 z-50 justify-between items-center border-b-1 shadow-2xs dark:shadow-none  border-b-primary md:self-start bg-background gap-4  top-0 
     md:py-6 lg:py-7 px-3 max-h-22  "
     >
-      <Link to="/" className="text-foreground text-xl tracking-tight lg:text-2xl font-bold mx-3">
+       < Link   tabIndex={0} to="/" className="text-foreground text-xl tracking-tight lg:text-2xl font-bold mx-3">
         NStream
       </Link>
       <div className="flex gap-4 justify-between xl:justify-around items-center md:w-full h-full md:flex-1 ">

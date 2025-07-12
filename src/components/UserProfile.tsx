@@ -39,9 +39,9 @@ const UserProfileTab = () => {
   };
   return (
     <>
-      <DropdownMenu modal>
+      <DropdownMenu modal >
         <DropdownMenuTrigger className="flex items-center justify-center p-2 outline-2" >
-          <Button  variant={"ghost"} asChild >
+          <Button  variant={"ghost"} asChild tabIndex={0} >
             <SafeAvatar
               avatar={user?.avatar}
               username={user?.username}

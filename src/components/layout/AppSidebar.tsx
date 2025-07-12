@@ -35,12 +35,12 @@ const AppSidebar = () => {
       <SidebarContent className="min-h-screen"  >
         <SidebarGroup >
           <SidebarGroupContent className="min-h-screen">
-          <SidebarTrigger className="px-2 mb-12 text-bold"  />
+          <SidebarTrigger className="px-2 mb-12 text-bold" tabIndex={0} />
             <SidebarMenu className="gap-12">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title} tabIndex={0}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url} className="">
+                    <a href={item.url} className="" tabIndex={0}>
                       <item.icon className="h-full w-full min-w-5 min-h-5 " strokeWidth="3"/>
                       <span>{item.title}</span>
                     </a>

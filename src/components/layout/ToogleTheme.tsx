@@ -10,7 +10,7 @@ export function ToggleTheme() {
   return (
     <Button
       variant="ghost"
-     
+       tabIndex={0} 
       className=" border-[0.2rem] contain-content icons-s text-xl m-0 border-transparent rounded-lg w-full h-full"
       value={theme}
       onClick={() => {

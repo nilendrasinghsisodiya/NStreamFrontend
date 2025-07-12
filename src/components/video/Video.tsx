@@ -49,14 +49,14 @@ const Video = ({ videoId, style, className }: Props) => {
               </span>
             ) : (
               <div className="flex flex-col  w-full  py-2  items-center px-2 ">
-                <span className="w-full main_shadow contain-content">
+                
                   <VideoPlayer
                     url={videoUrl}
                     className="
-                  outline-1 outline-red-400 contain-content rounded-2xl max-w-full max-h-full md:w-3/4 md:h-full aspect-video
+                  outline-1 outline-red-400 contain-content main_shadow rounded-2xl max-w-full max-h-full md:w-3/4 md:h-full aspect-video
                  "
                   />
-                </span>
+                
                 <div className="flex flex-col itesm-center mx-3 h-max-[40px] px-2 w-full">
                   <span className="flex  text-foreground text-[1.26rem] md:text-[2rem] font-bold text-wrap w-full self-start ml-3">
                     {data?.title}

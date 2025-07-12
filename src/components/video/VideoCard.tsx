@@ -4,6 +4,7 @@ import { VideoAvatarStrip } from "../avatar/Avatars";
 import { memo } from "react";
 import { useNavigate } from "react-router";
 import { VideoOptions } from "./VideoOptions";
+import { CircleSlash } from "lucide-react";
 
 type Props = {
   thumbnail: string;
@@ -43,22 +44,23 @@ const VideoCard = ({
           onClick={() => {
             navigate(`/watch?videoId=${videoId}`);
           }}
-          className={`flex flex-col cursor-pointer p-2 w-full max-h-full border-2 ${
+          className={`flex flex-col cursor-pointer p-1 w-85 h-80 border-2 ${
             !noHover &&
             "hover:scale-105 selection:border-foreground hover:shadow-[1px_1px_10px_rgba(23,23,255,0.5)]"
-          } md:rounded-xl gap-2 my-5  `}
+          } md:rounded-xl gap-2 my-2  `}
         >
           {isSuccess ? (
             <>
-              <img
+              {thumbnail.length > 0 ?<img
                 src={thumbnail}
                 alt={`${title}'s thumbnail`}
                 srcSet={generateSrcSet(thumbnail)}
-                className="aspect-video lg:rounded-3xl m-0.5 max-w-full min-w-1/2 "
+                className="aspect-video  md:rounded-2xl lg:rounded-3xl m-0.5 max-w-full w-full min-h-50 "
                 loading={lazyLoading ? "lazy" : "eager"}
                 width="100%"
                 height="100%"
-              />
+              /> : <span className="max-w-full min-w-1/2 lg:rounded-3xl aspect-video m-0.5 bg-accent">
+                <CircleSlash className="h-1/2 w-1/2"/></span>}
               <div className="flex w-full items-center justify-center">
                 <VideoAvatarStrip
                   avatar={owner.avatar}

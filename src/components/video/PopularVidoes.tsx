@@ -13,7 +13,7 @@ const GridList: GridComponents["List"] = React.forwardRef(
       style={{ ...style }}
       {...props}
       ref={ref}
-      className="grid grid-cols-1 grid-rows-1  md:grid-cols-2 justify-items-center gap-2 ">
+      className="grid grid-cols-1 grid-rows-1  md:grid-cols-3 justify-items-center gap-3 w-screen p-1 scroll-smooth">
       {children}
     </div>
   )
@@ -24,7 +24,7 @@ const GridItem: GridComponents["Item"] = React.forwardRef(
       ref={ref}
       {...props}
       style={{ ...style }}
-      className=" w-full max-w-[420px] xl:max-w-[600px] aspect-square min-h-[350px]"
+      className=" w-95 h-80 max-w-[420px] xl:max-w-[600px] aspect-square "
     >
       {children}
     </div>
@@ -56,6 +56,7 @@ const PopularVideos = () => {
       <VirtuosoGrid
         data={videos}
         useWindowScroll
+        
         components={{
           List: GridList,
           Item: GridItem,
@@ -80,10 +81,10 @@ const PopularVideos = () => {
           }
         }}
         computeItemKey={(_, val) => val._id}
-        increaseViewportBy={200}
+        increaseViewportBy={600}
         scrollSeekConfiguration={{
-          enter: (velocity) => Math.abs(velocity) > 900,
-          exit: (velocity) => Math.abs(velocity) < 100,
+          enter: (velocity) => Math.abs(velocity) > 100,
+          exit: (velocity) => Math.abs(velocity) < 50,
         
         }}
         overscan={15}

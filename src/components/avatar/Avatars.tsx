@@ -30,7 +30,7 @@ const SafeAvatar = ({
   return (
     <span>
       {avatar && username ? (
-        <Avatar
+        <Avatar tabIndex={0}
           className="min-h-[15px]  min-w-[15px] max-h-[40px] max-w-[40px] md:max-h-[55px] md:max-w-[55px]"
           onClick={propagate ? () => {} : handleNoPropagation}
         >

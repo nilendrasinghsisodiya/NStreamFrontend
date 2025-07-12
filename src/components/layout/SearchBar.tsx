@@ -21,7 +21,7 @@ const SearchBar = () => {
         />
       </span>
       <span className="min-h-full w-full ">
-        <Button
+        <Button tabIndex={0}
           variant="default"
           className={`rounded-md md:bg-accent md:border-accent rounded-l-none md:border-[0.12rem] bg-transparent  h-full md:py-[24px] w-max flex-1/3  ${active&&"border-2 border-red-500"} focus-visible:ring-transparent`} 
         >

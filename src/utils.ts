@@ -121,12 +121,13 @@ export const toKBMS = (num: number): string => {
 };
 
 export const generateSrcSet = (url: string): string => {
-  const url360p = url.replace("/upload/", "/upload/w_360/").concat(" 360w, ");
-  const url480p = url.replace("/upload/", "/upload/w_480/").concat(" 480w, ");
-  const url720p = url.replace("/upload/", "/upload/w_720/").concat(" 720w, ");
-  const url1080p = url.replace("/upload/", "/upload/w_1080/").concat(" 1080w ");
+  const sizes = [360, 480, 720, 1080];
 
-  return url360p.concat(url480p).concat(url720p).concat(url1080p);
+  return sizes
+    .map((w) =>
+      url.replace("/upload/", `/upload/w_${w},f_auto,q_auto/`) + ` ${w}w`
+    )
+    .join(", ");
 };
 
 export const getHomeUrl=()=>("http:://localhost:5173");
