@@ -12,7 +12,7 @@ const Footer = () => {
     },
     {
       title: "Upload",
-      url: "/video/upload",
+      url: "/upload-video",
       icon: Video,
       Link: true,
     },

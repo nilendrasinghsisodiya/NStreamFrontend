@@ -9,6 +9,8 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "../ui/sidebar";
+import { Link } from "react-router";
+import { Button } from "../ui/button";
 
 const items = [
   {
@@ -30,7 +32,7 @@ const items = [
  */
 const AppSidebar = () => {
   return (
-    <Sidebar className="max-w-100 col-span-1 gap-12 justify-around min-h-screen" collapsible="icon" variant="sidebar">
+    <Sidebar className="max-w-100  h-screen col-span-1 gap-12 justify-around min-h-screen" collapsible="icon" variant="sidebar">
      
       <SidebarContent className="min-h-screen"  >
         <SidebarGroup >
@@ -40,10 +42,10 @@ const AppSidebar = () => {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title} tabIndex={0}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url} className="" tabIndex={0}>
+                    <Link to={item.url} className="" tabIndex={0}>
                       <item.icon className="h-full w-full min-w-5 min-h-5 " strokeWidth="3"/>
-                      <span>{item.title}</span>
-                    </a>
+                      <Button variant={"ghost"}>{item.title}</Button>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
