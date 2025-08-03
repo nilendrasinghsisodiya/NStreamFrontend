@@ -1,5 +1,5 @@
 import { VideoCardSkeleton } from "./VideoCardSkeleton";
-import { generateSrcSet } from "@/utils";
+import { generateSrcSet, toHms } from "@/utils";
 import { VideoAvatarStrip } from "../avatar/Avatars";
 import { memo } from "react";
 import { useNavigate } from "react-router";
@@ -9,98 +9,109 @@ import { CircleSlash } from "lucide-react";
 type Props = {
   thumbnail: string;
   title: string;
-  likeCount?: number;
+  likesCount?: number;
   viewsCount: number;
   style?: React.CSSProperties;
-  isLoading: boolean;
-  owner: Pick<IUser, "avatar" | "_id" | "username" | "subscriberCount">;
+  owner: Pick<IUser, "avatar" | "_id" | "username" | "subscribersCount">;
   videoId: string;
   isSuccess: boolean;
   lazyLoading: boolean;
-  noHover?: boolean;
+  className?: string;
+  isLoading: boolean;
+  duration: number;
 };
 
 const VideoCard = ({
   thumbnail,
   title,
   style,
-  isLoading,
   owner,
   videoId,
   lazyLoading,
+  isLoading,
   isSuccess,
-  noHover,
+  duration,
+  className,
 }: Props) => {
   const navigate = useNavigate();
 
   return (
-    <>
-      {isLoading ? (
-        <VideoCardSkeleton />
-      ) : (
-        <div
-          tabIndex={0}
-          style={style}
-          onClick={() => {
-            navigate(`/watch?videoId=${videoId}`);
-          }}
-          className={`flex flex-col cursor-pointer p-1 w-85 h-80 border-2 ${
-            !noHover &&
-            "hover:scale-105 selection:border-foreground hover:shadow-[1px_1px_10px_rgba(23,23,255,0.5)]"
-          } md:rounded-xl gap-2 my-2  `}
-        >
-          {isSuccess ? (
-            <>
-              {thumbnail.length > 0 ?<img
-                src={thumbnail}
-                alt={`${title}'s thumbnail`}
-                srcSet={generateSrcSet(thumbnail)}
-                className="aspect-video  md:rounded-2xl lg:rounded-3xl m-0.5 max-w-full w-full min-h-50 "
-                loading={lazyLoading ? "lazy" : "eager"}
-                width="100%"
-                height="100%"
-              /> : <span className="max-w-full min-w-1/2 lg:rounded-3xl aspect-video m-0.5 bg-accent">
-                <CircleSlash className="h-1/2 w-1/2"/></span>}
-              <div className="flex w-full items-center justify-center">
-                <VideoAvatarStrip
-                  avatar={owner.avatar}
-                  subsCount={owner.subscriberCount}
-                  username={owner.username}
-                  videoTitle={title}
-                  videoId={videoId}
-                  className="flex flex-col w-full  z-40 px-5"
+    <div
+      tabIndex={0}
+      style={style}
+      onClick={() => {
+        navigate(`/watch?videoId=${videoId}`);
+      }}
+      //className={`flex flex-col cursor-pointer p-1 w-full h-full border-2 md:rounded-xl gap-2   ${className}`}
+      className={` flex flex-col p-1 border-2 rounded-xl gap-2 ${className}`}
+    >
+      {!isLoading ? (
+        isSuccess ? (
+          <>
+            {thumbnail.length > 0 ? (
+              <span className="relative w-full">
+                <img
+                  src={thumbnail}
+                  alt={`${title}'s thumbnail`}
+                  srcSet={generateSrcSet(thumbnail)}
+                  className="object-cover aspect-video  md:rounded-2xl lg:rounded-2xl m-0.5   "
+                  loading={lazyLoading ? "lazy" : "eager"}
+                  width="100%"
+                  height="100%"
                 />
-                
-                  <VideoOptions videoId={videoId} />
-               
-              </div>
-            </>
-          ) : (
-            <span>something went wrong</span>
-          )}
-        </div>
+                <span className="absolute bottom-1 text-[3px] right-1 p-0.5 rounded-sm  bg-foreground text-background">
+                  {toHms(duration)}
+                </span>
+              </span>
+            ) : (
+              <span className="max-w-full min-w-1/2 lg:rounded-3xl aspect-video m-0.5 bg-accent">
+                <CircleSlash className="h-1/2 w-1/2" />
+              </span>
+            )}
+            <div className="flex w-full items-center justify-center">
+              <VideoAvatarStrip
+                avatar={owner.avatar}
+                subsCount={owner.subscribersCount}
+                username={owner.username}
+                videoTitle={title}
+                videoId={videoId}
+                className={`flex flex-col w-full  z-40 px-2  ${className}`}
+              />
+
+              <VideoOptions videoId={videoId} />
+            </div>
+          </>
+        ) : (
+          <span>something went wrong</span>
+        )
+      ) : (
+        <VideoCardSkeleton />
       )}
-    </>
+    </div>
   );
 };
 
-type videoCardPlaylistProps = {thumbnail: string;
+type videoCardPlaylistProps = {
+  thumbnail: string;
   title: string;
-  likeCount?: number;
+  likesCount?: number;
   viewsCount: number;
   style?: React.CSSProperties;
   isLoading: boolean;
-  owner: Pick<IUser, "avatar" | "_id" | "username" | "subscriberCount">;
+  duration:number;
+  owner: Pick<IUser, "avatar" | "_id" | "username" | "subscribersCount">;
   videoId: string;
   isSuccess: boolean;
   lazyLoading: boolean;
 };
 
-export const VideoCardPlaylist = ({ thumbnail,
+export const VideoCardPlaylist = ({
+  thumbnail,
   title,
   style,
   isLoading,
   owner,
+  duration,
   videoId,
   lazyLoading,
   isSuccess,
@@ -118,30 +129,30 @@ export const VideoCardPlaylist = ({ thumbnail,
           onClick={() => {
             navigate(`/watch?videoId=${videoId}`);
           }}
-          className={`flex  cursor-pointer p-2 w-full max-h-full border-2 md:rounded-xl gap-2 my-5  `}
+          className={`flex  flex-col  justify-items-center  cursor-pointer p-2  h-full w-full border-2 md:rounded-xl gap-2 my-5  `}
         >
           {isSuccess ? (
-            <>
+            <><span className="w-full h-full aspect-video relative">
               <img
                 src={thumbnail}
                 alt={`${title}'s thumbnail`}
                 srcSet={generateSrcSet(thumbnail)}
-                className="aspect-video lg:rounded-3xl m-0.5 max-w-1/4 min-w-[200px] "
+                className="object-cover aspect-video  md:rounded-2xl lg:rounded-3xl m-0.5   min-h-50  "
                 loading={lazyLoading ? "lazy" : "eager"}
                 width="100%"
                 height="100%"
               />
+              <span className="absolute text-[3px] text-background bg-foreground bottom-3 p-0.5 rounded-sm right-1  ">{toHms(duration)}</span>
+              </span>
               <div className="flex w-full items-center justify-center">
                 <VideoAvatarStrip
                   avatar={owner.avatar}
-                  subsCount={owner.subscriberCount}
+                  subsCount={owner.subscribersCount}
                   username={owner.username}
                   videoTitle={title}
                   videoId={videoId}
                   className="flex flex-col w-full  z-40 px-5"
                 />
-                
-               
               </div>
             </>
           ) : (
@@ -152,10 +163,6 @@ export const VideoCardPlaylist = ({ thumbnail,
     </>
   );
 };
-
-
-
-
 
 export const MemoVideoCard = memo(VideoCard);
 
