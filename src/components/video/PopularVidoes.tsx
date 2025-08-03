@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 import { VirtuosoGrid, GridComponents } from "react-virtuoso";
 
 import { VideoCard } from "./VideoCard";
-import { VideoCardSkeleton } from "./VideoCardSkeleton";
+import { VideoCardSkeletonScrollSeek } from "./VideoCardSkeleton";
+import { useUserRecommendation } from "@/api/UserApi";
 
 // flex flex-col w-full md:flex-row flex-wrap  justify-center contain-content gap-4
 const GridList: GridComponents["List"] = React.forwardRef(
@@ -13,7 +14,7 @@ const GridList: GridComponents["List"] = React.forwardRef(
       style={{ ...style }}
       {...props}
       ref={ref}
-      className="grid grid-cols-1 grid-rows-1  md:grid-cols-3 justify-items-center gap-3 w-screen p-1 scroll-smooth">
+      className="grid grid-cols-1 grid-rows-1 min-h-full md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  place-items-center  -100 gap-3 w-full p-3 md:w-[95%]  scroll-smooth">
       {children}
     </div>
   )
@@ -24,8 +25,9 @@ const GridItem: GridComponents["Item"] = React.forwardRef(
       ref={ref}
       {...props}
       style={{ ...style }}
-      className=" w-95 h-80 max-w-[420px] xl:max-w-[600px] aspect-square "
-    >
+      //className="  md:h-80 md:w-85 h-[320px] w-[300px] min-w-[300px] min-h-[320px] max-w-[400px] xl:max-w-[600px] max-h-[340px] "
+    
+     className=" aspect-video w-[310px] h-[300px]  ">
       {children}
     </div>
   )
@@ -33,11 +35,18 @@ const GridItem: GridComponents["Item"] = React.forwardRef(
 
 
 const PopularVideos = () => {
-  const { isLoading, data, hasNextPage, fetchNextPage, isSuccess } =
+  const { data, hasNextPage, fetchNextPage, isSuccess,isLoading} =
     usePopularVideo({
-      limit: 5,
+      limit: 10,
     });
-  const [videos, setVideos] = useState<IVideo[] | []>([]);
+    const {data:RecommendedVideos} = useUserRecommendation();
+  const [videos, setVideos] = useState<IVideo[] >([]);
+
+  useEffect(()=>{
+    if(Array.isArray(RecommendedVideos) && RecommendedVideos.length > 0){
+      setVideos((prev)=>[...RecommendedVideos,...prev]);
+    }
+  },[RecommendedVideos]);
 
   useEffect(() => {
     if (data && data.pages) {
@@ -56,23 +65,28 @@ const PopularVideos = () => {
       <VirtuosoGrid
         data={videos}
         useWindowScroll
-        
         components={{
           List: GridList,
           Item: GridItem,
-          ScrollSeekPlaceholder: VideoCardSkeleton,
+          // Footer:()=>{
+          //   return <>{isFetchingNextPage && <div>loading....</div>}</>
+          // }
+          ScrollSeekPlaceholder: VideoCardSkeletonScrollSeek,
         }}
+        
         itemContent={(_, data) => (
           <VideoCard
-            isLoading={isLoading}
+          duration={data.duration}
+          isLoading={isLoading}
             owner={data?.owner}
             thumbnail={data.thumbnail}
             videoId={data._id}
             title={data.title}
             viewsCount={data.views}
-            key={data._id}
             isSuccess={isSuccess}
-            lazyLoading={false}
+            lazyLoading={true}
+
+
           />
         )}
         endReached={() => {
@@ -80,14 +94,16 @@ const PopularVideos = () => {
             fetchNextPage();
           }
         }}
-        computeItemKey={(_, val) => val._id}
-        increaseViewportBy={600}
+        computeItemKey={(index, val) => `${val._id}_${index}`}
+        increaseViewportBy={900}
+         height={"100%"}
+         style={{"minHeight":"100%"}}
         scrollSeekConfiguration={{
-          enter: (velocity) => Math.abs(velocity) > 100,
-          exit: (velocity) => Math.abs(velocity) < 50,
+        enter: (velocity) => Math.abs(velocity) > 150,
+          exit: (velocity) => Math.abs(velocity) < 10,
         
         }}
-        overscan={15}
+        overscan={50}
         isScrolling={(val) => console.log(val, "scrolling")}
         
       />
