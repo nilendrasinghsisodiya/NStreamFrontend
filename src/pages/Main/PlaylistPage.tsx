@@ -47,10 +47,10 @@ export const PlaylistCard = ({
                   navigate(`/playlist?playlistId=${playlistId}`);
                 }
           }
-          className={`flex flex-col md:flex-row cursor-pointer p-2 w-full max-h-full border-2 ${
+          className={`flex flex-col md:flex-row cursor-pointer p-2 w-full overflow-y-scroll border-2 ${
             !noHover &&
             "hover:scale-105 selection:border-foreground hover:shadow-[1px_1px_10px_rgba(23,23,255,0.5)]"
-          } md:rounded-xl gap-2 my-5  `}
+          } md:rounded-xl gap-2 lg:my-5 lg:p-5 justify-center items-center`}
         >
           {isSuccess  ? (
             <>
@@ -58,13 +58,13 @@ export const PlaylistCard = ({
                 src={cover}
                 alt={`${name}'s thumbnail`}
                 srcSet={generateSrcSet(cover)}
-                className="aspect-video lg:rounded-3xl m-0.5 max-w-[400px] min-w-[150px] "
+                className="aspect-video md:rounded-3xl m-0.5 max-w-[500px] min-w-[150px] "
                 loading={lazyLoading ? "lazy" : "eager"}
                 width="100%"
                 height="100%"
-              /> : <div className="flex justify-center items-center w-full h-full bg-accent rounded-2xl aspect-video max-w-[300px] min-w-[150px]"> <CircleOff className="h-1/2 w-1/2"/></div>}
-              <div className="flex flex-col gap-2">
-                <span>{name}</span>
+              /> : <div className="flex justify-center items-center max-w-[500px] min-w-[150px] w-full h-full bg-accent lg:rounded-3xl aspect-video "> <CircleOff className="h-1/2 w-1/2"/></div>}
+              <div className="flex flex-col md:items-start lg:justify-center w-full gap-2 m-2 lg:m-4">
+                <span className="text-md md:text-2xl text-center ">{name}</span>
               </div>
             </>
           ) : (

@@ -2,7 +2,8 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import themeReducers from "./contexts/theme/themeSlices";
 import authReducers from "./contexts/auth/authSlice";
 import videoPlayerReducers from "./contexts/videoPlayer/videoPlayerSlices";
-import comments from "./contexts/comments/commentSlice"
+import comments from "./contexts/comments/commentSlice";
+import videoUpload from "@/contexts/videoUpload/videoUploadSlice";
 import {
   persistStore,
   persistReducer,
@@ -16,16 +17,21 @@ import {
 import storage from "redux-persist/lib/storage";
 
 const presistConfig = {
-  key: "auth",
+  key: "nStreamPresist/auth",
   storage,
 };
 const presistedAuthReducers = persistReducer(presistConfig, authReducers);
+const presistedVideoUploadReducers = persistReducer(
+  { key: "nStreamPresist/videoUpload", storage ,serialize:false},
+  videoUpload
+);
 
 const rootReducers = combineReducers({
   auth: presistedAuthReducers,
   theme: themeReducers,
   videoPlayer: videoPlayerReducers,
-  comments: comments
+  comments: comments,
+  uploads: presistedVideoUploadReducers,
 });
 
 const store = configureStore({

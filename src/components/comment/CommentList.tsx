@@ -14,7 +14,7 @@ const Item: GridComponents["Item"] = React.forwardRef(
       ref={ref}
       {...props}
       style={{ ...style }}
-      className="  min-w-20 min-h-20"
+      className="  min-w-20 min-h-20 max-w-full"
     >
       {children}
     </div>
@@ -40,7 +40,7 @@ const CommentList = ({ videoId }: { videoId: string; className?: string }) => {
         <VirtuosoGrid
         style={{height:"100%"}}
           aria-rowspan={4}
-          className="flex overflow-scroll  outline-2 outline-red-200 "
+          className="grid grid-cols-1 grid-rows-10 max-w-full overflow-scroll   -200 "
           data={comments}
           overscan={5}
           components={{
@@ -54,12 +54,12 @@ const CommentList = ({ videoId }: { videoId: string; className?: string }) => {
               content={data.content}
               createdAt={data.createdAt}
               isLiked={data.isLiked}
-              likes={data.likeCount}
+              likes={data.likesCount}
               username={data.owner.username}
               key={data._id + index}
               videoId={videoId}
               refetch={refetch}
-              className="flex flex-col w-full my-3 min-h-50 outline-1 outline-blue-400 border-[0px] border-transparent border-b-foreground border-b-2 z-50"
+              className="flex flex-col w-full my-3 min-h-50 1 blue-400 border-[0px] border-transparent border-b-foreground border-b-2 z-50"
             />
           )}
           totalCount={comments.length}

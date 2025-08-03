@@ -37,7 +37,7 @@ const CommentInput = ({ videoId, commentId }: props) => {
       <form className="flex my-3" ref={formRef} onSubmit={handleSend}>
         <Input
           type="text"
-          className="flex-1 px-7 py-5 outline-1 outline-yellow-300 z-10"
+          className="flex-1 px-7 py-5 1 yellow-300 z-10"
           name="comment"
           placeholder="add comment here....."
         />

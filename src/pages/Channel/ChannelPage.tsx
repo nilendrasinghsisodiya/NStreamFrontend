@@ -20,7 +20,7 @@ const ChannelPage = () => {
     <div className="flex flex-col justify-center items-center h-full w-full p-3 gap-y-2">
       <ChannelPanel
         username={username}
-        className="gap-6 outline-2 outline-red-500 max-h-200 "
+        className="gap-6  -500 max-h-200 "
       />
       <NavigationMenu className="flex w-full gap-x-3 items-center justify-center list-none">
         {tabs.map((ele) => (

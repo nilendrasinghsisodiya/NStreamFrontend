@@ -8,16 +8,17 @@ import { useSearchParams ,Link} from "react-router";
 export const ChannelHomePage = () => {
   const [searchParams] = useSearchParams();
   const username = searchParams.get("username") as string;
-  const [videos, setVideos] = useState<IVideo[] | []>([]);
+  const [videos, setVideos] = useState<IVideo[] >([]);
   const { data, isLoading, isSuccess } = useChannelVideos({
-    limit: 3,
+    limit: 5,
     sortBy: "created_at",
     sortType: "asc",
     username,
   });
   useEffect(() => {
     if (data && data.pages) {
-      const fetchVideos = data.pages.flatMap((page) => page.videos);
+      const fetchVideos = data.pages.flatMap((page) => page.Videos);
+      console.log(fetchVideos, data);
       setVideos(fetchVideos);
     }
   }, [data, setVideos]);

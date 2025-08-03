@@ -1,8 +1,9 @@
 import { useGetChannel } from "@/api/ChannelApi";
 import { SafeAvatar } from "../avatar/Avatars";
 import { toKBMS } from "@/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { SubscribeButton } from "../SubscribeButton";
 
 type props = {
   username: string;
@@ -11,6 +12,10 @@ type props = {
 const ChannelPanel = ({ username, className }: props) => {
   const { data, isSuccess } = useGetChannel({ username });
   const [show, setShow] = useState<boolean>(false);
+  const [subscount,setSubscount] = useState<number>(0);
+  useEffect(()=>{if(data){
+    setSubscount(data.subscribersCount);
+  }},[data])
   const handleAboutBox = () => {
     setShow((prev) => !prev);
   };
@@ -22,10 +27,17 @@ const ChannelPanel = ({ username, className }: props) => {
         <>
           <div className="flex justify-start items-center w-full gap-5 p-2">
             <span className="max-w-20 max-h-20">
-              <SafeAvatar avatar={data.avatar} username={data.username} to={`/channel/home?username=${data.username}`}/>
+              <SafeAvatar
+                avatar={data.avatar}
+                username={data.username}
+                to={`/channel/home?username=${data.username}`}
+              />
             </span>
             <span className="text-2xl tracking-wide">{data.username}</span>
-            <span className="text-md text-accent-foreground/30  text-bold">{toKBMS(data.subscriberCount)}</span>
+            <span className="text-md text-accent-foreground/30  text-bold">
+              {toKBMS(subscount)}
+            </span>
+            <SubscribeButton isSubscribed={data.isSubscribed} targetId={data._id} username={data.username}/>
           </div>
           <div
             className="rounded-2xl border-2 border-secondary min-w-9/10 p-5 bg-accent/35 text-card"
@@ -41,7 +53,7 @@ const ChannelPanel = ({ username, className }: props) => {
                     data.fullname
                   }.\n created at: ${data.createdAt}. \n total videos: ${
                     data.videos.length
-                  }. \n Subscribers: ${toKBMS(data.subscriberCount)}.`}</p>
+                  }. \n Subscribers: ${toKBMS(data.subscribersCount)}.`}</p>
                 </CardContent>
               </Card>
             ) : (

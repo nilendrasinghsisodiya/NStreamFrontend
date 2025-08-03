@@ -8,11 +8,14 @@
   ],
   "compilerOptions": {
     "baseUrl": ".",
+    "noImplicitAny": false,
     "paths": {
       "@/*": ["./src/*"],
+    
       
     },
-    "skipLibCheck": true, 
+    "skipLibCheck": true,
+     
     "types": ["./src/types.d.ts"]
     
   },

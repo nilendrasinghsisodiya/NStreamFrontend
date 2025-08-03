@@ -8,17 +8,17 @@ import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 
 const AuthPage = () => {
-  const {data:registrationData,RegisterUser}= useRegisterUser();
-  const {loginUser} = useLoginUser();
+  const {RegisterUser,isPending:regPending}= useRegisterUser();
+  const {loginUser ,isPending} = useLoginUser();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const handleRegistration = (formData: signUpFormDataType) => {
-    RegisterUser(formData);
-    if (registrationData) {
+  const handleRegistration = async (formData: signUpFormDataType) => {
+    const registrationData = await RegisterUser(formData);
+  
       dispatch(setRegistration(registrationData));
 
-      navigate("/user-profile");
-    }
+      navigate("/user-reg-profile");
+    
   };
 
   const handleLogin = async (formData: loginFormDataType) => {
@@ -30,8 +30,8 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="flex   justify-center outline-1  outline-red-500 items-center w-full  h-full ">
-      <Tabs defaultValue="login" className=" outline-1 outline-red-500 min-h-120 min-w-90 w-full h-full max-h-150 max-w-100">
+    <div className="flex   justify-center   items-start w-full  h-full ">
+      <Tabs defaultValue="login" className=" ">
         <TabsList className=" grid grid-cols-2 w-full ">
           <TabsTrigger value="login" >Log In</TabsTrigger>
           <TabsTrigger value="signup">Sign Up</TabsTrigger>
@@ -39,14 +39,14 @@ const AuthPage = () => {
         <TabsContent value="login"  className="w-full h-full">
           <Card className="h-full">
             <CardContent>
-              <LogInForm onSave={handleLogin} className="w-full h-full flex flex-col  justify-center gap-7 p-4" />
+              <LogInForm onSave={handleLogin} isPending={isPending}className="w-full h-full flex flex-col  justify-center gap-2 p-2" />
             </CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="signup" className="w-full h-full">
           <Card className=" h-full">
             <CardContent>
-              <SignUpForm className="w-full h-full flex flex-col  justify-center gap-7 p-4" onSave={handleRegistration} />
+              <SignUpForm isPending={regPending} className="w-full h-full flex flex-col  justify-center gap-2 p-2" onSave={handleRegistration} />
             </CardContent>
           </Card>
         </TabsContent>

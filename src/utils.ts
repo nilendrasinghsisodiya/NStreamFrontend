@@ -1,5 +1,6 @@
 import { AxiosResponse } from "axios";
 import { apiClient } from "./api/ApiClient";
+import { Blob } from "buffer";
 
 
 
@@ -143,3 +144,14 @@ export const navigateGlobal = (path: string) => {
   if (navigateFunction) navigateFunction(path);
   else console.error("Navigate function not initialized!");
 };
+export function appendFormData<T extends Record<string, any>>(formData: FormData, data: T): void {
+  for (const key in data) {
+    const value:any = data[key];
+    if (Array.isArray(value)) {
+      value.forEach((v) => formData.append(`${key}[]`, v));
+    } else if (value && value instanceof File|| typeof value === 'string') {
+      formData.append(key, value);
+    }
+  }
+}
+

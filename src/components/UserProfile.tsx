@@ -40,7 +40,7 @@ const UserProfileTab = () => {
   return (
     <>
       <DropdownMenu modal >
-        <DropdownMenuTrigger className="flex items-center justify-center p-2 outline-2" >
+        <DropdownMenuTrigger className="flex items-center justify-center p-2 " >
           <Button  variant={"ghost"} asChild tabIndex={0} >
             <SafeAvatar
               avatar={user?.avatar}
@@ -58,19 +58,17 @@ const UserProfileTab = () => {
           align="start"
           sideOffset={20}
         >
-          <DropdownMenuLabel>My Profile</DropdownMenuLabel>
-          <DropdownMenuSeparator className="text-accent-foreground/45" />
+          <DropdownMenuLabel>Profile</DropdownMenuLabel>
+          <DropdownMenuSeparator className="bg-foreground" />
           {user.accessToken ? (
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Link to={`/channel/home?username=${user?.username}`}>Profile</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link to={`setting/?username=${user?.username}`}>
-                  Setting
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem></DropdownMenuItem>
+              
+                <DropdownMenuItem>
+                  Dashboard
+                </DropdownMenuItem>
+                <DropdownMenuItem></DropdownMenuItem>
+           
+             
               <DropdownMenuItem>
                 <Button variant="ghost" onClick={handleLogout}>
                   Logout <LogOut className="icons-sm" />

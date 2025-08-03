@@ -4,7 +4,7 @@ import { generateSrcSet, toKBMS } from "@/utils";
 import { User } from "lucide-react";
 import { CSSProperties } from "react";
 import { Link, useNavigate } from "react-router";
-import { Button } from "../ui/button";
+import { SubscribeButton } from "../SubscribeButton";
 type avatarProps = {
   avatar?: string;
   username?: string;
@@ -30,13 +30,14 @@ const SafeAvatar = ({
   return (
     <span>
       {avatar && username ? (
-        <Avatar tabIndex={0}
-          className="min-h-[15px]  min-w-[15px] max-h-[40px] max-w-[40px] md:max-h-[55px] md:max-w-[55px]"
+        <Avatar
+          tabIndex={0}
+          className="min-h-[15px]  min-w-[15px] max-h-[30px] max-w-[30px] md:max-h-[40px] md:max-w-[40px] aspect-square"
           onClick={propagate ? () => {} : handleNoPropagation}
         >
           <Link to={to}>
             <AvatarImage
-            className="z-50"
+              className="z-50"
               src={avatar}
               srcSet={generateSrcSet(avatar)}
               alt="user avatar"
@@ -49,7 +50,7 @@ const SafeAvatar = ({
       ) : (
         <Link to={failLink ? failLink : "#"}>
           <User
-            className={`fill-accent border-[2px] z-50 outline-2 outline-red-700 border-foreground rounded-full icons-md ${className}`}
+            className={`fill-accent border-[2px] z-50  -700 border-foreground rounded-full icons-md ${className}`}
           />
         </Link>
       )}
@@ -61,25 +62,39 @@ type Props = {
   subscriberCount: number;
   avatar: string;
   username: string;
+  channelId: string;
+  isSubscribed: boolean;
 };
 
-const ChannelAvatarBar = ({ avatar, username, subscriberCount }: Props) => {
+const ChannelAvatarBar = ({
+  avatar,
+  username,
+  subscriberCount,
+  channelId,
+  isSubscribed,
+}: Props) => {
   return (
-    <div className="flex gap-3  justify-between items-center outline-2 outline-red-400 px-3 max-w-full">
-     <div className="flex gap-3"> <span className="flex  items-center ">
-        <SafeAvatar
-          avatar={avatar}
-          to={`/channel/home?username=${username}`}
-          username={username}
-          className="outline-2 outline-emerald-300"
-        />
-      </span>
-      <span className="flex flex-col text-md">
-        <span className="flex text-foreground ">{username}</span>
-        <span >{toKBMS(subscriberCount)}</span>
-      </span>
+    <div className="flex gap-3  justify-between items-center  -400 px-1 max-w-full">
+      <div className="flex gap-3">
+        {" "}
+        <span className="flex  items-center ">
+          <SafeAvatar
+            avatar={avatar}
+            to={`/channel/home?username=${username}`}
+            username={username}
+          />
+        </span>
+        <span className="flex flex-col ">
+          <span className="flex text-foreground text-xs md:text-md">{username}</span>
+          <span className="text-xs text-secondary-foreground">{toKBMS(subscriberCount)}</span>
+        </span>
       </div>
-      <Button variant={"outline"}  className="bg-[rgba(55,77,158,0.49)] font-bold tracking-wide border-2 border-foreground/60 p-2.5 h-8">Subscribe</Button>
+      <SubscribeButton
+        username={username}
+        isSubscribed={isSubscribed}
+        targetId={channelId}
+        className="max-w-1/3 text-sm px-1 py-0.5 text-center "
+      />
     </div>
   );
 };
@@ -91,7 +106,7 @@ type VideoAvatarStripProps = {
   style?: CSSProperties;
   className?: string;
   videoTitle: string;
-  videoId:string;
+  videoId: string;
 };
 const VideoAvatarStrip = ({
   avatar,
@@ -103,22 +118,25 @@ const VideoAvatarStrip = ({
 }: VideoAvatarStripProps) => {
   const navigate = useNavigate();
 
-  if (!avatar || !username || !videoTitle) return null; // Don't render if data is missing
+  if (!avatar || !username || !videoTitle) {
+    return <p>missing</p>;
+  } // Don't render if data is missing
 
   console.log("videoCardStrip", avatar, username, subsCount);
 
   return (
     <div className={className} style={style}>
-      <span className="text-sm tracking-tight m-3 xl:text-xl font-semibold ">
+      <span className="text-md tracking-tight text-start xl:text-md font-semibold line-clamp-2">
         {videoTitle}
       </span>
-      <div className="flex">
-        <span className="flex   p-2.5 justify-center items-center  w-1/6">
+      <div className="flex w-full max-w-full ">
+        <span className="flex    justify-center items-center  w-1/6">
           <SafeAvatar
             avatar={avatar}
             username={username}
             to={`/channel/home?username=${username}`}
-            className="icons-sm "
+            className="icons-sm max-h-12 max-w-12 min-w-5 min-h-5 "
+            noLazy
           />
         </span>
         <div className="flex flex-col flex-3/4 text-foreground">
@@ -126,13 +144,12 @@ const VideoAvatarStrip = ({
             className="flex flex-col justify-start items-start p-2"
             onClick={() => navigate(`/channel/home?username=${username}`)}
           >
-            <span className="text-sm tracking-tight">{username}</span>
-            <span className="text-foreground/60 text-sm">
+            <span className="text-xs tracking-tight">{username}</span>
+            <span className="text-foreground/60 text-xs/tight">
               {toKBMS(subsCount)}
             </span>
           </span>
         </div>
-       
       </div>
     </div>
   );

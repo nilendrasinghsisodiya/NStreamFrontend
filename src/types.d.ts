@@ -1,3 +1,4 @@
+
 declare global{
 
 
@@ -23,10 +24,10 @@ interface IUser extends IBase  {
     fullname:string;
     description:string;
     email:string;
-    recentlyWatchedTags?:string[]|[];
-    watchHistory?:string[]|[];
+    recentlyWatchedTags?:string[];
+    watchHistory?:string[];
     accessToken?:string;
-    subscriberCount:number;
+    subscribersCount:number;
     
 
 };
@@ -38,12 +39,14 @@ interface IVideo extends IBase{
     videoFile:string;
     thumbnail:string;
     title:string;
+    duration:number;
     description:string;
+    isSubscribed:boolean;
     duration:string;
     views:number;
-    owner:IUser; 
+    owner:Pick<IUser,"_id"|"avatar"|"username"|"subscribersCount">; 
     isPublished: boolean;
-    tags:string[]|[];
+    tags:string[];
     likesCount:number;
     subscriberCount:number;
     isLiked:boolean;
@@ -52,7 +55,7 @@ interface IVideo extends IBase{
  * Represents a channel document with accessable fields in the backend
  */
 interface IChannel extends IUser{
-    videos:IVideo[]|[];
+    videos:IVideo[];
     subscribersCount:number;
     channelsSubscribedToCount:number;
     isSubscribed:boolean;
@@ -64,7 +67,7 @@ interface IChannel extends IUser{
  */
 interface IPlaylist extends  IBase{
 
-    videos:IVideo[]| [];
+    videos:IVideo[];
     name:string;
     description:string;
     owner:string;
@@ -98,7 +101,7 @@ interface IComment extends IBase{
     owner:Pick<IUser,"_id"|"avatar"|"username">;
     commentId?:string;
     videoId:string;
-    likeCount:number;
+    likesCount:number;
     isLiked:boolean;
 }
 
@@ -109,10 +112,20 @@ export interface IPaginatedBase {
   nextPage?: number; 
   prevPage?: number;
 }
-
-
-
+export interface IWatchHistory  { 
+    _id:string;
+    thumbnail:string;
+    title:string;
+    view:number,
+    owner:{
+        _id:string;
+        avatar:string;
+        username:string;
+    }
 }
+}
+
+
 
 
 

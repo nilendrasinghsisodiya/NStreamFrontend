@@ -28,10 +28,10 @@ export const ChannelVideoPage = () => {
       sortType: "asc",
       username,
     });
-  const [videos, setVideos] = useState<IVideo[] | []>([]);
+  const [videos, setVideos] = useState<IVideo[] >([]);
   useEffect(() => {
     if (data && data.pages) {
-      const fetchVideos = data.pages.flatMap((page) => page.videos);
+      const fetchVideos = data.pages.flatMap((page) => page.Videos);
       setVideos(fetchVideos);
     }
   }, [data, setVideos]);
@@ -39,7 +39,7 @@ export const ChannelVideoPage = () => {
     <>
       <Virtuoso<IVideo>
         useWindowScroll
-        className="block w-full h-full"
+        className="w-full h-full"
         data={videos}
         components={{
           List,
@@ -48,7 +48,7 @@ export const ChannelVideoPage = () => {
               style={style}
               ref={ref as React.LegacyRef<HTMLDivElement>}
               {...props}
-              className="flex max-w-full"
+              className="flex flex-col max-w-full "
             >
               {children}
             </div>
@@ -65,9 +65,11 @@ export const ChannelVideoPage = () => {
             videoId={data._id}
             viewsCount={data.views}
             key={data._id}
-            likeCount={data.likesCount}
-            style={{flexDirection:"row"}}
+            likesCount={data.likesCount}
+            
             noHover
+            className="grid grid-cols-2 w-full"
+          
             
           />
         )}

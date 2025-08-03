@@ -14,14 +14,14 @@ const ChannelPlaylistPage = () => {
       {!isError ? (
         isLoading ? (
           <div>loading screen props here</div>
-        ) : playlists?.length && isSuccess ? (
+        ) : playlists?.playlists.length && isSuccess ? (
           <div>
-            {playlists.map((ele, index) => (
+            {playlists.playlists.map((ele, index) => (
               <PlaylistCard
                 cover={ele.cover}
                 name={ele.name}
                 playlistId={ele._id}
-                view={ele.view}
+                
                 isLoading={isLoading}
                 isSuccess={isSuccess}
                 key={index + ele._id}
