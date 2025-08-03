@@ -17,9 +17,9 @@ export const useToggleVideoLike = () => {
     error,
     isError,
     mutateAsync: toggleLike,
-  } = useMutation<{likeCount:number;}, AxiosError, toggleVideoLikeBody>({
+  } = useMutation<{likesCount:number;}, AxiosError, toggleVideoLikeBody>({
     mutationFn: async ({ targetId }: toggleVideoLikeBody) => {
-      const response = await apiClient.post<ApiResponse<{likeCount:number}>>("/like/video", { targetId:targetId},{
+      const response = await apiClient.post<ApiResponse<{likesCount:number}>>("/like/video", { targetId:targetId},{
         headers:{
             Authorization:`Bearer ${accessToken}`
         }
@@ -42,9 +42,9 @@ export const useToggleCommentLike = ()=>{
     error,
     isError,
     mutateAsync: toggleLike,
-  } = useMutation<{likeCount:number;}, AxiosError, toggleVideoLikeBody>({
+  } = useMutation<{likesCount:number;}, AxiosError, toggleVideoLikeBody>({
     mutationFn: async ({ targetId }: toggleVideoLikeBody) => {
-      const response = await apiClient.post<ApiResponse<{likeCount:number}>>("/like/comment", { targetId:targetId},{
+      const response = await apiClient.post<ApiResponse<{likesCount:number}>>("/like/comment", { targetId:targetId},{
         headers:{
             Authorization:`Bearer ${accessToken}`
         }
