@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { QueryClient } from "@tanstack/react-query";
 import { navigateGlobal, refreshAccessToken } from "@/utils";
 import { setUser } from "@/contexts/auth/authSlice";
@@ -15,7 +15,7 @@ apiClient.interceptors.response.use(
 (response) => response,
   async(error) => {
     console.log("running axios interceptors");
-    if (error.status === 493) {
+    if (error.status === 493 ) {
       console.log("refereshing user")
      try {
        const refreshedUser = await refreshAccessToken();
@@ -28,8 +28,11 @@ apiClient.interceptors.response.use(
          console.log("user referesh successfull");
          store.dispatch(setUser(refreshedUser));
        }
-     } catch (error:any) {
-      console.log(error.message);
+     } catch (error:unknown) {
+     if(error instanceof AxiosError){
+      console.error(error.message);
+     }
+     console.log(error);
       
      }
         
