@@ -1,18 +1,32 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { GridComponents } from "react-virtuoso";
 
-const VideoCardSkeleton = () => {
+const VideoCardSkeletonScrollSeek: GridComponents["ScrollSeekPlaceholder"] = () => {
   return (
-    <div className=" flex justify-center items-center  h-80 w-95  p-3">
-      <div className="flex flex-col  gap-4 h-full w-full justify-center items-center outline-1 outline-transparent ">
-        <Skeleton className="w-full h-5/7 flex-1 rounded-2xl" />
-        <Skeleton className="w-full h-1/7 rounded-2xl "/>
-        <span className=" flex w-full h-1/7 gap-2.5">
-          <Skeleton className="aspect-square  rounded-full" />
-          <Skeleton className="flex-1 rounded-2xl" />
-        </span>
-      </div>
-     </div>
+<div className=" aspect-video w-[310px] h-[300px] p-3 rounded-xl bg-background shadow-sm flex flex-col gap-3">
+  <Skeleton className="aspect-video w-full rounded-xl" />
+  <Skeleton className="h-4 w-3/4 rounded" />
+  <div className="flex items-center gap-2 mt-auto">
+    <Skeleton className="w-8 h-8 rounded-full" />
+    <Skeleton className="h-4 w-1/2 rounded" />
+  </div>
+</div>
+
   );
 };
 
-export { VideoCardSkeleton };
+
+const VideoCardSkeleton = ()=>{
+  return (
+     <div className="w-[320px] h-[310px] p-3 rounded-xl bg-background shadow-sm flex flex-col gap-3">
+  <Skeleton className="aspect-video w-full rounded-xl" />
+  <Skeleton className="h-4 w-3/4 rounded" />
+  <div className="flex items-center gap-2 mt-auto">
+    <Skeleton className="w-8 h-8 rounded-full" />
+    <Skeleton className="h-4 w-1/2 rounded" />
+  </div>
+</div>
+  );
+}
+
+export { VideoCardSkeletonScrollSeek, VideoCardSkeleton };
