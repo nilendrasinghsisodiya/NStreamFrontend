@@ -17,26 +17,26 @@ const loginFormSchema = z.object({
     .string()
     .trim().nonempty()
     .email("not a valid email")
-    .min(1, "email cant be  empty"),
+    .min(3, "email cant be  empty"),
  
-  password: z.string().trim().min(1, "password can be empty"),
+  password: z.string().trim().min(1, "password cant be empty"),
 });
 type FormDataType = z.infer<typeof loginFormSchema>;
 export default FormDataType;
 type Props = {
   className?: string;
-
+isPending:boolean;
   onSave: (formData: FormDataType) => void;
 };
 
-const LogInForm = ({ className, onSave }: Props) => {
+const LogInForm = ({ className, onSave,isPending }: Props) => {
   const form = useForm<FormDataType>({
     defaultValues: {
       email: "",
       password: "",
      
     },
-    mode: "onSubmit",
+    mode: "all",
     reValidateMode: "onChange",
     resolver: zodResolver(loginFormSchema),
   });
@@ -44,7 +44,7 @@ const LogInForm = ({ className, onSave }: Props) => {
   return (
     <Form {...form} >
       <form className={`${className}`} onSubmit={form.handleSubmit(onSave)}>
-        <h2 className="text-3xl font-bold">Log In</h2>
+        <h2 className="text-xl font-bold">Log In</h2>
 
         <FormField
           name="email"
@@ -72,7 +72,7 @@ const LogInForm = ({ className, onSave }: Props) => {
             </FormItem>
           )}
         />
-        <Button type="submit" >Log In</Button>
+        <Button type="submit" disabled={isPending} >Log In</Button>
       </form>
     </Form>
   );

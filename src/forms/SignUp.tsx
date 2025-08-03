@@ -11,7 +11,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ChangeEvent, useState } from "react";
+import {  useState } from "react";
 
 const signUpSchema = z.object({
   email: z
@@ -23,7 +23,6 @@ const signUpSchema = z.object({
     .string()
     .trim()
     .nonempty()
-    .email("not a valid email")
     .min(3, "minmum 3 characters required")
     .max(12, "maxium 12 characters are allowed"),
   password: z.string().trim().min(1, "password cant be empty"),
@@ -36,12 +35,11 @@ export default FormDataType;
 type Props = {
   className?: string;
   onSave: (FormData: FormDataType) => void;
+  isPending:boolean;
 };
 
-const SignUp = ({ className, onSave }: Props) => {
-  const [pass, setPass] = useState<string>("");
-  const [err, setError] = useState<string>("");
-  const [isError, setIsError] = useState<boolean>(false);
+const SignUp = ({ className, onSave ,isPending}: Props) => {
+  
 
   const form = useForm<FormDataType>({
     resolver: zodResolver(signUpSchema),
@@ -52,13 +50,14 @@ const SignUp = ({ className, onSave }: Props) => {
       passwordAgain: "",
     },
     reValidateMode: "onChange",
-    mode: "onSubmit",
+    
+    mode: "all",
   });
 
   return (
     <Form {...form}>
       <form className={`${className}`} onSubmit={form.handleSubmit(onSave)}>
-        <h2 className="font-bold text-3xl">Sign Up</h2>
+        <h2 className="font-bold text-xl">Sign Up</h2>
         <FormField
           name="username"
           control={form.control}
@@ -69,26 +68,10 @@ const SignUp = ({ className, onSave }: Props) => {
                 <Input
                   {...field}
                   ref={null}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    if (e.target) {
-                      const val = e.target.value.trim();
-                      if (val !== pass) {
-                        setError("password does not match");
-                        setIsError(true);
-                      }
-                      field.onChange(val);
-                    }
-                  }}
+                  
                 />
               </FormControl>
-              <FormMessage>
-                {isError ? (
-                  <span>{err}</span>
-                ) : (
-                  <span className="fixed hidden"></span>
-                )}
-              </FormMessage>
-            </FormItem>
+              <FormMessage/>    </FormItem>
           )}
         />
         <FormField
@@ -114,14 +97,9 @@ const SignUp = ({ className, onSave }: Props) => {
               <FormControl>
                 <Input
                   {...field}
+                  type="password"
                   ref={null}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    if (e.target) {
-                      const val = e.target.value;
-                      setPass(val);
-                      field.onChange(val);
-                    }
-                  }}
+               
                 />
               </FormControl>
               <FormMessage />
@@ -137,32 +115,19 @@ const SignUp = ({ className, onSave }: Props) => {
               <FormControl>
                 <Input
                   {...field}
+                  type="password"
                   ref={null}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    if (e.target) {
-                      const val = e.target.value.trim();
-                      if (val !== pass) {
-                        setError("password does not match");
-                        setIsError(true);
-                      }
-                      field.onChange(val);
-                    }
-                  }}
+                 
                 />
               </FormControl>
-              <FormMessage>
-                {isError ? (
-                  <span>{err}</span>
-                ) : (
-                  <span className="fixed hidden"></span>
-                )}
-              </FormMessage>
+              <FormMessage/>
             </FormItem>
           )}
         />
-        <Button type="submit" className="text-xl tracking-widest">
-          Sign Up
-        </Button>
+        <div className="w-full flex gap-2 p-2">
+          <Button type="submit" disabled={isPending} className="w-1/2"> Submit</Button>
+          <Button type="reset" className="w-1/2">Reset</Button>
+        </div>
       </form>
     </Form>
   );

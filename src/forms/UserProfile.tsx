@@ -13,7 +13,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { LoadingButton } from "@/components/layout/LoadingButton";
+import { useCreateUser } from "@/api/UserApi";
+import { setUser } from "@/contexts/auth/authSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 const allowedType = ["image/png", "image/jpeg", "image/"];
 const MAX_FILE_SIZE = 5000000;
@@ -29,7 +32,6 @@ const userProfileSchema = z.object({
       if (!value) return;
       return value.size <= MAX_FILE_SIZE;
     }, "Maximun file size allowed 5MB."),
-  email: z.string().trim().email("not a valid email").min(1, "email cant be  empty"),
   coverImage: z
     .instanceof(File)
     .optional()
@@ -43,20 +45,17 @@ const userProfileSchema = z.object({
     }, "Maximun file size allowed 5MB."),
 
   description: z.string().trim().min(1,"description can not be empty"),
-  username: z
-    .string().trim()
-    .min(3, "should not be less than 3 character long")
-    .max(20, "should not be more than 20 characters long"),
+ 
 });
 type formDataType = z.infer<typeof userProfileSchema>;
 type props = {
   onSave: (formData: formDataType) => void;
-  isLoading: boolean;
+  isPending: boolean;
 };
-const UserProfileForm = ({ isLoading, onSave }: props) => {
+const UserProfileForm = ({ isPending, onSave }: props) => {
   const form = useForm<formDataType>({
     defaultValues: {
-      username: "",
+     
       fullname: "",
       avatar: new File([], "empty"),
       coverImage: new File([], "empty"),
@@ -64,27 +63,12 @@ const UserProfileForm = ({ isLoading, onSave }: props) => {
     },
     resolver: zodResolver(userProfileSchema),
     reValidateMode: "onChange",
-    mode: "onChange",
+    mode: "all",
   });
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSave)}>
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      
         <FormField
           control={form.control}
           name="fullname"
@@ -92,7 +76,7 @@ const UserProfileForm = ({ isLoading, onSave }: props) => {
             <FormItem>
               <FormLabel>Full Name</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} ref={null}/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -101,7 +85,7 @@ const UserProfileForm = ({ isLoading, onSave }: props) => {
         <FormField
           control={form.control}
           name="avatar"
-          render={({ field: { onChange, ref } }) => (
+          render={({ field: { onChange} }) => (
             <FormItem>
               <FormLabel>Avatar</FormLabel>
               <FormControl>
@@ -113,7 +97,7 @@ const UserProfileForm = ({ isLoading, onSave }: props) => {
                       onChange(e.target.files[0]);
                     }
                   }}
-                  ref={ref}
+                  ref={null}
                 />
               </FormControl>
               <FormMessage />
@@ -127,7 +111,7 @@ const UserProfileForm = ({ isLoading, onSave }: props) => {
         <FormField
           control={form.control}
           name="coverImage"
-          render={({ field: { onChange, ref } }) => (
+          render={({ field: { onChange} }) => (
             <FormItem>
               <FormLabel>CoverImage</FormLabel>
               <FormControl>
@@ -139,7 +123,7 @@ const UserProfileForm = ({ isLoading, onSave }: props) => {
                       onChange(e.target.files[0]);
                     }
                   }}
-                  ref={ref}
+                  ref={null}
                 />
               </FormControl>
               <FormMessage />
@@ -156,23 +140,26 @@ const UserProfileForm = ({ isLoading, onSave }: props) => {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea {...field} />
+                <Textarea {...field} ref={null}/>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        {isLoading ? (
-          <LoadingButton
-            text="Submiting"
-            className="bg-foreground text-background"
-          />
-        ) : (
-          <Button type="submit" / >
-        )}
+       <Button type="submit" className="" disabled={isPending}>Submit</Button>
       </form>
     </Form>
   );
 };
-
-export { UserProfileForm };
+export const ProfileForm = ()=> {
+  const {createUser,isPending} = useCreateUser();
+  const dispatch  = useDispatch();
+  const navigate = useNavigate();
+  const handleSumbit = async (formData:formDataType)=>{
+    console.log("handle summit triggered")
+    const val= await createUser(formData);
+      dispatch(setUser(val));
+      navigate("/");
+    }
+  return <UserProfileForm isPending={isPending} onSave={handleSumbit}/>
+}
