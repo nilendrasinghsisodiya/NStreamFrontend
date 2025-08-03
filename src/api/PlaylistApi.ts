@@ -101,14 +101,7 @@ export const useUpdatePlaylist = () => {
   return { update, isError, isSuccess, error };
 };
 interface IPaginatedPlaylist extends IPaginatedBase {
-  playlist: {
-    name: string;
-    view: number;
-    owner: string;
-    videos: IVideo[];
-    description:string;
-    totalVideos: number;
-  };
+  playlist:IPlaylist;
 }
 type getPlaylistBody = {
   playlistId: string;
