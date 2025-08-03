@@ -22,7 +22,7 @@ const VideoList = ({
       {data && isSuccess ? (
         data.map((ele, index) => (
           <div
-            className="w-95 h-80 max-w-[420px] xl:max-w-[600px] aspect-square col-span-1"
+            className="h-65 w-70 md:w-75 md:h-65 xl:w-75 xl:h-65  aspect-square col-span-1"
             key={index}
           >
             <MemoVideoCard
@@ -31,11 +31,11 @@ const VideoList = ({
               viewsCount={ele.views}
               thumbnail={ele.thumbnail}
               key={ele._id}
+              duration={ele.duration}
               videoId={ele._id}
               owner={ele.owner}
               isSuccess={isSuccess}
               lazyLoading={false}
-              noHover
             />
           </div>
         ))
