@@ -4,36 +4,34 @@ import { useSelector } from "react-redux";
 import { apiClient, queryClient } from "./ApiClient";
 import { handleResponse } from "@/utils";
 import { AxiosError } from "axios";
+import { toast } from "sonner";
 
 export interface ICreateUserBody {
   fullname: string;
-  username: string;
-
+  description:string;
   avatar: File;
   coverImage?: File;
 }
 
 export const useCreateUser = () => {
+  const {accessToken} = useSelector(selectUser);
   const {
     isError,
     data,
+    isPending,
     error,
     mutateAsync: createUser,
   } = useMutation<IUser, AxiosError, ICreateUserBody>({
     mutationFn: async (params: ICreateUserBody) => {
-      const formData = new FormData();
-      formData.append("fullname", params.fullname);
-      formData.append("username", params.username);
-      if (params.coverImage) {
-        formData.append("coverImage", params.coverImage);
-      }
+      
 
-      const response = await apiClient.post<ApiResponse<IUser>>(
-        `/user/profile-create`,
-        formData,
+      const response = await apiClient.put<ApiResponse<IUser>>(
+        `/user/create`,
+        params,
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization:`Bearer ${accessToken}`
           },
           withCredentials: true,
         }
@@ -49,7 +47,7 @@ export const useCreateUser = () => {
     },
   });
 
-  return { isError, data, error, createUser };
+  return { isError, data, error, isPending,createUser };
 };
 export interface IUpdateUserBody {
   email?: string;
@@ -122,6 +120,7 @@ export const useLoginUser = () => {
   const {
     isError,
     data,
+    isPending,
     isSuccess,
     mutateAsync: loginUser,
   } = useMutation<IUser, AxiosError, ILoginUserBody>({
@@ -137,7 +136,7 @@ export const useLoginUser = () => {
     },
   });
 
-  return { isError, data, isSuccess, loginUser };
+  return { isError, data, isSuccess, isPending,loginUser };
 };
 
 interface IRegisterUserBody {
@@ -154,6 +153,7 @@ export const useRegisterUser = () => {
     isError,
     data,
     isSuccess,
+    isPending,
     mutateAsync: RegisterUser,
   } = useMutation<RegisterDataType, AxiosError, IRegisterUserBody>({
     mutationFn: async (formData: IRegisterUserBody) => {
@@ -168,7 +168,7 @@ export const useRegisterUser = () => {
     },
   });
 
-  return { isError, data, isSuccess, RegisterUser };
+  return { isError, data, isSuccess, RegisterUser,isPending };
 };
 
 export const useUserRecommendation = () => {
@@ -182,7 +182,7 @@ export const useUserRecommendation = () => {
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<IVideo[]>>(
         "/user/recommendations",
-        { withCredentials: true }
+        { withCredentials: true,headers:{optional:"true"} }
       );
       return handleResponse(response, "failed to get recommendations");
     },
@@ -220,12 +220,22 @@ export const useLogoutUser = () => {
   });
   return { logout, isError, isSuccess };
 };
-type getUserPlaylistData ={ 
-  playlists:[Pick<IPlaylist, "_id" | "name" | "view"|"cover">];}
-  
-export  const useGetUserPlaylists = ({ username ,isOpen}: { username: string; isOpen:boolean}) =>{
+type getUserPlaylistData = {
+  playlists: Pick<IPlaylist, "_id" | "name" | "view" | "cover">[];
+};
+
+export const useGetUserPlaylists = ({
+  username,
+  isOpen,
+}: {
+  username: string;
+  isOpen: boolean;
+}) => {
   const {
-    data: playlists, isSuccess, isError, isLoading
+    data: playlists,
+    isSuccess,
+    isError,
+    isLoading,
   } = useQuery<getUserPlaylistData, AxiosError>({
     queryKey: ["userPlaylists", username],
     queryFn: async () => {
@@ -237,8 +247,80 @@ export  const useGetUserPlaylists = ({ username ,isOpen}: { username: string; is
         "failed to fetch user playlist"
       );
     },
-    enabled:isOpen,
+    enabled: isOpen,
   });
 
   return { isError, isSuccess, playlists, isLoading };
-}
+};
+export const useGetUserWatchHistory = (isActive: boolean) => {
+  const { _id: userId } = useSelector(selectUser);
+  const query = useQuery({
+    queryKey: ["watch histroy", userId],
+    queryFn: async () => {
+      const response = await apiClient.get<ApiResponse<IWatchHistory[]>>(
+        `/user/history`,
+        { withCredentials: true }
+      );
+      return handleResponse<IWatchHistory[]>(
+        response,
+        "failed to get user watch history"
+      );
+    },
+    enabled: isActive,
+  });
+  return { ...query };
+};
+
+export const useToggleSubscribed = () => {
+  const query = useMutation<
+    { subsCount: number; flag: boolean },
+    AxiosError,
+    { targetId: string }
+  >({
+    mutationKey: ["subscribed"],
+    mutationFn: async ({ targetId }) => {
+      const response = await apiClient.post<
+        ApiResponse<{ subsCount: number; flag: boolean }>
+      >("/user/subscribe", { targetId });
+      return handleResponse<{ subsCount: number; flag: boolean }>(
+        response,
+        "failed to toggle subscribe"
+      );
+    },
+    onError: (error) => {
+      toast.error("failed to subscribe please try later.");
+      console.error(error.message);
+    },
+  });
+  return query;
+};
+type userStats = {
+  totalSubscribers: number;
+  totalViews: number;
+  mostPopularVideos: IVideo[];
+  likedVideos: IVideo[];
+  subsInLast30Days: number;
+  subsInLast7Days: number;
+  userComments: IComment[];
+};
+export const useGetUserDashboard = () => {
+  const { accessToken } = useSelector(selectUser);
+  const query = useQuery<userStats, AxiosError>({
+    queryKey: ["Dashboard"],
+    queryFn: async () => {
+      const response = await apiClient.get<ApiResponse<userStats>>(
+        "dashboard/stats",
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      return handleResponse(response, "failed to fetch user dashboard");
+    },
+    refetchInterval: 20 * 1000,
+  });
+
+  return { ...query };
+};
