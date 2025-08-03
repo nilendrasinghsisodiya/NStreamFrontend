@@ -5,34 +5,41 @@ import { handleResponse } from "@/utils";
 import { AxiosError } from "axios";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/contexts/auth/authSlice";
-
-interface UploadVideoBody {
-  title: string;
-  description: string;
-  videoFile: File;
-  thumbnail: File;
-  tags?: string[];
-}
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 const useUploadVideo = () => {
-  const {
-    data,
-    isSuccess,
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
-    error,
-    isError,
-    mutateAsync: uploadVideo,
-  } = useMutation<IVideo, AxiosError, UploadVideoBody>({
-    mutationFn: async (props: UploadVideoBody) => {
+  const abortRef = useRef<AbortController | null>(null);
+  const uploadMutation = useMutation<IVideo, AxiosError, FormData>({
+    mutationFn: async (formData) => {
+      console.log("video api video upload", formData.entries());
       const response = await apiClient.post<ApiResponse<IVideo>>(
-        "videos/",
-        props
+        "video/",
+        formData,
+        {
+          signal: abortRef.current?.signal,
+          onUploadProgress: (ProgressEvent) => {
+            setUploadProgress(Math.round(ProgressEvent.loaded * 100) / 100);
+            console.log(Math.round(ProgressEvent.loaded * 100) / 100);
+          },
+        }
       );
       return handleResponse<IVideo>(response, "Failed to upload a video");
     },
+    onSuccess: (variables) => {
+      toast.success(`video upload for ${variables.title} just completed`);
+    },
+    onError: (error, variables) => {
+      toast.error(`video upload for ${variables.get("title")} failed`);
+      console.error(`Video Upload:${error.message}`);
+    },
   });
-
-  return { data, isSuccess, error, isError, uploadVideo };
+  const cancelUpload = () => {
+    if (abortRef && abortRef.current) abortRef.current.abort();
+  };
+  return { uploadProgress, cancelUpload, ...uploadMutation };
 };
 
 interface AllVideosBody {
@@ -50,35 +57,34 @@ const useAllVideos = ({
   sortBy = "createdAt",
   sortType = "asc",
 }: AllVideosBody) => {
-  const allVideoQuery = useQuery<IVideo[], AxiosError>({
+  const allVideoQuery = useInfiniteQuery<IPaginatedVideos, AxiosError>({
     queryKey: ["videos", userId, limit, page, sortBy, sortType], // 🔹 Pass parameters here
     queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<IVideo[]>>(
-        `/videos/all?userId=${userId}&limit=${limit}&page=${page}&sortBy=${sortBy}&sortType=${sortType}`
+      const response = await apiClient.get<ApiResponse<IPaginatedVideos>>(
+        `/video/all?userId=${userId}&limit=${limit}&page=${page}&sortBy=${sortBy}&sortType=${sortType}`
       );
-      return handleResponse<IVideo[]>(
+      return handleResponse(
         response,
         "Failed to fetch all videos for the channel"
       );
     },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasNextPage ? lastPage.nextPage : undefined,
+
+    getPreviousPageParam: (lastPage) =>
+      lastPage.hasPrevPage ? lastPage.prevPage : undefined,
     staleTime: 10000,
     refetchOnWindowFocus: false,
   });
   return { ...allVideoQuery };
 };
 
-interface VideoBody extends Omit<IVideo, "owner"> {
-  ownerDetails: {
-    _id: string;
-    avatar: string;
-    username: string;
-  };
-}
 const useGetVideo = (videoId: string) => {
   const { accessToken } = useSelector(selectUser);
-  const getVideoQuery = useQuery<VideoBody, AxiosError>({
+  const getVideoQuery = useQuery<IVideo, AxiosError>({
     queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<VideoBody>>(
+      const response = await apiClient.get<ApiResponse<IVideo>>(
         `/video/?videoId=${videoId}`,
         {
           headers: {
@@ -87,7 +93,7 @@ const useGetVideo = (videoId: string) => {
           },
         }
       );
-      return handleResponse<VideoBody>(response, "failed to fetch channel");
+      return handleResponse<IVideo>(response, "failed to fetch channel");
     },
     queryKey: ["video", videoId],
     staleTime: 100000,
@@ -133,4 +139,30 @@ const usePopularVideo = ({ limit }: GetPopularVideoParams) => {
     ...popularVideoQuery,
   };
 };
+
+export const useRelatedVideos = ({
+  videoId,
+  limit,
+}: {
+  videoId: string;
+  limit: number;
+}) => {
+  const query = useInfiniteQuery<IPaginatedVideos, AxiosError>({
+    queryKey: ["relatedVideo", videoId,limit],
+    queryFn: async ({pageParam =1 }) => {
+      const response = await apiClient.get<ApiResponse<IPaginatedVideos>>(
+        `video/related?videoId=${videoId}&page=${pageParam}&limit=${limit}`
+      );
+      return handleResponse(response, "failed to fetch related videos");
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasNextPage ? lastPage.nextPage : undefined,
+
+    getPreviousPageParam: (lastPage) =>
+      lastPage.hasPrevPage ? lastPage.prevPage : undefined,
+  });
+  return { ...query };
+};
+
 export { useUploadVideo, useAllVideos, useGetVideo, usePopularVideo };
