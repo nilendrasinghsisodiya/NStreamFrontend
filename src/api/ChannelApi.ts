@@ -25,7 +25,7 @@ const useGetChannel = ({username,userId}:getChannelBody) => {
     },
     throwOnError:true,
     
-    queryKey: ["channel", username, userId],
+    queryKey: ["channel", username],
     staleTime: 100000,
     refetchOnWindowFocus: false,
   });
@@ -38,6 +38,7 @@ const useChannelStats = () => {
   const { isLoading, isError, error, data, isSuccess } = useQuery({
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<IChannel>>(`/dashboard/stats/`, {
+        
        withCredentials:true
       });
       return handleResponse<IChannel>(response, "failed to fetch channel");
@@ -58,7 +59,7 @@ interface ChannelVideosBody {
 }
 
 interface channelVideoType extends IPaginatedBase{
-  videos:IVideo[]|[];
+  Videos:IVideo[];
 }
 const useChannelVideos = ({
   limit = 5,
