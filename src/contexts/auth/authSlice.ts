@@ -1,10 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/ContextStore";
 
-
 const initialState: IUser = {
-  accessToken:"",
-    _id: "",
+  accessToken: "",
+  _id: "",
   username: "",
   avatar: "",
   coverImage: "",
@@ -13,7 +12,7 @@ const initialState: IUser = {
   updated_at: "",
   fullname: "",
   email: "",
-  subscriberCount:0,
+  subscribersCount: 0,
 };
 
 const authSlice = createSlice({
@@ -31,14 +30,14 @@ const authSlice = createSlice({
         email: string;
         createdAt: string;
         accessToken?: string;
-        username:string;
+        username: string;
       }>
     ) => {
-   state.accessToken =user.payload.accessToken;
-   state._id = user.payload._id;
-   state.username = user.payload.username;
-   state.createdAt = user.payload.createdAt;
-   state.email = user.payload.email;
+     return { ...state,accessToken : user.payload.accessToken,
+      _id: user.payload._id,
+      username : user.payload.username,
+      createdAt : user.payload.createdAt,
+      email :user.payload.email}
     },
 
     reset: (state) => {
