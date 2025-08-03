@@ -48,12 +48,12 @@ const Video = ({ videoId, style, className }: Props) => {
                 {error?.message}
               </span>
             ) : (
-              <div className="flex flex-col  w-full  py-2  items-center px-2 ">
+              <div className="flex flex-col  w-full  py-2  items-center px-1 m-auto ">
                 
                   <VideoPlayer
                     url={videoUrl}
                     className="
-                  outline-1 outline-red-400 contain-content main_shadow rounded-2xl max-w-full max-h-full md:w-3/4 md:h-full aspect-video
+                  1 -400 contain-content main_shadow rounded-2xl max-w-full max-h-full md:w-3/4 md:h-full aspect-video
                  "
                   />
                 
@@ -61,18 +61,20 @@ const Video = ({ videoId, style, className }: Props) => {
                   <span className="flex  text-foreground text-[1.26rem] md:text-[2rem] font-bold text-wrap w-full self-start ml-3">
                     {data?.title}
                   </span>
-                  <span className="flex  items-center text-secondary-foreground ml-3">
+                  <span className="flex  items-center text-secondary-foreground ml-3 gap-3 ">
                     <span className=" text-xs ">
                       {data ? data.views : 0} views
                     </span>
-                    <span className=" text-sm ">{data?.likesCount}</span>
+                    <span className=" text-xs ">{data?.likesCount} likes</span>
                   </span>
 
-                  {data.ownerDetails && (
+                  {data.owner&& (
                     <ChannelAvatarBar
-                      username={data.ownerDetails.username}
-                      subscriberCount={data.subscriberCount}
-                      avatar={data.ownerDetails.avatar}
+                      username={data.owner.username}
+                      subscriberCount={data.owner.subscribersCount}
+                      avatar={data.owner.avatar}
+                      channelId={data.owner._id}
+                      isSubscribed={data.isSubscribed}
                     />
                   )}
                 </div>
