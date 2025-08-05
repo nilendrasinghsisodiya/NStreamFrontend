@@ -1,40 +1,35 @@
 import React from "react";
-import { VirtuosoGrid, GridComponents } from "react-virtuoso";
+import {
+  Virtuoso,
+  Components,
+} from "react-virtuoso";
 
-
-import { VideoCard } from "./VideoCard";
-import { VideoCardSkeletonScrollSeek } from "./VideoCardSkeleton";
+import { ListVideoCard} from "./VideoCard";
+import { ErrorScreen } from "../ErrorComponent";
 
 // flex flex-col w-full md:flex-row flex-wrap  justify-center contain-content gap-4
-const GridList: GridComponents["List"] = React.forwardRef(
+const List: Components["List"] = React.forwardRef(
   ({ style, children, ...props }, ref) => (
     <div
       style={{ scrollBehavior: "-moz-initial", ...style }}
       {...props}
       ref={ref}
-      className="grid grid-cols-1 grid-rows-1   place-items-center gap-3 p-0  h-full max-w-120 scroll-smooth "
+      className="flex flex-col w-full h-full scroll-smooth gap-3"
     >
       {children}
     </div>
   )
 );
-const GridItem: GridComponents["Item"] = React.forwardRef(
-  ({ style, children, ...props }, ref) => (
-    <div
-      ref={ref}
-      {...props}
-      style={{ height: "320px", width: "350px", ...style }}
-    >
-      {children}
-    </div>
-  )
-);
+
+
 type props = {
   videos: IVideo[];
   isLoading: boolean;
   hasNextPage?: boolean;
   isSuccess: boolean;
-  fetchNextPage: any;}
+  fetchNextPage: any;
+  itemClassName: string;
+};
 
 export const VirtualVideoList = ({
   videos,
@@ -42,46 +37,54 @@ export const VirtualVideoList = ({
   isLoading,
   isSuccess,
   hasNextPage,
+  itemClassName,
 }: props) => {
   return (
     <>
-      <VirtuosoGrid
-        data={videos}
-        useWindowScroll
-        className="w-120 h-159"
-        components={{
-          List: GridList,
-          Item: GridItem,
-          ScrollSeekPlaceholder: VideoCardSkeletonScrollSeek,
-        }}
-        itemContent={(_, data) => (
-          <VideoCard
-          duration={data.duration}
-            isLoading={isLoading}
-            owner={data?.owner}
-            thumbnail={data.thumbnail}
-            videoId={data._id}
-            title={data.title}
-            viewsCount={data.views}
-            key={data._id}
-            isSuccess={isSuccess}
-            lazyLoading={isLoading}
-          />
-        )}
-        endReached={() => {
-          if (hasNextPage) {
-            fetchNextPage();
-          }
-        }}
-        scrollSeekConfiguration={{
-          enter: (vel) => Math.abs(vel) > 150,
-          exit: (vel) => Math.abs(vel) < 90,
-        }}
-        computeItemKey={(_, val) => val._id}
-        increaseViewportBy={600}
-        overscan={15}
-        isScrolling={(val) => console.log(val, "scrolling")}
-      />
+      {videos.length > 0 ? (
+        <Virtuoso<IVideo>
+          data={videos}
+          useWindowScroll
+          components={{
+            List: List,
+          }}
+          
+          defaultItemHeight={350}
+          itemContent={(_, data) => (
+            <ListVideoCard
+              className={itemClassName}
+              duration={data.duration}
+              isLoading={isLoading}
+              owner={data?.owner}
+              thumbnail={data.thumbnail}
+              videoId={data._id}
+              title={data.title}
+              viewsCount={data.views}
+              isSuccess={isSuccess}
+              lazyLoading={isLoading}
+              avatarClassName=" flex flex-col w-full justify-center "
+            />
+          )}
+          endReached={() => {
+            if (hasNextPage) {
+              fetchNextPage();
+            }
+          }}
+          scrollSeekConfiguration={{
+            enter: (vel) => Math.abs(vel) > 150,
+            exit: (vel) => Math.abs(vel) < 10,
+          }}
+          computeItemKey={(index, val) => val._id + index}
+          increaseViewportBy={700}
+          overscan={5}
+          isScrolling={(val) => console.log(val, "scrolling")}
+        />
+      ) : (
+        <ErrorScreen
+          mainMessage="no matching content found"
+          secondaryMessage="please try something else"
+        />
+      )}
     </>
   );
 };
