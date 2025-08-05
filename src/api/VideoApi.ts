@@ -103,19 +103,8 @@ const useGetVideo = (videoId: string) => {
   return { ...getVideoQuery };
 };
 
-export interface IPaginatedVideos {
-  popularVideos: IVideo[];
-  totalVideos: number;
-  currentPage: number;
-  totalPage: number;
-  hasNextPage: boolean; // Fix: Changed type to boolean
-  hasPrevPage: boolean;
-  nextPage?: number; // Fix: Optional since it may not always exist
-  prevPage?: number;
-}
-
 interface GetPopularVideoParams {
-  limit: number; // Fix: Renamed for clarity
+  limit: number;
 }
 
 const usePopularVideo = ({ limit }: GetPopularVideoParams) => {
@@ -148,8 +137,8 @@ export const useRelatedVideos = ({
   limit: number;
 }) => {
   const query = useInfiniteQuery<IPaginatedVideos, AxiosError>({
-    queryKey: ["relatedVideo", videoId,limit],
-    queryFn: async ({pageParam =1 }) => {
+    queryKey: ["relatedVideo", videoId, limit],
+    queryFn: async ({ pageParam = 1 }) => {
       const response = await apiClient.get<ApiResponse<IPaginatedVideos>>(
         `video/related?videoId=${videoId}&page=${pageParam}&limit=${limit}`
       );
@@ -163,6 +152,45 @@ export const useRelatedVideos = ({
       lastPage.hasPrevPage ? lastPage.prevPage : undefined,
   });
   return { ...query };
+};
+
+ export type sortBy = "views" | "createdAt";
+export type sortType = "asc" | "desc";
+export type searchType = 'vid'| 'chnl';
+export type searchQueryParams = {
+  sortBy: sortBy;
+  sortType: sortType;
+  query: string;
+  type: searchType;
+  limit: number;
+};
+export const useSearchVideo = ({
+  limit,
+  sortBy,
+  sortType,
+  query,
+  type,
+}: searchQueryParams) => {
+  const searchQuery = useInfiniteQuery<IPaginatedVideos, AxiosError>({
+    queryKey: ["search", query, type],
+    queryFn: async ({ pageParam = 1 }) => {
+      const response = await apiClient.get<ApiResponse<IPaginatedVideos>>(
+        `/video/search?query=${query}&type=${type}&page=${pageParam}&limit=${limit}&sortBy=${sortBy}&sortType=${sortType}`
+      );
+      return handleResponse<IPaginatedVideos>(
+        response,
+        "something went wrong while search"
+      );
+    },
+    initialPageParam: 1,
+    staleTime: 2 * 60 * 1000,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasNextPage ? lastPage.nextPage : undefined,
+
+    getPreviousPageParam: (lastPage) =>
+      lastPage.hasPrevPage ? lastPage.prevPage : undefined,
+  });
+  return { ...searchQuery };
 };
 
 export { useUploadVideo, useAllVideos, useGetVideo, usePopularVideo };
