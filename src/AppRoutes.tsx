@@ -14,6 +14,7 @@ import { setNavigateGlobal } from "./utils";
 import { ChannelPlaylistPage } from "./pages/Channel/ChannelPlaylistPage";
 import { VideoUploadForm } from "./pages/Main/VideoUploadPage";
 import { Dashboard } from "./pages/Main/DashboardPage";
+import { SearchPage } from "./pages/Main/SearchPage";
 const AppRoutes = () => {
   const navigate = useNavigate();
   useEffect(() => {
@@ -51,6 +52,7 @@ const AppRoutes = () => {
           </Layout>
         }
       />
+      <Route path="search" element={<Layout><SearchPage/></Layout>}/>
       <Route
         path="auth"
         element={

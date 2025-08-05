@@ -4,6 +4,7 @@ import authReducers from "./contexts/auth/authSlice";
 import videoPlayerReducers from "./contexts/videoPlayer/videoPlayerSlices";
 import comments from "./contexts/comments/commentSlice";
 import videoUpload from "@/contexts/videoUpload/videoUploadSlice";
+import serachReducers from "@/contexts/search/searchSlice";
 import {
   persistStore,
   persistReducer,
@@ -32,6 +33,7 @@ const rootReducers = combineReducers({
   videoPlayer: videoPlayerReducers,
   comments: comments,
   uploads: presistedVideoUploadReducers,
+  search: serachReducers,
 });
 
 const store = configureStore({
