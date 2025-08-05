@@ -53,7 +53,7 @@ const PopularVideos = () => {
       console.log("data.pages", data.pages);
 
       // Ensure `popularVideos` exists and is an array
-      const newVideos = data.pages.flatMap((page) => page.popularVideos || []);
+      const newVideos = data.pages.flatMap((page) => page.Videos || []);
       console.log("new videos", newVideos);
 
       setVideos(newVideos);
