@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { GridComponents } from "react-virtuoso";
+import { Components, GridComponents } from "react-virtuoso";
 
 const VideoCardSkeletonScrollSeek: GridComponents["ScrollSeekPlaceholder"] = () => {
   return (
@@ -15,6 +15,24 @@ const VideoCardSkeletonScrollSeek: GridComponents["ScrollSeekPlaceholder"] = () 
   );
 };
 
+const VideoCardSkeletonScrollSeekSingle: Components["ScrollSeekPlaceholder"] = () => {
+  return (
+<div className=" aspect-video h-full w-full p-3 rounded-xl bg-background shadow-sm flex flex-col gap-3">
+  <Skeleton className="aspect-video w-full rounded-xl" />
+  <Skeleton className="h-4 w-3/4 rounded" />
+  <div className="flex items-center gap-2 mt-auto">
+    <Skeleton className="w-8 h-8 rounded-full" />
+    <Skeleton className="h-4 w-1/2 rounded" />
+  </div>
+</div>
+
+  );
+};
+
+
+
+
+
 
 const VideoCardSkeleton = ()=>{
   return (
@@ -29,4 +47,4 @@ const VideoCardSkeleton = ()=>{
   );
 }
 
-export { VideoCardSkeletonScrollSeek, VideoCardSkeleton };
+export { VideoCardSkeletonScrollSeek, VideoCardSkeleton ,VideoCardSkeletonScrollSeekSingle};

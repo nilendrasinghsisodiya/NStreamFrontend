@@ -6,7 +6,7 @@ import { useNavigate } from "react-router";
 import { VideoOptions } from "./VideoOptions";
 import { CircleSlash } from "lucide-react";
 
-type Props = {
+interface Props {
   thumbnail: string;
   title: string;
   likesCount?: number;
@@ -76,6 +76,79 @@ const VideoCard = ({
                 videoTitle={title}
                 videoId={videoId}
                 className={`flex flex-col w-full  z-40 px-2  ${className}`}
+              />
+
+              <VideoOptions videoId={videoId} />
+            </div>
+          </>
+        ) : (
+          <span>something went wrong</span>
+        )
+      ) : (
+        <VideoCardSkeleton />
+      )}
+    </div>
+  );
+};
+interface ListVideoCardProps extends Props {
+  avatarClassName:string;
+}
+const ListVideoCard = ({
+  thumbnail,
+  title,
+  style,
+  owner,
+  videoId,
+  lazyLoading,
+  avatarClassName,
+  isLoading,
+  isSuccess,
+  duration,
+  className,
+}: ListVideoCardProps) => {
+  const navigate = useNavigate();
+
+  return (
+    <div
+      tabIndex={0}
+      style={style}
+      onClick={() => {
+        navigate(`/watch?videoId=${videoId}`);
+      }}
+      //className={`flex flex-col cursor-pointer p-1 w-full h-full border-2 md:rounded-xl gap-2   ${className}`}
+      className={`  p-1 border-2 rounded-xl gap-2 ${className}`}
+    >
+      {!isLoading ? (
+        isSuccess ? (
+          <>
+            {thumbnail.length > 0 ? (
+              <span className="relative w-full max-w-140 max-h-110">
+                <img
+                  src={thumbnail}
+                  alt={`${title}'s thumbnail`}
+                  srcSet={generateSrcSet(thumbnail)}
+                  className="object-cover aspect-video  md:rounded-2xl lg:rounded-2xl m-0.5   "
+                  loading={lazyLoading ? "lazy" : "eager"}
+                  width="100%"
+                  height="100%"
+                />
+                <span className="absolute bottom-1 text-[3px] right-1 p-0.5 rounded-sm  bg-foreground text-background">
+                  {toHms(duration)}
+                </span>
+              </span>
+            ) : (
+              <span className="max-w-full min-w-1/2 lg:rounded-3xl aspect-video m-0.5 bg-accent">
+                <CircleSlash className="h-1/2 w-1/2" />
+              </span>
+            )}
+            <div className="flex w-full items-center justify-center">
+              <VideoAvatarStrip
+                avatar={owner.avatar}
+                subsCount={owner.subscribersCount}
+                username={owner.username}
+                videoTitle={title}
+                videoId={videoId}
+                className={`${avatarClassName}`}
               />
 
               <VideoOptions videoId={videoId} />
@@ -166,4 +239,4 @@ export const VideoCardPlaylist = ({
 
 export const MemoVideoCard = memo(VideoCard);
 
-export { VideoCard };
+export { VideoCard, ListVideoCard};
