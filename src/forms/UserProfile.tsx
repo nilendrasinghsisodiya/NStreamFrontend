@@ -66,8 +66,8 @@ const UserProfileForm = ({ isPending, onSave }: props) => {
     mode: "all",
   });
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSave)}>
+    <Form {...form} >
+      <form onSubmit={form.handleSubmit(onSave)} className="flex flex-col w-1/2 justify-center m-auto mt-16 rounded-xl gap-3  border-2 border-accent h-fit p-5">
       
         <FormField
           control={form.control}
