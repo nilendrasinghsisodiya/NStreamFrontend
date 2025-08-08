@@ -8,7 +8,6 @@ import { SubscribeButton } from "../SubscribeButton";
 type avatarProps = {
   avatar?: string;
   username?: string;
-  className?: string;
   to: string;
   noLazy?: boolean;
   failLink?: string;
@@ -17,7 +16,6 @@ type avatarProps = {
 const SafeAvatar = ({
   avatar,
   username,
-  className,
   to,
   noLazy,
   failLink,
@@ -30,28 +28,31 @@ const SafeAvatar = ({
   return (
     <span>
       {avatar && username ? (
-        <Avatar
-          tabIndex={0}
-          className="min-h-[15px]  min-w-[15px] max-h-[30px] max-w-[30px] md:max-h-[40px] md:max-w-[40px] aspect-square"
+        <Link
+          to={to || `/channel/home?username=${username}`}
           onClick={propagate ? () => {} : handleNoPropagation}
         >
-          <Link to={to}>
+          <Avatar className="border-2 border-rounded border-foreground/80  ">
             <AvatarImage
-              className="z-50"
               src={avatar}
               srcSet={generateSrcSet(avatar)}
-              alt="user avatar"
               loading={noLazy ? "eager" : "lazy"}
+              alt={`${username}'s avatar`}
+              aria-label="user avatar"
             />
-
-            <AvatarFallback>{username[0]}</AvatarFallback>
-          </Link>
-        </Avatar>
+            <AvatarFallback className="h-full w-full font-extrabold text-foreground/80 text-xl">
+              {username[0].toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+        </Link>
       ) : (
-        <Link to={failLink ? failLink : "#"}>
-          <User
-            className={`fill-accent border-[2px] z-50  -700 border-foreground rounded-full icons-md ${className}`}
-          />
+        <Link
+          to={failLink || "/auth"}
+          onClick={propagate ? () => {} : handleNoPropagation}
+        >
+          <Avatar className="border-2 border-foreground/80 w-full h-full">
+            <User className="text-foreground/80" />
+          </Avatar>
         </Link>
       )}
     </span>
@@ -64,6 +65,7 @@ type Props = {
   username: string;
   channelId: string;
   isSubscribed: boolean;
+  videoId?: string;
 };
 
 const ChannelAvatarBar = ({
@@ -72,6 +74,7 @@ const ChannelAvatarBar = ({
   subscriberCount,
   channelId,
   isSubscribed,
+  videoId,
 }: Props) => {
   return (
     <div className="flex gap-3  justify-between items-center  -400 px-1 max-w-full">
@@ -82,18 +85,24 @@ const ChannelAvatarBar = ({
             avatar={avatar}
             to={`/channel/home?username=${username}`}
             username={username}
+            failLink="#"
           />
         </span>
         <span className="flex flex-col ">
-          <span className="flex text-foreground text-xs md:text-md">{username}</span>
-          <span className="text-xs text-secondary-foreground">{toKBMS(subscriberCount)}</span>
+          <span className="flex text-foreground text-xs md:text-md">
+            {username}
+          </span>
+          <span className="text-xs text-secondary-foreground">
+            {toKBMS(subscriberCount)}
+          </span>
         </span>
       </div>
       <SubscribeButton
         username={username}
         isSubscribed={isSubscribed}
+        videoId={videoId}
         targetId={channelId}
-        className="max-w-1/3 text-sm px-1 py-0.5 text-center "
+        className="max-w-1/3 text-[.6rem] px-2 py-0 max-h-7  border-2 border-accent text-center "
       />
     </div>
   );
@@ -120,13 +129,13 @@ const VideoAvatarStrip = ({
 
   if (!avatar || !username || !videoTitle) {
     return <p>missing</p>;
-  } // Don't render if data is missing
+  }
 
   console.log("videoCardStrip", avatar, username, subsCount);
 
   return (
     <div className={className} style={style}>
-      <span className="text-md tracking-tight text-start xl:text-md font-semibold line-clamp-2">
+      <span className="text-wrap text-xs sm:text-sm lg:text-md tracking-tight text-start  font-semibold line-clamp-2">
         {videoTitle}
       </span>
       <div className="flex w-full max-w-full ">
@@ -135,7 +144,7 @@ const VideoAvatarStrip = ({
             avatar={avatar}
             username={username}
             to={`/channel/home?username=${username}`}
-            className="icons-sm max-h-12 max-w-12 min-w-5 min-h-5 "
+            failLink="#"
             noLazy
           />
         </span>
