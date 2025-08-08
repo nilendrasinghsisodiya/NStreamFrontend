@@ -112,6 +112,9 @@ export interface IPaginatedBase {
   nextPage?: number; 
   prevPage?: number;
 }
+export interface IPaginatedVideos extends IPaginatedBase{
+Videos: IVideo[];
+}
 export interface IWatchHistory  { 
     _id:string;
     thumbnail:string;
