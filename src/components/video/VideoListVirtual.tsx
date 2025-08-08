@@ -14,7 +14,7 @@ const List: Components["List"] = React.forwardRef(
       style={{ scrollBehavior: "-moz-initial", ...style }}
       {...props}
       ref={ref}
-      className="flex flex-col w-full h-full scroll-smooth gap-3"
+      className="flex flex-col w-full h-full scroll-smooth gap-3 p-0 m-0"
     >
       {children}
     </div>
@@ -29,6 +29,7 @@ type props = {
   isSuccess: boolean;
   fetchNextPage: any;
   itemClassName: string;
+  header?:Components['Header'];
 };
 
 export const VirtualVideoList = ({
@@ -38,6 +39,7 @@ export const VirtualVideoList = ({
   isSuccess,
   hasNextPage,
   itemClassName,
+  header,
 }: props) => {
   return (
     <>
@@ -47,9 +49,9 @@ export const VirtualVideoList = ({
           useWindowScroll
           components={{
             List: List,
+            Header: header 
           }}
           
-          defaultItemHeight={350}
           itemContent={(_, data) => (
             <ListVideoCard
               className={itemClassName}
@@ -61,8 +63,8 @@ export const VirtualVideoList = ({
               title={data.title}
               viewsCount={data.views}
               isSuccess={isSuccess}
-              lazyLoading={isLoading}
-              avatarClassName=" flex flex-col w-full justify-center "
+              lazyLoading={true}
+              avatarClassName=" flex flex-col  justify-center  w-3/5 "
             />
           )}
           endReached={() => {
@@ -81,8 +83,7 @@ export const VirtualVideoList = ({
         />
       ) : (
         <ErrorScreen
-          mainMessage="no matching content found"
-          secondaryMessage="please try something else"
+          mainMessage="no videos found"
         />
       )}
     </>
