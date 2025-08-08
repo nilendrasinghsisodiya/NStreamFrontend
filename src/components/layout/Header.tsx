@@ -1,39 +1,82 @@
+// import { ToggleTheme } from "./ToogleTheme";
+// import { SearchBarDesktop } from "./SearchBar";
+// import { memo } from "react";
+// import { Link } from "react-router";
+// import { UserProfileTab } from "../UserProfile";
+// import { useSelector } from "react-redux";
+// import { selectUser } from "@/contexts/auth/authSlice";
+// import { Video } from "lucide-react";
+
+// const Header = () => {
+//   const user = useSelector(selectUser);
+//   return (
+//     <div className="fixed flex flex-col w-full justify-center left-12 top-0 h-15 py-2">
+//       <div className="flex items-center">
+//         <span className="text-xl lg:text-2xl tracking-tight font-extrabold">NStream</span>
+//         <div className="flex">
+//           <span className="flex">
+//             <SearchBarDesktop />
+//           </span>
+//           <span className="flex">
+//             <span className="flex items-center">
+//               <UserProfileTab />
+//             </span>
+//             <span className="flex items-center">
+//               <Link to={"/upload-video"}>
+//                 <Video />
+//               </Link>
+//             </span>
+//             <span className="flex items-center">
+//               <ToggleTheme />
+//             </span>
+//           </span>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// const MemoHeader = memo(Header);
+// export default MemoHeader;
+// export { Header };
+
 import { ToggleTheme } from "./ToogleTheme";
-import { SearchBar } from "./SearchBar";
-import {memo } from "react"
+import { SearchBarDesktop, SearchBarMobile } from "./SearchBar";
+import { memo } from "react";
 import { Link } from "react-router";
 import { UserProfileTab } from "../UserProfile";
-import { useSelector } from "react-redux";
-import { selectUser } from "@/contexts/auth/authSlice";
 import { Video } from "lucide-react";
+import { Separator } from "../ui/separator";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "../ui/button";
 
 const Header = () => {
-  const user = useSelector(selectUser);
-  return (
-    <div
-      className=" fixed  flex  w-full min-h-12 z-50 justify-between items-center border-b-1 shadow-2xs dark:shadow-none  border-b-primary md:self-start bg-background gap-4  top-0 
-    md:py-5 lg:py-6 px-3 max-h-22  "
-    >
-       < Link   tabIndex={0} to="/" className="text-foreground text-xl tracking-tight lg:text-2xl font-bold mx-3">
-        NStream
-      </Link>
-      <div className="flex gap-5 justify-evenly xl:justify-center items-center md:flex-1  ">
-       <SearchBar />
-         <div className="flex  justify-center gap-10 items-center w-full h-full xl:mr-19 ">
-        <span className=" flex min-w-[18px] min-h-[18px] max-w-[35px] max-h-[35px]">
-          
-         <UserProfileTab />
-        </span>
-        <span className="hidden md:block min-w-[20px] min-h-[20px] max-h-[40px] max-w-[40px]">
-          <Link to={user?"/upload-video":"/auth"}><Video/></Link>
-        </span>
+  const isMobile = useIsMobile();
 
-        <span className="flex box-border md:justify-self-end min-w-[20px] min-h-[20px] max-h-[40px] max-w-[40px]">
+  return (
+    <header className="w-full h-18 relative flex flex-col z-50 py-2 ">
+      <div className="w-full h-full flex items-center justify-evenly px-4 gap-3 border-b bg-background overflow-visible z-50 p-3">
+        <div className="text-xl lg:text-2xl font-extrabold tracking-tight  ">
+          <Link to="/">NStream</Link>
+        </div>
+
+        <div className="flex items-center gap-3  min-w-[280px] max-w-[650px] h-full  ">
+          {!isMobile && <SearchBarDesktop />}
+          {isMobile && <SearchBarMobile />}
+          <UserProfileTab />
+
+          <Link
+            to="/upload-video"
+            className="text-primary hover:text-muted-foreground"
+          >
+            <Button variant={"ghost"} className="bg-transparent h-fit w-fit"><Video className="w-5 h-5" />
+          </Button></Link>
+
           <ToggleTheme />
-        </span>
         </div>
       </div>
-    </div>
+      <Separator className="w-full align-bottom" />
+    </header>
   );
 };
 
