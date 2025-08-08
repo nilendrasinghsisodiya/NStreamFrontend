@@ -8,12 +8,14 @@ export const SubscribeButton = ({
   isSubscribed,
   targetId,
   className,
-  username
+  username,
+  videoId,
 }: {
   className?:string;
   isSubscribed: boolean;
   targetId: string;
   username:string;
+  videoId?:string;
 }) => {
   const { mutateAsync } = useToggleSubscribed();
   const [subscribed, setSubscribed] = useState<boolean>(isSubscribed);
@@ -32,6 +34,7 @@ export const SubscribeButton = ({
                 toast.success("channel unsubscribed successFully");
             }
             queryClient.refetchQueries({queryKey:['channel',username]});
+            queryClient.refetchQueries({queryKey:["video",videoId]});
         });
       }}
     >
