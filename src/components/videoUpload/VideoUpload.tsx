@@ -11,7 +11,7 @@ export const VideoUploadsList = ({ className }: { className: string }) => {
   const [successTab, setSuccessTab] = useState<boolean>(false);
   return (
     <div className={className}>
-      <div className="flex justify-center w-full gap-3 p-3 max-w-full min-h-12 overflow-x-scroll">
+      <div className="flex justify-center w-full gap-3 p-3  min-h-12 overflow-scroll">
         <Button
           className="bg-foreground text-backgroundbg-foreground text-background aria-checked:bg-accent aria-checked:text-foreground  border-2 aria-checked:border-foreground/50 "
           aria-checked={pendingTab}
