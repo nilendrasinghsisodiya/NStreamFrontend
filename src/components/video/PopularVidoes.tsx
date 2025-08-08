@@ -7,14 +7,14 @@ import { VideoCard } from "./VideoCard";
 import { VideoCardSkeletonScrollSeek } from "./VideoCardSkeleton";
 import { useUserRecommendation } from "@/api/UserApi";
 
-// flex flex-col w-full md:flex-row flex-wrap  justify-center contain-content gap-4
 const GridList: GridComponents["List"] = React.forwardRef(
   ({ style, children, ...props }, ref) => (
     <div
       style={{ ...style }}
       {...props}
       ref={ref}
-      className="grid grid-cols-1 grid-rows-1 min-h-full md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  place-items-center  -100 gap-3 w-full p-3 md:w-[95%]  scroll-smooth">
+      className=" grid gird-cols-1 sm:grid-cols-2 md:grid-cols-3 lg-grid-cols-4  place-items-center gap-y-1 sm:gap-y-2 md:gap-y-3 gap-x-1 p-0 mt-2 xl:gap-3"
+    >
       {children}
     </div>
   )
@@ -25,40 +25,39 @@ const GridItem: GridComponents["Item"] = React.forwardRef(
       ref={ref}
       {...props}
       style={{ ...style }}
-      //className="  md:h-80 md:w-85 h-[320px] w-[300px] min-w-[300px] min-h-[320px] max-w-[400px] xl:max-w-[600px] max-h-[340px] "
-    
-     className=" aspect-video w-[310px] h-[300px]  ">
+      className=" aspect-video w-[310px] h-[300px] "
+    >
       {children}
     </div>
   )
 );
 
-
 const PopularVideos = () => {
-  const { data, hasNextPage, fetchNextPage, isSuccess,isLoading} =
+  const { data, hasNextPage, fetchNextPage, isSuccess, isLoading } =
     usePopularVideo({
       limit: 10,
     });
-    const {data:RecommendedVideos} = useUserRecommendation();
-  const [videos, setVideos] = useState<IVideo[] >([]);
+  const { data: RecommendedVideos } = useUserRecommendation();
+  const [videos, setVideos] = useState<IVideo[]>([]);
+  const [recommendedAdded, setRecommendedAdded] = useState(false);
 
-  useEffect(()=>{
-    if(Array.isArray(RecommendedVideos) && RecommendedVideos.length > 0){
-      setVideos((prev)=>[...RecommendedVideos,...prev]);
-    }
-  },[RecommendedVideos]);
+ 
 
   useEffect(() => {
     if (data && data.pages) {
-      console.log("data.pages", data.pages);
-
-      // Ensure `popularVideos` exists and is an array
-      const newVideos = data.pages.flatMap((page) => page.Videos || []);
-      console.log("new videos", newVideos);
-
-      setVideos(newVideos);
+      const popular = data.pages.flatMap((page) => page.Videos || []);
+      let merged = popular;
+      if (
+        Array.isArray(RecommendedVideos) &&
+        RecommendedVideos.length > 0 &&
+        !recommendedAdded
+      ) {
+        merged = [...RecommendedVideos, ...popular];
+        setRecommendedAdded(true);
+      }
+      setVideos(merged);
     }
-  }, [data]);
+  }, [data, RecommendedVideos, recommendedAdded]);
 
   return (
     <>
@@ -68,16 +67,12 @@ const PopularVideos = () => {
         components={{
           List: GridList,
           Item: GridItem,
-          // Footer:()=>{
-          //   return <>{isFetchingNextPage && <div>loading....</div>}</>
-          // }
           ScrollSeekPlaceholder: VideoCardSkeletonScrollSeek,
         }}
-        
         itemContent={(_, data) => (
           <VideoCard
-          duration={data.duration}
-          isLoading={isLoading}
+            duration={data.duration}
+            isLoading={isLoading}
             owner={data?.owner}
             thumbnail={data.thumbnail}
             videoId={data._id}
@@ -85,8 +80,6 @@ const PopularVideos = () => {
             viewsCount={data.views}
             isSuccess={isSuccess}
             lazyLoading={true}
-
-
           />
         )}
         endReached={() => {
@@ -96,16 +89,11 @@ const PopularVideos = () => {
         }}
         computeItemKey={(index, val) => `${val._id}_${index}`}
         increaseViewportBy={900}
-         height={"100%"}
-         style={{"minHeight":"100%"}}
         scrollSeekConfiguration={{
-        enter: (velocity) => Math.abs(velocity) > 150,
+          enter: (velocity) => Math.abs(velocity) > 350,
           exit: (velocity) => Math.abs(velocity) < 10,
-        
         }}
-        overscan={50}
-        isScrolling={(val) => console.log(val, "scrolling")}
-        
+        overscan={25}
       />
     </>
   );
