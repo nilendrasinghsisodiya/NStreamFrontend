@@ -1,5 +1,3 @@
-// type createPlaylistProps = {
-
 import { useGetUserPlaylists } from "@/api/UserApi";
 import { selectUser } from "@/contexts/auth/authSlice";
 import { PlaylistCard } from "@/pages/Main/PlaylistPage";
@@ -26,7 +24,6 @@ import {
 } from "@/components/ui/dialog";
 import { DialogHeader } from "./ui/dialog";
 
-// };
 type AddToPlaylistPopoverProps = {
   videoId: string;
 };
@@ -68,7 +65,6 @@ export const AddToPlaylistPopover = ({
 
       toast.success(`videoAdded to ${val.name} successfully!`);
 
-      //
     }
   };
   return (
@@ -169,3 +165,5 @@ export const AddToPlaylistPopover = ({
     </Popover>
   );
 };
+
+
