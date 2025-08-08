@@ -10,19 +10,21 @@ import {
 import { SafeAvatar } from "./avatar/Avatars";
 import { LogOut } from "lucide-react";
 import { useSelector } from "react-redux";
-import { selectUser, reset as userReset } from "@/contexts/auth/authSlice";
+import { selectUser, useIsAuthenticated, reset as userReset } from "@/contexts/auth/authSlice";
 
 import { Button } from "./ui/button";
 import { Link, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { useLogoutUser } from "@/api/UserApi";
 import { presister } from "@/ContextStore";
+import { Separator } from "./ui/separator";
 
 const UserProfileTab = () => {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const { logout } = useLogoutUser();
   const navigate = useNavigate();
+  const isAuthenticated = useIsAuthenticated();
 
   const handleLogout = async () => {
     try {
@@ -47,37 +49,38 @@ const UserProfileTab = () => {
               username={user?.username}
               to={"#"}
               failLink="/auth" 
-              className=""
             />
           </Button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          className=" z-50 border-2 border-accent-foreground/40 bg-accent p-2 rounded-xl w-full h-full"
-          alignOffset={23}
+          className=" z-50  bg-accent p-2 rounded-sm h-fit w-fit"
           align="start"
-          sideOffset={20}
+          sideOffset={10}
         >
-          <DropdownMenuLabel>Profile</DropdownMenuLabel>
+          <DropdownMenuLabel className="text-foreground font-semibold tracking-tight ">Profile</DropdownMenuLabel>
+          <Separator className="bg-foreground/50 my-0.5"/>
           <DropdownMenuSeparator className="bg-foreground" />
-          {user.accessToken ? (
+          {isAuthenticated? (
             <DropdownMenuGroup>
               
-                <DropdownMenuItem>
-                  Dashboard
+                <DropdownMenuItem >
+                  <Link to="/dashboard" className="text-sm font-semibold tracking-tight">Dashboard</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem></DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link to={`/channel/home?username=${user.username}`} className="text-sm font-semibold tracking-tight">Home</Link>
+                </DropdownMenuItem>
            
              
               <DropdownMenuItem>
-                <Button variant="ghost" onClick={handleLogout}>
-                  Logout <LogOut className="icons-sm" />
+                <Button variant="ghost" className="text-sm tracking-tight font-semibold"onClick={handleLogout}>
+                  Logout <LogOut className="h-full w-full" />
                 </Button>
               </DropdownMenuItem>
             </DropdownMenuGroup>
           ) : (
             <DropdownMenuItem>
-              <Link to={"/auth"}>LogIn</Link>
+              <Link to={"/auth"} className="text-sm font-semibold tracking-tight">Log In</Link>
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
