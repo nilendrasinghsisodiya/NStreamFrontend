@@ -1,52 +1,46 @@
-import { Home,  ListVideo } from "lucide-react";
+import { Home, ListVideo, HistoryIcon, ThumbsUp, AlarmClockPlus } from "lucide-react";
 import {
-    Sidebar,
+  Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
 } from "../ui/sidebar";
 import { Link } from "react-router";
-import { Button } from "../ui/button";
 
 const items = [
+  { title: "Home", url: "/", icon: Home },
+  { title: "Playlists", url: "/user-playlists", icon: ListVideo },
+  { title: "History", url: "/watch-history", icon: HistoryIcon },
   {
-    title: "Home",
-    url: "/",
-    icon: Home,
+    title: "Liked Videos",
+    url: "/liked-video",
+    icon: () => <ThumbsUp className="fill-foreground" />,
   },
-  {
-    title: "Playlists",
-    url: "/user-playlists",
-    icon: ListVideo,
-  },
+  {title:"Watch Later",url:"/watch-later",icon:AlarmClockPlus}
 ];
 
-
-/**
- * A sidebar compenent that creates a sidebar to the left for md break point
- * @returns A React jsx component that represent Navbar to the left side in UI.
- */
 const AppSidebar = () => {
   return (
-    <Sidebar className="max-w-100  h-screen col-span-1 gap-12 justify-around min-h-screen" collapsible="icon" variant="sidebar">
-     
-      <SidebarContent className="min-h-screen"  >
-        <SidebarGroup >
-          <SidebarGroupContent className="min-h-screen">
-          <SidebarTrigger className="px-2 mb-12 text-bold" tabIndex={0} />
-            <SidebarMenu className="gap-12">
+    <Sidebar
+      className="h-full w-full bg-background border-r"
+      collapsible="none"
+      variant="sidebar"
+    >
+      <SidebarContent className="h-full py-4 px-2">
+        <SidebarGroup>
+          <SidebarGroupContent className="space-y-6">
+            <SidebarMenu className="space-y-4">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title} tabIndex={0}>
-                  <SidebarMenuButton asChild>
-                    <Link to={item.url} className="" tabIndex={0}>
-                      <item.icon className="h-full w-full min-w-5 min-h-5 " strokeWidth="3"/>
-                      <Button variant={"ghost"}>{item.title}</Button>
-                    </Link>
-                  </SidebarMenuButton>
+                  <Link
+                    to={item.url}
+                    className="flex flex-col items-center gap-2 text-sm font-medium"
+                  >
+                    <item.icon className="w-5 h-5" strokeWidth="2" />
+                    <span className="text-xs">{item.title}</span>
+                  </Link>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
