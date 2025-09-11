@@ -55,7 +55,7 @@ const Header = () => {
 
   return (
     <header className="w-full h-18 relative flex flex-col z-50 py-2 ">
-      <div className="w-full h-full flex items-center justify-evenly px-4 gap-3 border-b bg-background overflow-visible z-50 p-3">
+      <div className="w-full h-full flex items-center justify-evenly px-2 sm:px-4 gap-2 sm:gap-3 border-b bg-background overflow-visible z-50 p-1 sm:p-3">
         <div className="text-xl lg:text-2xl font-extrabold tracking-tight  ">
           <Link to="/">NStream</Link>
         </div>

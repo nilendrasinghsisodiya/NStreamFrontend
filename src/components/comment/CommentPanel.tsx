@@ -1,22 +1,24 @@
+import { Separator } from "@radix-ui/react-separator";
 import { CommentInput } from "./CommentInput";
 import { CommentList } from "./CommentList";
+
 
 const CommentPanel = ({
   videoId,
   className,
-  onFocus,
-  onBlur
 }: {
   videoId: string;
   className?: string;
-  onFocus: (e: React.FocusEvent) => void;
-  onBlur:(e:React.FocusEvent)=>void;
 }) => {
   return (
-    <div className={className} onFocus={onFocus} onBlur={onBlur}>
-      <CommentInput videoId={videoId} />
+   
+        <div className={className}>
+               <span className="h-1/12 w-full">
+                   <CommentInput videoId={videoId} />
+                  <Separator className="w-full text-accent-foreground" />
+                </span>
       <CommentList videoId={videoId} />
-    </div>
+                </div>
   );
 };
 

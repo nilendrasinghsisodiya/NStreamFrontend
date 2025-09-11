@@ -121,7 +121,6 @@
   width: 100%;
   cursor: pointer;
 
-  /* Hides the slider so custom styles can be added */
   background: transparent; 
   border-color: transparent;
   color: transparent;
@@ -135,11 +134,8 @@
   background: var(--accent-foreground);
   cursor: pointer;
   margin-top: 0px;
-   /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; 
 }
-
-/* Icons with width and height of 2rem*/
 .icons-m{
   width:2rem !important;
   height: 2rem !important;
@@ -155,7 +151,7 @@
   height:1.5rem !important;
 }
 .main_shadow{
-  box-shadow: -23px -8px 115px rgb(23, 72, 218);
+  box-shadow: -23px -8px 115px var(--ring);
 }
 .video_grid{
   display: grid !important; 
@@ -164,7 +160,7 @@
   grid-template-rows:auto;
   justify-items: center;
   row-gap:2rem;
-  
+
   column-gap: 2rem;
   box-sizing: border-box;
   transition: transform 0.4s ease-in-out ;
@@ -178,9 +174,6 @@
   box-shadow: 1px 1px 1.5px rgba(0,0,255,.5)
 }
 
-
-
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -191,5 +184,20 @@
   }
   body {
     @apply bg-background text-foreground overflow-x-hidden;
+  }
+  .custom_input {
+    @apply file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive
+  }
+  .custom_textarea{
+    @apply border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

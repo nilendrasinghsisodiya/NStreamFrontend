@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AxiosResponse } from "axios";
 import { apiClient } from "./api/ApiClient";
-import { Blob } from "buffer";
 
 
 
@@ -54,7 +54,7 @@ export const refreshAccessToken = async (): Promise<IUser> => {
       throw new Error("Refresh failed");
     }
   } catch (error) {
-    console.log("Refresh token request failed:", error);
+    console.error("Refresh token request failed:", error);
     navigateGlobal("/auth");
     throw error; // propagate to caller
   }
@@ -154,4 +154,61 @@ export function appendFormData<T extends Record<string, any>>(formData: FormData
     }
   }
 }
+
+/**
+ * Returns a human-readable relative time string like "5 minutes ago",
+ * "2 days ago", "just now", etc., based on the input ISO date string.
+ *
+ * @param isoDateString - A valid ISO date string (e.g., "2025-03-24T12:10:50.435Z")
+ * @returns A relative time string or "Invalid date" if input is not parseable
+ */
+export function getRelativeTime(isoDateString: string): string {
+  const date = new Date(isoDateString);
+
+  if (isNaN(date.getTime())) {
+    return "Invalid date";
+  }
+
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (diffInSeconds < 5) return "Just now";
+
+  const units: [number, string][] = [
+    [60, "second"],
+    [60, "minute"],
+    [24, "hour"],
+    [30, "day"],
+    [12, "month"],
+    [Infinity, "year"],
+  ];
+
+  let value = diffInSeconds;
+
+  for (const [threshold, label] of units) {
+    if (value < threshold) {
+      const rounded = Math.floor(value);
+      return `${rounded} ${label}${rounded !== 1 ? "s" : ""} ago`;
+    }
+    value = value / threshold;
+  }
+
+  return "Some time ago";
+}
+
+export const allowedImageType = [
+  "image/png",
+  "image/jpg",
+  "image/webp",
+  "image/jepg",
+];
+
+export const allowedVideoType = [
+  "video/mp4",
+  "video/x-msvideo",
+  "video/mpeg",
+  "video/avi",
+  "video/avi",
+];
+
 

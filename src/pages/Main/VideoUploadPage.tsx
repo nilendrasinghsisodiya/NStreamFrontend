@@ -9,7 +9,6 @@ import {
   Form,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TagInput } from "@/components/TagInputComponent";
@@ -20,26 +19,14 @@ import { startUpload } from "@/contexts/videoUpload/videoUploadSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/contexts/auth/authSlice";
-import { appendFormData } from "@/utils";
-import { Textarea } from "@/components/ui/textarea";
+import { allowedImageType, allowedVideoType, appendFormData } from "@/utils";
 import { VideoUploadsList } from "@/components/videoUpload/VideoUpload";
 import { AxiosError } from "axios";
-const allowedThumbnailType = [
-  "image/png",
-  "image/jpg",
-  "image/webp",
-  "image/jepg",
-];
+
 const maxThumbnailSize = 5 * 1024 * 1024;
 
-const allowedVideoType = [
-  "video/mp4",
-  "video/x-msvideo",
-  "video/mpeg",
-  "video/avi",
-  "video/avi",
-];
-const maxVideoSize = 250 * 1024 * 1024;
+
+const maxVideoSize = 25 * 1024 * 1024;
 
 const videoUploadSchema = z.object({
   title: z
@@ -48,7 +35,6 @@ const videoUploadSchema = z.object({
     .nonempty()
     .min(3)
     .max(100, "maximum 32 characters allowed"),
-  description: z.string().trim().max(5000, "maximum 5000 characters allowed"),
   tags: z
     .array(z.string().trim())
     .max(20, "maximum 20 tags allowed")
@@ -57,7 +43,7 @@ const videoUploadSchema = z.object({
     .instanceof(File)
     .refine((value: File) => {
       if (!value) return;
-      return allowedThumbnailType.includes(value.type);
+      return allowedImageType.includes(value.type);
     }, "Only jpeg, png , and gif's are allowed")
     .refine((value) => {
       if (!value) return;
@@ -73,7 +59,7 @@ const videoUploadSchema = z.object({
     .refine((value: File) => {
       if (!value) return;
       return value.size <= maxVideoSize;
-    }, "max video size 250 MB only"),
+    }, "max video size 25 MB only"),
 });
 
 type formDataType = z.infer<typeof videoUploadSchema>;
@@ -118,7 +104,6 @@ export const VideoUploadForm = () => {
       videoFile: undefined,
       tags: [],
       title: "",
-      description: "",
     },
     reValidateMode: "onChange",
     mode: "all",
@@ -142,7 +127,7 @@ export const VideoUploadForm = () => {
                 <FormItem className="p-3">
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input {...field} ref={null} placeholder="add title...." />
+                    <input className="custom_input" {...field}  placeholder="add title...." />
                   </FormControl>
                   <FormDescription className="text-right text-xs">
                     this is your video's title in 100 characters max.
@@ -151,22 +136,7 @@ export const VideoUploadForm = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              name="description"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} ref={null} placeholder="add description...."/>
-                  </FormControl>
-                  <FormDescription className="text-xs text-right line-clamp-2 ">
-                    this is a description of your video in 5000 characters max.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+           
 
             <FormField
               name="thumbnail"
@@ -175,10 +145,10 @@ export const VideoUploadForm = () => {
                 <FormItem>
                   <FormLabel>Thumbnail</FormLabel>
                   <FormControl>
-                    <Input
+                    <input className="custom_input"
                       type="file"
                       max={1}
-                      ref={null}
+                      
                       name={name}
                       min={1}
                       onBlur={onBlur}
@@ -205,10 +175,10 @@ export const VideoUploadForm = () => {
                 <FormItem>
                   <FormLabel>Video</FormLabel>
                   <FormControl>
-                    <Input
+                    <input className="custom_input"
                       type="file"
                       max={1}
-                      ref={null}
+                      
                       name={name}
                       min={1}
                       disabled={disabled}
@@ -265,7 +235,7 @@ export const VideoUploadForm = () => {
           </fieldset>
         </form>
       </Form>
-    <VideoUploadsList className="flex flex-col h-full w-full border-2 border-accent rounded-xl row-span-1 p-3" /> 
+    <VideoUploadsList className="flex flex-col h-full w-full border-2 border-accent rounded-xl row-span-1 p-3 overflow-scroll" /> 
     </div>
   );
 };

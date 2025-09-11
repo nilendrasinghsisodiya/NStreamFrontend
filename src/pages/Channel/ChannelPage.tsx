@@ -15,7 +15,7 @@ const ChannelPage = () => {
     { name: "Videos", to: `videos?username=${username}`,index:"second" },
     { name: "Playlists", to: `playlists?username=${username}`,index:"third" },
   ];
-  const [active,setActive]= useState<string>("");
+  const [active,setActive]= useState<string>("first");
   return (
     <div className="flex flex-col justify-center items-center h-full w-full p-3 gap-y-2">
       <ChannelPanel
@@ -25,6 +25,7 @@ const ChannelPage = () => {
       <NavigationMenu className="flex w-full gap-x-3 items-center justify-center list-none">
         {tabs.map((ele) => (
           <NavigationMenuItem key={ele.index}>
+            <Link to={ele.to} key={ele.index}>
             <Button
               variant={active===ele.index?"default":"secondary"}
               className="active:bg-accent/40 active:border-accent active:text-foreground"
@@ -34,8 +35,9 @@ const ChannelPage = () => {
             
               }
             >
-              <Link to={ele.to} key={ele.index}>{ele.name}</Link>
+              {ele.name}
             </Button>
+              </Link>
           </NavigationMenuItem>
         ))}
       </NavigationMenu>

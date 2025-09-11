@@ -1,4 +1,4 @@
-import { Home, ListVideo, HistoryIcon, ThumbsUp, AlarmClockPlus } from "lucide-react";
+import { Home, ListVideo, HistoryIcon, ThumbsUp, Layers } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -15,10 +15,11 @@ const items = [
   { title: "History", url: "/watch-history", icon: HistoryIcon },
   {
     title: "Liked Videos",
-    url: "/liked-video",
+    url: "/liked-videos",
     icon: () => <ThumbsUp className="fill-foreground" />,
   },
-  {title:"Watch Later",url:"/watch-later",icon:AlarmClockPlus}
+  {title:"Subscription",url:"/subscriptions",icon:Layers}
+ 
 ];
 
 const AppSidebar = () => {
@@ -30,8 +31,8 @@ const AppSidebar = () => {
     >
       <SidebarContent className="h-full py-4 px-2">
         <SidebarGroup>
-          <SidebarGroupContent className="space-y-6">
-            <SidebarMenu className="space-y-4">
+          <SidebarGroupContent className="space-y-9">
+            <SidebarMenu className="space-y-9">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title} tabIndex={0}>
                   <Link
@@ -39,7 +40,7 @@ const AppSidebar = () => {
                     className="flex flex-col items-center gap-2 text-sm font-medium"
                   >
                     <item.icon className="w-5 h-5" strokeWidth="2" />
-                    <span className="text-xs">{item.title}</span>
+                    <span className="text-xs text-center w-fit overflow-ellipsis line-clamp-2 m-0 p-0">{item.title}</span>
                   </Link>
                 </SidebarMenuItem>
               ))}

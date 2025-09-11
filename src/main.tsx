@@ -17,7 +17,8 @@ createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <PersistGate persistor={presister} loading={null}>
         <QueryProvider client={queryClient}>
-          <Toaster position="bottom-center" richColors closeButton/>
+          <Toaster position="bottom-center" richColors closeButton theme="system" duration={6000} id="gloabal" />
+          <Toaster offset={{left:"50vw",top:"50vh"}}  duration={Infinity} id="confirmation-center" />
             <ReactQueryDevtools client={queryClient} />
           <ErrorBoundary>
             <Router>

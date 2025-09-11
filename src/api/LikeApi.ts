@@ -5,6 +5,7 @@ import { AxiosError } from "axios";
 import { apiClient} from "./ApiClient";
 import { handleResponse } from "@/utils";
 
+
 type toggleVideoLikeBody = {
   targetId: string;
 };
@@ -16,10 +17,11 @@ export const useToggleVideoLike = () => {
     isSuccess,
     error,
     isError,
+    
     mutateAsync: toggleLike,
-  } = useMutation<{likesCount:number;}, AxiosError, toggleVideoLikeBody>({
+  } = useMutation<unknown, AxiosError, toggleVideoLikeBody>({
     mutationFn: async ({ targetId }: toggleVideoLikeBody) => {
-      const response = await apiClient.post<ApiResponse<{likesCount:number}>>("/like/video", { targetId:targetId},{
+      const response = await apiClient.post<ApiResponse<unknown>>("/like/video", { videoId:targetId},{
         headers:{
             Authorization:`Bearer ${accessToken}`
         }
@@ -49,10 +51,10 @@ export const useToggleCommentLike = ()=>{
             Authorization:`Bearer ${accessToken}`
         }
       });
-      return handleResponse(response,"failed to like the video");
+      return handleResponse(response,"failed to like the comment");
     
     },
-    mutationKey:["videoLikes",accessToken],
+    mutationKey:["videoCommentLikes",accessToken],
   });
 
   return {data,isSuccess,error,isError,toggleLike}

@@ -1,12 +1,11 @@
 import { PopularVideos } from "@/components/video/PopularVidoes";
-import { RecommendedVideos } from "@/components/video/RecommendedVideos";
 
 const HomePage = () => {
 
 
   return (
-  <PopularVideos/>
-  );
+  <div className="h-full  w-full "><PopularVideos/>
+  </div>);
 };
 
 export { HomePage };

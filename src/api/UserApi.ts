@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { apiClient, queryClient } from "./ApiClient";
 import { handleResponse } from "@/utils";
-import { AxiosError } from "axios";
+import {  AxiosError } from "axios";
 import { toast } from "sonner";
 
 export interface ICreateUserBody {
@@ -57,25 +57,21 @@ export interface IUpdateUserBody {
 export const useUpdateUser = () => {
   const { accessToken } = useSelector(selectUser);
 
-  const updateUserFunction = async (props: IUpdateUserBody) => {
-    const response = await apiClient.patch("/user/update-account", props, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      throw new Error("failed to update user");
-    }
-  };
   const {
     isError,
+    isPending,
     error,
     data,
     mutateAsync: updateUser,
-  } = useMutation({
+  } = useMutation<IUser,AxiosError,IUpdateUserBody>({
     mutationKey: ["UserUpdate", accessToken],
-    mutationFn: updateUserFunction,
+    mutationFn:  async (props: IUpdateUserBody) => {
+    const response = await apiClient.patch<ApiResponse<IUser>>("/user/update-account", props, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+     return handleResponse(response,"failed to update the user");
+  },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["User", accessToken] });
     },
@@ -84,7 +80,7 @@ export const useUpdateUser = () => {
     },
   });
 
-  return { isError, error, data, updateUser };
+  return { isError, error, data, updateUser ,isPending};
 };
 
 export const useDeleteUser = () => {
@@ -254,7 +250,7 @@ export const useGetUserPlaylists = ({
 };
 export const useGetUserWatchHistory = (isActive: boolean) => {
   const { _id: userId } = useSelector(selectUser);
-  const query = useQuery({
+  const query = useQuery<IWatchHistory[],AxiosError>({
     queryKey: ["watch histroy", userId],
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<IWatchHistory[]>>(
@@ -273,16 +269,16 @@ export const useGetUserWatchHistory = (isActive: boolean) => {
 
 export const useToggleSubscribed = () => {
   const query = useMutation<
-    { subsCount: number; flag: boolean },
+    { subscribersCount: number; flag: boolean },
     AxiosError,
     { targetId: string }
   >({
     mutationKey: ["subscribed"],
     mutationFn: async ({ targetId }) => {
       const response = await apiClient.post<
-        ApiResponse<{ subsCount: number; flag: boolean }>
+        ApiResponse<{ subscribersCount: number; flag: boolean }>
       >("/user/subscribe", { targetId });
-      return handleResponse<{ subsCount: number; flag: boolean }>(
+      return handleResponse<{ subscribersCount: number; flag: boolean }>(
         response,
         "failed to toggle subscribe"
       );
@@ -298,10 +294,12 @@ type userStats = {
   totalSubscribers: number;
   totalViews: number;
   mostPopularVideos: IVideo[];
-  likedVideos: IVideo[];
   subsInLast30Days: number;
   subsInLast7Days: number;
-  userComments: IComment[];
+  subsInLast24Hrs:number;
+  viewsInLast24Hrs:number;
+  viewsInLast7Days:number;
+  viewsInLast30Days:number;
 };
 export const useGetUserDashboard = () => {
   const { accessToken } = useSelector(selectUser);
@@ -324,3 +322,16 @@ export const useGetUserDashboard = () => {
 
   return { ...query };
 };
+type updateUserAvatarBody = {
+  avatar:File;
+}
+export const useUpdateUserAvatar = ()=>{
+  const mutation = useMutation<IUser,AxiosError,updateUserAvatarBody>({
+    mutationKey:["updateAvatar"],
+    mutationFn:async({avatar})=>{
+      const response = await apiClient.patch<ApiResponse<IUser>>("/user/avatar",{avatar:avatar});
+      return handleResponse(response,"failed to update avatar");
+    }
+  });
+  return {...mutation};
+}

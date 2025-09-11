@@ -2,6 +2,7 @@
 
 import { searchType } from "@/api/VideoApi";
 import { Button } from "@/components/ui/button";
+import { setSearch as setReduxSearch } from "@/contexts/search/searchSlice";
 import {
   Popover,
   PopoverTrigger,
@@ -14,11 +15,14 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { selectSearch } from "@/contexts/search/searchSlice";
+import {  selectSearch } from "@/contexts/search/searchSlice";
+
 import { Search, SlidersHorizontal } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { createSearchParams, useNavigate } from "react-router";
+import { queryClient } from "@/api/ApiClient";
 
 type SortByType = "views" | "createdAt";
 type SortOrder = "asc" | "desc";
@@ -26,33 +30,48 @@ type SortOrder = "asc" | "desc";
 export const SearchBarDesktop: React.FC = () => {
   const { type, query } = useSelector(selectSearch);
   const [active, setActive] = useState<boolean>(false);
-  const [searchType, setSearchType] = useState<searchType>(type);
+  const [searchType, setSearchType] = useState<searchType>("vid");
   const [sortBy, setSortBy] = useState<SortByType>("views");
   const [sortType, setSortType] = useState<SortOrder>("asc");
   const [search, setSearch] = useState<string>(query);
-
+  
   const inputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   useEffect(() => {
     setSearch(query);
-    setSearchType(type);
+    setSearchType(type as searchType);
   }, [query, type]);
+  const dispatch = useDispatch();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (search.trim() === "") {
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
-    } else {
-      const searchParams = createSearchParams();
-      searchParams.set("query", search);
-      searchParams.set("sortType", sortType);
-      searchParams.set("sortBY", sortBy);
-      searchParams.set("type", searchType);
-      navigate(`/search?${searchParams}`);
-    }
-  };
+ const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+ 
+  
+  if (!search.trim()) return inputRef.current?.focus();
+
+  dispatch(
+        setReduxSearch({
+          query: search,
+          type: searchType,
+          sortBy: sortBy,
+          sortType:sortType,
+          limit:10,
+        })
+      );
+
+      queryClient.refetchQueries({queryKey:["ChannelSearch"]});
+      queryClient.refetchQueries({queryKey:["VideoSearch"]})
+
+  navigate({
+    pathname: "/search",
+    search: createSearchParams({
+      query: search,
+      type: searchType,
+      sortBy,
+      sortType,
+    }).toString(),
+  });
+};
   return (
     <form
       onFocusCapture={() => setActive(true)}
@@ -60,8 +79,9 @@ export const SearchBarDesktop: React.FC = () => {
       className="flex w-full justify-center items-center flex-1 h-12 "
       onSubmit={handleSubmit}
     >
-      {/* Text Input */}
+      {/* Text input className="custom_input" */}
       <span className="h-full w-5/6 relative">
+      <label htmlFor="searchText" className="sr-only">searchText</label>
         <input
           tabIndex={0}
           id="searchText"
@@ -69,6 +89,7 @@ export const SearchBarDesktop: React.FC = () => {
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setSearch(e.target.value)
           }
+          autoComplete="true"
           type="text"
           name="query"
           autoCorrect="true"
@@ -117,7 +138,7 @@ export const SearchBarDesktop: React.FC = () => {
             </div>
 
             {/* Sort By Selector */}
-            <div className="space-y-1">
+           { searchType === "vid"&& <div className="space-y-1">
               <label className="text-sm font-medium">Sort By</label>
               <Select
                 value={sortBy}
@@ -131,7 +152,7 @@ export const SearchBarDesktop: React.FC = () => {
                   <SelectItem value="createdAt">Created At</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </div>}
 
             {/* Sort Type Selector */}
             <div className="space-y-1">
@@ -183,7 +204,7 @@ export const SearchBarMobile =()=>{
       <PopoverTrigger className="h-fit w-fit">
         <Button asChild variant={"ghost"} className="bg-transparent h-5 w-5"><Search className="h-full w-full text-foreground hover:text-accent" /></Button>
       </PopoverTrigger>
-      <PopoverContent className="h-fit w-fit p-3">
+      <PopoverContent className="h-fit w-[360px] sm:w-fit p-3">
         <span className="h-fit w-fit">
           <SearchBarDesktop/>
         </span>

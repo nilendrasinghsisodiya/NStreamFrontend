@@ -15,7 +15,7 @@ const AuthPage = () => {
   const handleRegistration = async (formData: signUpFormDataType) => {
     const registrationData = await RegisterUser(formData);
   
-      dispatch(setRegistration(registrationData));
+      dispatch(setRegistration({...registrationData,isAuthenticated:false}));
 
       navigate("/user-reg-profile");
     
@@ -24,13 +24,13 @@ const AuthPage = () => {
   const handleLogin = async (formData: loginFormDataType) => {
    const loginData = await loginUser(formData);
    
-   dispatch(setUser(loginData));
+   dispatch(setUser({...loginData,isAuthenticated:true}));
     navigate("/");
    
   };
 
   return (
-    <div className="flex   justify-center   items-start w-full  h-full ">
+    <div className="flex   justify-center   items-start w-full  h-full mt-17">
       <Tabs defaultValue="login" className=" ">
         <TabsList className=" grid grid-cols-2 w-full ">
           <TabsTrigger value="login" >Log In</TabsTrigger>

@@ -3,23 +3,27 @@ import { AvatarImage } from "../ui/avatar";
 import { generateSrcSet, toKBMS } from "@/utils";
 import { User } from "lucide-react";
 import { CSSProperties } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { SubscribeButton } from "../SubscribeButton";
 type avatarProps = {
   avatar?: string;
   username?: string;
   to: string;
   noLazy?: boolean;
+  noNavigate?:boolean;
   failLink?: string;
   propagate?: boolean;
+  
 };
 const SafeAvatar = ({
   avatar,
   username,
   to,
   noLazy,
+  noNavigate = false,
   failLink,
-  propagate,
+  propagate=true,
+  
 }: avatarProps) => {
   const handleNoPropagation = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.stopPropagation();
@@ -27,12 +31,12 @@ const SafeAvatar = ({
 
   return (
     <span>
-      {avatar && username ? (
+      {!noNavigate?(avatar && username ? (
         <Link
           to={to || `/channel/home?username=${username}`}
           onClick={propagate ? () => {} : handleNoPropagation}
         >
-          <Avatar className="border-2 border-rounded border-foreground/80  ">
+          <Avatar className={`border-2 border-rounded border-foreground/80 w-full h-full` }>
             <AvatarImage
               src={avatar}
               srcSet={generateSrcSet(avatar)}
@@ -54,7 +58,28 @@ const SafeAvatar = ({
             <User className="text-foreground/80" />
           </Avatar>
         </Link>
-      )}
+      )):(avatar && username ? (
+        
+          <Avatar className="border-2 border-rounded border-foreground/80  " onClick={propagate ? () => {} : handleNoPropagation}>
+            <AvatarImage
+              src={avatar}
+              srcSet={generateSrcSet(avatar)}
+              loading={noLazy ? "eager" : "lazy"}
+              alt={`${username}'s avatar`}
+              aria-label="user avatar"
+            />
+            <AvatarFallback className="h-full w-full font-extrabold text-foreground/80 text-xl">
+              {username[0].toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+       
+      ) : (
+       
+          <Avatar className="border-2 border-foreground/80 w-full h-full" onClick={propagate ? () => {} : handleNoPropagation}>
+            <User className="text-foreground/80" />
+          </Avatar>
+        
+      ))}
     </span>
   );
 };
@@ -66,6 +91,7 @@ type Props = {
   channelId: string;
   isSubscribed: boolean;
   videoId?: string;
+  navigateOnAvatarClick?:boolean;
 };
 
 const ChannelAvatarBar = ({
@@ -75,6 +101,7 @@ const ChannelAvatarBar = ({
   channelId,
   isSubscribed,
   videoId,
+  navigateOnAvatarClick = true,
 }: Props) => {
   return (
     <div className="flex gap-3  justify-between items-center  -400 px-1 max-w-full">
@@ -86,6 +113,8 @@ const ChannelAvatarBar = ({
             to={`/channel/home?username=${username}`}
             username={username}
             failLink="#"
+            noNavigate={!navigateOnAvatarClick} // if navigationOnAvatarClick === false then this will be true
+            
           />
         </span>
         <span className="flex flex-col ">
@@ -102,7 +131,7 @@ const ChannelAvatarBar = ({
         isSubscribed={isSubscribed}
         videoId={videoId}
         targetId={channelId}
-        className="max-w-1/3 text-[.6rem] px-2 py-0 max-h-7  border-2 border-accent text-center "
+        className="w-1/3 text-[.6rem] px-2 py-0   border-2 border-accent text-center "
       />
     </div>
   );
@@ -111,32 +140,33 @@ const ChannelAvatarBar = ({
 type VideoAvatarStripProps = {
   avatar: string;
   username: string;
-  subsCount: number;
+  subscribersCount: number;
   style?: CSSProperties;
   className?: string;
   videoTitle: string;
-  videoId: string;
+  views:number;
+  navigateOnAvatarClick?: boolean;
 };
 const VideoAvatarStrip = ({
   avatar,
   username,
-  subsCount,
+  subscribersCount,
+  views,
   style,
   className,
   videoTitle,
+  navigateOnAvatarClick = true,
 }: VideoAvatarStripProps) => {
-  const navigate = useNavigate();
-
   if (!avatar || !username || !videoTitle) {
     return <p>missing</p>;
   }
 
-  console.log("videoCardStrip", avatar, username, subsCount);
 
   return (
     <div className={className} style={style}>
-      <span className="text-wrap text-xs sm:text-sm lg:text-md tracking-tight text-start  font-semibold line-clamp-2">
-        {videoTitle}
+      <span className="flex flex-col w-full">
+        <span className=" text-[14px] wrap-break-word  tracking-tighter text-start  font-semibold line-clamp-2 w-full">{videoTitle}</span>
+        <span className="text-xs text-accent-foreground/76 ml-6">{toKBMS(views)}</span>
       </span>
       <div className="flex w-full max-w-full ">
         <span className="flex    justify-center items-center  w-1/6">
@@ -145,19 +175,30 @@ const VideoAvatarStrip = ({
             username={username}
             to={`/channel/home?username=${username}`}
             failLink="#"
-            noLazy
+            
+            propagate={!navigateOnAvatarClick}
+            noNavigate={!navigateOnAvatarClick}
           />
         </span>
         <div className="flex flex-col flex-3/4 text-foreground">
-          <span
-            className="flex flex-col justify-start items-start p-2"
-            onClick={() => navigate(`/channel/home?username=${username}`)}
-          >
-            <span className="text-xs tracking-tight">{username}</span>
-            <span className="text-foreground/60 text-xs/tight">
-              {toKBMS(subsCount)}
-            </span>
-          </span>
+          {navigateOnAvatarClick ? (
+            <Link
+              to={`/channel/home?username=${username}`}
+              className="flex flex-col justify-start items-start p-2"
+            >
+              <span className="text-xs tracking-tight">{username}</span>
+              <span className="text-foreground/60 text-xs/tight">
+                {toKBMS(subscribersCount)}
+              </span>
+            </Link>
+          ) : (
+            <div className="flex flex-col justify-start items-start p-2 cursor-default">
+              <span className="text-xs tracking-tight">{username}</span>
+              <span className="text-foreground/60 text-xs/tight">
+                {toKBMS(subscribersCount)}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>

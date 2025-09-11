@@ -1,6 +1,5 @@
 import { Send } from "lucide-react";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { useCreateComment } from "@/api/CommentApi";
 import { FormEvent, useRef } from "react";
 
@@ -34,17 +33,18 @@ const CommentInput = ({ videoId, commentId }: props) => {
   };
   return (
     <>
-      <form className="flex my-3" ref={formRef} onSubmit={handleSend}>
-        <Input
+      <form className="flex my-3 gap-1 w-full h-fit p-3" ref={formRef} onSubmit={handleSend}>
+        <label htmlFor="comment" className="hidden fixed"></label><input 
           type="text"
-          className="flex-1 px-7 py-5 1 yellow-300 z-10"
+          id="comment"
+          className="flex-1 w-11/12 z-10 hit-fit custom_input"
           name="comment"
           placeholder="add comment here....."
         />
         <Button
           type="submit"
-          variant="outline"
-          className="button_border py-4.5 bg-red-200"
+          variant="ghost"
+          className=" h-full "
         >
           <Send className="icons-s md:icons-m xl:icons-lg" />
         </Button>

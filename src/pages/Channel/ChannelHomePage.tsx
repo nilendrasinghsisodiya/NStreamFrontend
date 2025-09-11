@@ -27,7 +27,7 @@ export const ChannelHomePage = () => {
     <div className="flex flex-col h-full overflow-scroll w-full gap-y-2 ">
       <h2 className="text-foreground text-3xl font-bold">Videos</h2>
       <div className=" flex flex-col min-w-full overflow-x-scroll min-h-[400px] justify-center items-center">
-      <VideoList data={videos} isLoading={isLoading} isSuccess={isSuccess} className="flex flex-col md:flex-row overflow-x-scroll w-full max-h-full gap-3 items-center" />
+      <VideoList data={videos} isLoading={isLoading} isSuccess={isSuccess} className="flex flex-col md:flex-row overflow-x-scroll w-full max-h-full gap-3 items-center flex-wrap" />
       <Button variant={"ghost"} className="max-w-3 max-h-3">
         <Link to={`/channel/videos?username=${username}`}><ChevronDown/></Link>
       </Button>

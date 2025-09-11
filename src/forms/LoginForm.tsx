@@ -9,7 +9,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const loginFormSchema = z.object({
@@ -30,7 +29,7 @@ isPending:boolean;
 };
 
 const LogInForm = ({ className, onSave,isPending }: Props) => {
-  const form = useForm<FormDataType>({
+  const form= useForm<FormDataType>({
     defaultValues: {
       email: "",
       password: "",
@@ -53,7 +52,7 @@ const LogInForm = ({ className, onSave,isPending }: Props) => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input {...field} ref={null} autoComplete="email" />
+                <input {...field}  autoComplete="email" className="custom_input" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -66,7 +65,7 @@ const LogInForm = ({ className, onSave,isPending }: Props) => {
             <FormItem>
               <FormLabel>password</FormLabel>
               <FormControl>
-                <Input {...field} type="password" ref={null} autoComplete="current-password"/>
+                <input {...field} type="password" className="custom_input" autoComplete="current-password"/>
               </FormControl>
               <FormMessage />
             </FormItem>

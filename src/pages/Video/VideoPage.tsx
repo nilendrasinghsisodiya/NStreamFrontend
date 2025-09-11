@@ -3,64 +3,62 @@ import { Video } from "@/components/video/Video";
 import { CommentPanel } from "@/components/comment/CommentPanel";
 import { VirtualVideoList } from "@/components/video/VideoListVirtual";
 import { useRelatedVideos } from "@/api/VideoApi";
-import { useEffect, useState } from "react";
+import {  useEffect, useMemo} from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const VideoPage = () => {
   const [searchParams] = useSearchParams();
   const videoId = searchParams.get("videoId") as string;
-
-  const [videos, setVideos] = useState<IVideo[]>([]);
+  const isMobile = useIsMobile();
+  useEffect(()=>{},[isMobile]);
   const { data, fetchNextPage, hasNextPage, isLoading, isSuccess } =
-    useRelatedVideos({ videoId, limit: 10 });
-  useEffect(() => {
+    useRelatedVideos({ videoId, limit:isMobile?3:10,pageLimit:isMobile?4:100});
+  const fetchedVids = useMemo<IVideo[]>(() => {
     if (data && data.pages) {
-      console.log("data.pages", data.pages);
-
-      // Ensure `popularVideos` exists and is an array
-      const newVideos = data.pages.flatMap((page) => page.popularVideos || []);
-      console.log("new videos", newVideos);
-
-      setVideos((prev) => [...prev, ...newVideos]);
+      return data.pages.flatMap((page) => page.Videos);
+    } else {
+      return [];
     }
   }, [data]);
-  const [isActive,setIsActive]= useState<boolean>(false);
 
   return (
-    <>
-      <div
-        className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gird-rows-3 md:grid-rows-2   gap-0 items-center 
-      w-full h-full   justify-center"
-      >
-     
-          
-          <Video
-            videoId={videoId}
-            className=" max-w-full min-w-[300px]  col-span-1 row-span-1 
-            "
-          />
-          <CommentPanel
-          onFocus={()=>setIsActive(true)}
-          onBlur={()=>setIsActive(false)}
-          aria-focused={true}
-            videoId={videoId}
-            
-            className={` col-span-1 row-span-2 border-3   md:h-full w-full min-w-70 rounded-2xl border-accent   m-auto py-2 px-4
-            aria-focused:bg-black
-            overflow-hidden ${isActive&& "h-full"}
-          `}
-          /> 
-         { !isActive &&<div className="h-full  row-span-1 md:col-start-2 md:row-start-1 md:col-end-3 md:row-end-2">
-            <span>related videos</span>
-            <VirtualVideoList
-              fetchNextPage={fetchNextPage}
-              hasNextPage={hasNextPage}
-              videos={videos}
-              isLoading={isLoading}
-              isSuccess={isSuccess}
-            />
-          </div>}
-        </div>
-    </>
+   <div className="h-full w-full grid grid-cols-1 sm:grid-cols-2 grid-rows-5 sm:grid-rows-12 gap-x-2 gap-y-4 p-1">
+  {/* Main Video */}
+  <Video
+    videoId={videoId}
+    className="h-fit w-fit min-w-[300px] col-span-1 row-span-1 col-start-1 col-end-2 row-start-1 row-end-2"
+  />
+
+  {/* Related Videos Virtual List */}
+  <div
+    className="
+     col-span-1 row-span-2 sm:row-span-12 sm:col-start-2 row-start-2 sm:row-start-1 sm:row-end-13
+    "
+  >
+    <span className="capitalize text-xs tracking-tighter">
+      related videos
+    </span>
+    <VirtualVideoList
+      // className="flex-1 w-full h-full"
+      itemClassName="flex"
+      fetchNextPage={fetchNextPage}
+      hasNextPage={hasNextPage}
+      videos={fetchedVids}
+      isLoading={isLoading}
+      isSuccess={isSuccess}
+      useWindowScroll={!isMobile}
+    />
+  </div>
+
+  {/* Comments */}
+  <CommentPanel
+    videoId={videoId}
+    className="
+     col-span-1 row-start-4 sm:row-start-2 row-span-2 sm:row-span-11 contain-content 
+    "
+  />
+</div>
+
   );
 };
 

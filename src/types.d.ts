@@ -20,7 +20,6 @@ interface IUser extends IBase  {
    
     username:string;
     avatar:string;
-    coverImage:string;
     fullname:string;
     description:string;
     email:string;
@@ -28,6 +27,7 @@ interface IUser extends IBase  {
     watchHistory?:string[];
     accessToken?:string;
     subscribersCount:number;
+    isProfileComplete?:boolean;
     
 
 };
@@ -40,7 +40,6 @@ interface IVideo extends IBase{
     thumbnail:string;
     title:string;
     duration:number;
-    description:string;
     isSubscribed:boolean;
     duration:string;
     views:number;
@@ -119,11 +118,13 @@ export interface IWatchHistory  {
     _id:string;
     thumbnail:string;
     title:string;
-    view:number,
+    views:number,
+    duration:number;
     owner:{
         _id:string;
         avatar:string;
         username:string;
+        subscribersCount:number;
     }
 }
 }

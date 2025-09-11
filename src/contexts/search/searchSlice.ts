@@ -1,13 +1,15 @@
 import { createSlice,PayloadAction} from "@reduxjs/toolkit";
 import { RootState } from "@/ContextStore";
+import { sortBy, sortType } from "@/api/VideoApi";
 export interface searchStateType  {
     query:string;
     type:"chnl"|"vid";
+    sortType:sortType,
+    sortBy:sortBy,
+    limit:number;
+
 }
-const initialState :searchStateType={
-    query: "",
-    type:"vid"
-}
+const initialState :searchStateType= {query:"",type:"vid",limit:10} as searchStateType;
 const search = createSlice({
     name:"search",
     initialState,

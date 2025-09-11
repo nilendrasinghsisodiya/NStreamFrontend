@@ -54,16 +54,7 @@ export const useGetVideoComments = ({
   videoId,
   limit,
 }: GetVideoCommentsParams) => {
-  const {
-    data,
-    refetch,
-    isError,
-    isSuccess,
-    error,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-  } = useInfiniteQuery<IPaginatedComments, AxiosError>({
+ const querry= useInfiniteQuery<IPaginatedComments, AxiosError>({
     queryKey: ["videoComments", videoId, limit],
     queryFn: async ({ pageParam = 1 }) => {
       const response = await apiClient.get<ApiResponse<IPaginatedComments>>(
@@ -83,16 +74,7 @@ export const useGetVideoComments = ({
       lastPage.hasPrevPage ? lastPage.prevPage : undefined,
   });
 
-  return {
-    data,
-    isError,
-    isSuccess,
-    error,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    refetch,
-  };
+  return{...querry}
 };
 
 export const useDeleteComment = () => {

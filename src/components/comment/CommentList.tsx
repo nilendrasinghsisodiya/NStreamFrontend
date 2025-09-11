@@ -1,53 +1,49 @@
 import { useGetVideoComments } from "@/api/CommentApi";
-import {  VirtuosoGrid } from "react-virtuoso";
+import { VirtuosoGrid } from "react-virtuoso";
 import type { GridComponents } from "react-virtuoso";
 import { Comment } from "./Comment";
-import React, { useEffect } from "react";
-import { selectComments, setComments } from "@/contexts/comments/commentSlice";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
 
+import { ErrorScreen } from "../ErrorComponent";
 
 const Item: GridComponents["Item"] = React.forwardRef(
-  ({ style, children, ...props },ref) => (
-    <div
-      ref={ref}
-      {...props}
-      style={{ ...style }}
-      className="  min-w-20 min-h-20 max-w-full"
-    >
+  ({ style, children, ...props }, ref) => (
+    <div ref={ref} {...props} style={{ ...style }} className="  h-fit w-full">
       {children}
     </div>
   )
 );
 const CommentList = ({ videoId }: { videoId: string; className?: string }) => {
   const { data, fetchNextPage, refetch, hasNextPage, isError, error } =
-    useGetVideoComments({ videoId, limit: 10 });
-  const comments = useSelector(selectComments);
-  const dispatch = useDispatch();
+    useGetVideoComments({ videoId, limit: 20 });
+  const [comments, setComments] = useState<IComment[]>([]);
 
   useEffect(() => {
     if (data) {
       const fetchedComments = data.pages.flatMap((value) => value.comments);
-      dispatch(setComments(fetchedComments));
+      setComments(fetchedComments);
       console.log(fetchedComments);
     }
-  }, [data, dispatch, comments]);
+  }, [data]);
+
+  useEffect(() => {
+    return () => {
+      setComments([]);
+    };
+  }, []);
 
   return (
     <>
       {comments.length > 0 ? (
         <VirtuosoGrid
-        style={{height:"100%"}}
-          aria-rowspan={4}
-          className="grid grid-cols-1 grid-rows-10 max-w-full overflow-scroll   -200 "
+          className="grid grid-cols-1 h-11/12 justify-center gap-2 w-full mb-26 p-y-14 "
           data={comments}
-          overscan={5}
+          overscan={15}
           components={{
             Item: Item,
-            
           }}
-          itemContent={(index, data) => (
+          increaseViewportBy={100}
+          itemContent={(_, data) => (
             <Comment
               avatar={data.owner.avatar}
               commentId={data._id}
@@ -56,26 +52,22 @@ const CommentList = ({ videoId }: { videoId: string; className?: string }) => {
               isLiked={data.isLiked}
               likes={data.likesCount}
               username={data.owner.username}
-              key={data._id + index}
               videoId={videoId}
               refetch={refetch}
-              className="flex flex-col w-full my-3 min-h-50 1 blue-400 border-[0px] border-transparent border-b-foreground border-b-2 z-50"
+              className="flex flex-col w-full h-[220px] border-[0px] border-transparent border-b-foreground border-b-2 p-2"
             />
           )}
-          totalCount={comments.length}
+          computeItemKey={(_, val) => val._id}
           endReached={() => {
             if (hasNextPage) {
               fetchNextPage();
             }
           }}
-          isScrolling={() => {
-            console.log("scrolling comments");
-          }}
         />
       ) : isError ? (
-        <p>{error?.message}</p>
+        <ErrorScreen mainMessage={error?.message || "something went wrong"} />
       ) : (
-        <p>No Comments yet....</p>
+        <ErrorScreen mainMessage="no comments found" />
       )}
     </>
   );

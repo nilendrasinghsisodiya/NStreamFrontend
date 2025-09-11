@@ -53,15 +53,15 @@ const Layout = ({ children, hideFooter }: Props) => {
         </div>}
 
         {/* Main layout (with margin-left to avoid sidebar overlap) */}
-        <div className={`flex flex-col flex-1 w-full ${!isMobile && "ml-16"}`}>
+        <div className={`flex flex-col flex-1 w-full ${!isMobile ? "ml-16":""}`}>
 
           {/* Fixed Header */}
-          <div className={`fixed top-0 left-0 ${!isMobile && "left-16"} right-0 h-16 z-30 bg-background overflow-visible`}>
+          <div className={`fixed top-0 left-0 ${!isMobile ?"left-16":""} right-0 h-16 z-30 bg-background overflow-visible`}>
             <Header />
           </div>
 
           {/* Scrollable main content */}
-          <main className="mt-16 flex-1 overflow-y-auto p-0 ">
+          <main className={`mt-16 flex-1 overflow-y-auto p-0 ${isMobile ? 'mb-15':""}`}>
             {children}
           </main>
 

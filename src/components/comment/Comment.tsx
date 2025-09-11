@@ -2,14 +2,12 @@
 import { Button } from "../ui/button";
 import   {useState } from "react";
 
-import { Reply, ThumbsUp } from "lucide-react";
-import { CommentInput } from "./CommentInput";
+import {  ThumbsUp } from "lucide-react";
 import { SafeAvatar } from "../avatar/Avatars";
-import { useDispatch } from "react-redux";
-import { resetComments } from "@/contexts/comments/commentSlice";
 
 import { useToggleCommentLike } from "@/api/LikeApi";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
+import { getRelativeTime } from "@/utils";
 
 type Props = {
   className?: string;
@@ -34,27 +32,15 @@ const Comment = ({
   createdAt,
   likes,
   isLiked,
-  videoId,
   refetch
   
 }: Props) => {
  
-  const [showReplyBox, setShowReplyBox] = useState<boolean>(false);
   const [currentLikes,setCurrentLikes] = useState<number>(likes);
   const [liked,setLiked] = useState<boolean>(isLiked);
-  const dispatch = useDispatch();
   const {toggleLike} = useToggleCommentLike();
-  // const {data:commentData} = useCreateComment();
 
 
-const handleReplyBox = () => {
-    // will open a replyBox below the comment card
-    if (!showReplyBox) {
-      setShowReplyBox(true);
-    } else {
-      setShowReplyBox(false);
-    }
-  };
 
   const handleToggleLike = async ()=>{
     if(liked){
@@ -68,7 +54,6 @@ const handleReplyBox = () => {
       setLiked(true);
     }
     await toggleLike({targetId:commentId})
-    dispatch(resetComments());
     refetch();
   }
 
@@ -94,15 +79,7 @@ const handleReplyBox = () => {
             </Button>
          
         </div>
-        <span className="reply" >
-         <Button variant="ghost" onClick={handleReplyBox} ><Reply className="icons-s" /></Button>
-        </span>
-        <span>{createdAt}</span>
-      </div>
-      <div className="w-full">
-        {showReplyBox && videoId && (
-          <CommentInput videoId={videoId} commentId={commentId} />
-        )}
+        <span className="text-xs m-0.5 text-muted-foreground tracking-tight">{getRelativeTime(createdAt)}</span>
       </div>
     </div>
   );

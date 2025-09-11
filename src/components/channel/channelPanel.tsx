@@ -1,6 +1,6 @@
 import { useGetChannel } from "@/api/ChannelApi";
 import { SafeAvatar } from "../avatar/Avatars";
-import { toKBMS } from "@/utils";
+import { getRelativeTime, toKBMS } from "@/utils";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { SubscribeButton } from "../SubscribeButton";
@@ -12,16 +12,16 @@ type props = {
 const ChannelPanel = ({ username, className }: props) => {
   const { data, isSuccess } = useGetChannel({ username });
   const [show, setShow] = useState<boolean>(false);
-  const [subscount,setSubscount] = useState<number>(0);
+  const [subscribersCount,setsubscribersCount] = useState<number>(0);
   useEffect(()=>{if(data){
-    setSubscount(data.subscribersCount);
+    setsubscribersCount(data.subscribersCount);
   }},[data])
   const handleAboutBox = () => {
     setShow((prev) => !prev);
   };
   return (
     <div
-      className={`flex flex-col justify-center items-center w-full h-full border-b-2 border-accent ${className}`}
+      className={` w-full h-full  ${className}`}
     >
       {isSuccess && data ? (
         <>
@@ -35,7 +35,7 @@ const ChannelPanel = ({ username, className }: props) => {
             </span>
             <span className="text-2xl tracking-wide">{data.username}</span>
             <span className="text-md text-accent-foreground/30  text-bold">
-              {toKBMS(subscount)}
+              {toKBMS(subscribersCount)}
             </span>
             <SubscribeButton isSubscribed={data.isSubscribed} targetId={data._id} username={data.username}/>
           </div>
@@ -51,7 +51,7 @@ const ChannelPanel = ({ username, className }: props) => {
                 <CardContent>
                   <p className="text-xl text-center text-foreground">{`created by: ${
                     data.fullname
-                  }.\n created at: ${data.createdAt}. \n total videos: ${
+                  }.\n created at: ${getRelativeTime(data.createdAt)}. \n total videos: ${
                     data.videos.length
                   }. \n Subscribers: ${toKBMS(data.subscribersCount)}.`}</p>
                 </CardContent>

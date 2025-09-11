@@ -25,6 +25,7 @@ const VideoCard = ({
   thumbnail,
   title,
   style,
+  viewsCount,
   owner,
   videoId,
   lazyLoading,
@@ -67,10 +68,12 @@ const VideoCard = ({
           <div className="flex w-full items-center justify-center">
             <VideoAvatarStrip
               avatar={owner.avatar}
-              subsCount={owner.subscribersCount}
+              subscribersCount={owner.subscribersCount}
               username={owner.username}
               videoTitle={title}
-              videoId={videoId}
+              views={viewsCount}
+              navigateOnAvatarClick
+              
               className={`flex flex-col w-full   px-2  ${avatarClassName}`}
             />
 
@@ -83,7 +86,7 @@ const VideoCard = ({
     </div>
   );
 };
-interface ListVideoCardProps extends IVideoCardProps {
+export interface ListVideoCardProps extends IVideoCardProps {
   avatarClassName: string;
   className:string;
 }
@@ -99,6 +102,7 @@ const ListVideoCard = ({
   isSuccess,
   duration,
   className,
+  viewsCount,
 }: ListVideoCardProps) => {
   const navigate = useNavigate();
 
@@ -138,10 +142,10 @@ const ListVideoCard = ({
             <div className="flex w-full items-center justify-center">
               <VideoAvatarStrip
                 avatar={owner.avatar}
-                subsCount={owner.subscribersCount}
+                subscribersCount={owner.subscribersCount}
                 username={owner.username}
                 videoTitle={title}
-                videoId={videoId}
+                views={viewsCount}
                 className={`${avatarClassName}`}
               />
 

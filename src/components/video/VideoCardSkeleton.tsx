@@ -3,7 +3,7 @@ import { Components, GridComponents } from "react-virtuoso";
 
 const VideoCardSkeletonScrollSeek: GridComponents["ScrollSeekPlaceholder"] = () => {
   return (
-    <div className="aspect-video w-[320px] h-[310px] flex flex-col p-1 border-2 sm:rounded-md md:rounded-lg lg:rounded-xl gap-2">
+    <div className="aspect-video w-[320px] h-[310px] sm:w-[380px] sm:h-[360px] flex flex-col p-1 border-2 sm:rounded-md md:rounded-lg lg:rounded-xl gap-2">
       <div className="relative w-full aspect-video shrink-0">
         <Skeleton className="absolute inset-0 w-full h-full md:rounded-2xl" />
       </div>

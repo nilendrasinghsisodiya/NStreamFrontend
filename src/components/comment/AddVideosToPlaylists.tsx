@@ -5,14 +5,14 @@ import { Plus } from "lucide-react";
 import { generateSrcSet } from "@/utils";
 import { VideoAvatarStrip } from "../avatar/Avatars";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogTrigger,
-  DialogFooter,
-  DialogTitle,
-  DialogDescription,
-} from "../ui/dialog";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@radix-ui/react-popover";
+import { queryClient } from "@/api/ApiClient";
+import { useAddVideoToPlaylist } from "@/api/PlaylistApi";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
 
 type videoOptionProps = {
   ele: IWatchHistory;
@@ -20,7 +20,7 @@ type videoOptionProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
 };
-const VideoOption = ({
+export const AddVideoOption = ({
   ele,
   className,
   onChange,
@@ -31,15 +31,17 @@ const VideoOption = ({
   return (
     <span
       className={className}
-      onClick={() =>
+      onClick={(e) =>
+      {e.stopPropagation();
         setVideosToAdd((prev) => {
           let value = "";
-          if (inputRef && inputRef.current ) {
+          if (inputRef && inputRef.current) {
             value = inputRef.current.value;
+            inputRef.current.checked = !inputRef.current.checked;
           }
           return [...prev, value];
         })
-      }
+      }}
     >
       <img
         src={ele.thumbnail}
@@ -47,15 +49,22 @@ const VideoOption = ({
         className="aspect-video h-full w-full min-h-[50px] min-w-[100px] max-h-[80px] max-w-[160px]"
       />
       <VideoAvatarStrip
+      views={ele.views}
         avatar={ele.owner.avatar}
         username={ele.owner.username}
-        videoId={ele._id}
-        subsCount={0}
+        subscribersCount={ele.owner.subscribersCount}
         videoTitle={ele.title}
         className="w-full"
+        navigateOnAvatarClick={false}
+        
       />
       <span>
+        <label htmlFor={`videoSelectOption_${ele._id}`} className="sr-only">
+          select for {ele.title}
+        </label>
         <input
+          name="videoSelectOption"
+          id={`videoSelectOption_${ele._id}`}
           ref={inputRef}
           type="checkbox"
           className=""
@@ -71,38 +80,35 @@ type videoOptionListProps = {
   isActive: boolean;
   className?: string;
   setVideosToAdd: React.Dispatch<React.SetStateAction<string[]>>;
+  isError: boolean;
+  isSuccess: boolean;
+  videos: IVideo[] | IWatchHistory[];
 };
-const VideoOptionList = ({
-  isActive,
+export const AddVideoOptionList = ({
   className,
+  videos,
+  isError,
+  isSuccess,
   setVideosToAdd,
 }: videoOptionListProps) => {
-  const [videos, setVideos] = useState<IWatchHistory[]>([]);
-  const { data, isError, isSuccess } = useGetUserWatchHistory(isActive);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     e.stopPropagation();
     const value = e.currentTarget.value;
     setVideosToAdd((prev) => [value, ...prev]);
   };
- 
-  useEffect(() => {
-    if (data) {
-      setVideos(data);
-    }
-    console.log("add to playlist video data", data);
-  }, [videos, setVideos, data]);
+
   return (
     <div className={className}>
       {isSuccess && Array.isArray(videos) ? (
         videos.length > 0 ? (
           videos.map((ele) => (
-            <VideoOption
+            <AddVideoOption
               ele={ele}
               setVideosToAdd={setVideosToAdd}
               key={ele._id}
               onChange={handleChange}
-              className="flex w-full "
+              className="flex w-full gap-x-3"
             />
           ))
         ) : (
@@ -126,31 +132,43 @@ export const AddVideosToPlaylist = ({
 }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [videosToAdd, setVideosToAdd] = useState<string[]>([]);
-  const handleAdd = () => {
-    console.log("videosToAddToPlaylist", videosToAdd);
-    console.log("target playlist id", playlistId);
+  const [videos, setVideos] = useState<IWatchHistory[]>([]);
+  const { data, isError, isSuccess } = useGetUserWatchHistory(isActive);
+  useEffect(() => {
+    if (data) {
+      setVideos(data);
+    }
+    console.log("add to playlist video data", data);
+  }, [videos, setVideos, data]);
+  const addPlaylists = useAddVideoToPlaylist();
+  const handleAdd = async () => {
+    try {
+      await addPlaylists.add({ playlistId: playlistId, videoIds: videosToAdd });
+      toast.success("video added to playlists successfully");
+      queryClient.invalidateQueries({ queryKey: ["playlist", playlistId] });
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        toast.error("failed to add video to playlist");
+      }
+    }
   };
   return (
-    <Dialog onOpenChange={() => setIsActive(true)}>
-      <DialogTrigger>
+    <Popover onOpenChange={() => setIsActive(true)}>
+      <PopoverTrigger>
         <Plus className="h-full w-full" />
-      </DialogTrigger>
-      <DialogContent className={className}>
-        <DialogTitle>Add Video to Playlist</DialogTitle>
-        <DialogDescription>
-          {" "}
-          videos that can be added to playlist
-        </DialogDescription>
-        <VideoOptionList
+      </PopoverTrigger>
+      <PopoverContent className={className}>
+        <span>Add Video to Playlist</span>
+        <AddVideoOptionList
+          isError={isError}
+          isSuccess={isSuccess}
+          videos={videos}
           isActive={isActive}
           setVideosToAdd={setVideosToAdd}
-          className="overflow-y-scroll max-h-70 max-w-[300px] md:max-w-120 flex flex-col gap-2"
+          className="overflow-y-scroll max-h-70 max-w-[320px] md:max-w-120 flex flex-col gap-2"
         />
-        <DialogFooter>
-          <DialogClose>Close</DialogClose>
-          <Button onClick={handleAdd}>Add</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        <Button onClick={handleAdd}>Confirm</Button>
+      </PopoverContent>
+    </Popover>
   );
 };

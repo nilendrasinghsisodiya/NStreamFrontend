@@ -6,7 +6,7 @@ type Props = {
   className?: string;
   isSuccess?: boolean;
   isLoading?: boolean;
-  data?: IVideo[];
+  data?: IVideo[]|IWatchHistory[];
   isError?: boolean;
 };
 
@@ -29,6 +29,7 @@ const VideoList = ({
               isLoading={isLoading ? isLoading : false}
               title={ele.title}
               viewsCount={ele.views}
+              
               thumbnail={ele.thumbnail}
               key={ele._id}
               duration={ele.duration}
@@ -36,6 +37,7 @@ const VideoList = ({
               owner={ele.owner}
               isSuccess={isSuccess}
               lazyLoading={false}
+              
             />
           </div>
         ))

@@ -18,7 +18,7 @@ const Footer = () => {
     },
   ];
   return (
-    <div className="flex  row-span-1 py-2 fixed bottom-0 bg-background bg-blend-normal z-[50] gap-4 dark:border-t-white border-1 border-t-accent w-full justify-between items-center">
+    <div className="flex  row-span-1 py-2 fixed bottom-0 bg-background bg-blend-normal z-[50] gap-4 dark:border-t-white border-1 border-t-accent w-full h-15 justify-between items-center">
       {items.map((item) => (
         <div
           tabIndex={0}

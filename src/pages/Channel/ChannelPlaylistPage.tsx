@@ -15,7 +15,7 @@ const ChannelPlaylistPage = () => {
         isLoading ? (
           <div>loading screen props here</div>
         ) : playlists?.playlists.length && isSuccess ? (
-          <div>
+          <div className="w-full h-full m-auto">
             {playlists.playlists.map((ele, index) => (
               <PlaylistCard
                 cover={ele.cover}

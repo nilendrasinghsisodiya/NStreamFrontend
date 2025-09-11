@@ -132,9 +132,11 @@ const usePopularVideo = ({ limit }: GetPopularVideoParams) => {
 export const useRelatedVideos = ({
   videoId,
   limit,
+  pageLimit,
 }: {
   videoId: string;
   limit: number;
+  pageLimit: number;
 }) => {
   const query = useInfiniteQuery<IPaginatedVideos, AxiosError>({
     queryKey: ["relatedVideo", videoId, limit],
@@ -145,8 +147,10 @@ export const useRelatedVideos = ({
       return handleResponse(response, "failed to fetch related videos");
     },
     initialPageParam: 1,
-    getNextPageParam: (lastPage) =>
-      lastPage.hasNextPage ? lastPage.nextPage : undefined,
+    getNextPageParam: (lastPage, pages) => {
+      if (pages.length >= pageLimit) return undefined;
+      return lastPage.hasNextPage ? lastPage.nextPage : undefined;
+    },
 
     getPreviousPageParam: (lastPage) =>
       lastPage.hasPrevPage ? lastPage.prevPage : undefined,
@@ -154,28 +158,30 @@ export const useRelatedVideos = ({
   return { ...query };
 };
 
- export type sortBy = "views" | "createdAt";
+export type sortBy = "views" | "createdAt";
 export type sortType = "asc" | "desc";
-export type searchType = 'vid'| 'chnl';
+export type searchType = "vid" | "chnl";
 export type searchQueryParams = {
   sortBy: sortBy;
   sortType: sortType;
   query: string;
-  type: searchType;
+  type?: searchType;
   limit: number;
+  isActive:boolean;
 };
 export const useSearchVideo = ({
   limit,
   sortBy,
   sortType,
   query,
-  type,
+  isActive
+  
 }: searchQueryParams) => {
   const searchQuery = useInfiniteQuery<IPaginatedVideos, AxiosError>({
-    queryKey: ["search", query, type],
+    queryKey: ["VideoSearch" ],
     queryFn: async ({ pageParam = 1 }) => {
       const response = await apiClient.get<ApiResponse<IPaginatedVideos>>(
-        `/video/search?query=${query}&type=${type}&page=${pageParam}&limit=${limit}&sortBy=${sortBy}&sortType=${sortType}`
+        `/video/search?query=${query}&page=${pageParam}&limit=${limit}&sortBy=${sortBy}&sortType=${sortType}`
       );
       return handleResponse<IPaginatedVideos>(
         response,
@@ -186,11 +192,73 @@ export const useSearchVideo = ({
     staleTime: 2 * 60 * 1000,
     getNextPageParam: (lastPage) =>
       lastPage.hasNextPage ? lastPage.nextPage : undefined,
+    enabled:isActive,
 
     getPreviousPageParam: (lastPage) =>
       lastPage.hasPrevPage ? lastPage.prevPage : undefined,
   });
   return { ...searchQuery };
 };
+const useGetLikedVideos = () => {
+  const query = useQuery<IVideo[], AxiosError>({
+    queryKey: ["likedVideos"],
+    queryFn: async () => {
+      const respone = await apiClient.get<ApiResponse<IVideo[]>>(
+        "/user/liked-videos",
+        { withCredentials: true }
+      );
+      return handleResponse(
+        respone,
+        "something went wrong when fetching liked Videos"
+      );
+    },
+  });
+  return { ...query };
+};
 
-export { useUploadVideo, useAllVideos, useGetVideo, usePopularVideo };
+const useDeleteVideo = () => {
+  const mutation = useMutation<unknown, AxiosError, { videoId: string }>({
+    mutationKey: ["videoDelete"],
+    mutationFn: async ({ videoId }) => {
+      const response = await apiClient.delete<ApiResponse<unknown>>(
+        `/video?videoId=${videoId}`
+      );
+      return handleResponse(
+        response,
+        "something went wront while deleting the video"
+      );
+    },
+  });
+  return { ...mutation };
+};
+
+const useEditVideo = () => {
+  const mutation = useMutation<
+    IVideo,
+    AxiosError,
+    { videoId:string;title?: string; tags?:string[]; thumbnail?: File }
+  >({
+    mutationFn: async ({videoId, title, tags, thumbnail }) => {
+      const response = await apiClient.patch<ApiResponse<IVideo>>(
+        "/video/update",
+        { videoId,title, tags, thumbnail }
+      );
+      return handleResponse(response, "failed to Edit Video");
+    },
+    mutationKey: ["videoEdit"],
+  });
+
+  return { ...mutation };
+};
+
+
+export {
+  useUploadVideo,
+  useAllVideos,
+  useGetVideo,
+  usePopularVideo,
+  useGetLikedVideos,
+  useDeleteVideo,
+  useEditVideo,
+ 
+};

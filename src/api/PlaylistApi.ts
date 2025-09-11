@@ -35,7 +35,7 @@ export const useCreatePlaylist = () => {
   return { isError, isSuccess, create, error };
 };
 type addVideoToPlaylistBody = {
-  videoIds: [string];
+  videoIds: string[];
   playlistId: string;
 };
 export const useAddVideoToPlaylist = () => {
@@ -110,7 +110,7 @@ type getPlaylistBody = {
 export const useGetPlaylist = ({ playlistId, limit }: getPlaylistBody) => {
   const { accessToken } = useSelector(selectUser);
   const playlistQuery = useInfiniteQuery<IPaginatedPlaylist, AxiosError>({
-    queryKey: ["playlists", playlistId, limit],
+    queryKey: ["playlist", playlistId],
     queryFn: async ({ pageParam = 1 }) => {
       const response = await apiClient.get<ApiResponse<IPaginatedPlaylist>>(
         `playlist?playlistId=${playlistId}&page=${pageParam}&limit=${limit}`,
