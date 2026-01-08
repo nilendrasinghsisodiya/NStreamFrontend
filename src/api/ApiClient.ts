@@ -1,7 +1,7 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { QueryClient } from "@tanstack/react-query";
 import { navigateGlobal, refreshAccessToken } from "@/utils";
-import { setUser,resetIsAuthenticated } from "@/contexts/auth/authSlice";
+import { setUser, reset as resetUser } from "@/contexts/auth/authSlice";
 import { store } from "@/ContextStore";
 import { toast } from "sonner";
 
@@ -12,39 +12,46 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.response.use(
-(response) => response,
-  async(error) => {
-    console.log("running axios interceptors");
-    if(error.status === 401){
-      store.dispatch(resetIsAuthenticated());
-      navigateGlobal("/auth")
-      toast.error("please login to do this action")
+  (response) => response,
+  async (error) => {
+    console.log(error);
+    const ogRequest = error.config;
+    const status = error.status;
+    console.log(ogRequest, status);
+
+    if (status === 493 && !ogRequest._retry) {
+      console.log("inside refresh token");
+      ogRequest._retry = true;
+      if (ogRequest.url?.includes("/auth/refresh")) {
+        store.dispatch(resetUser());
+        navigateGlobal("/auth");
+        return Promise.reject(error);
+      }
+
+      try {
+        const refreshedUser = await refreshAccessToken();
+        console.log(refreshedUser);
+        if (!refreshedUser) {
+          console.log("failed to refresh user");
+          store.dispatch(resetUser());
+          toast.error("unauthorized access, please login again", {
+            toasterId: "global",
+          });
+          navigateGlobal("/auth");
+        }
+        store.dispatch(setUser({ ...refreshedUser, isAuthenticated: true }));
+        return apiClient(ogRequest);
+      } catch (refreshError) {
+        store.dispatch(resetUser());
+        navigateGlobal("/auth");
+        return Promise.reject(refreshError);
+      }
     }
-    if (error.status === 493 ) {
-      console.log("refereshing user")
-     try {
-       const refreshedUser = await refreshAccessToken();
-       console.log(refreshedUser);
-       if(!refreshedUser){
-         console.log("failed to refresh user");
-         toast.error("unauthorized access, please login again");
-         navigateGlobal("/auth");
-       }else{
-         console.log("user referesh successfull");
-         store.dispatch(setUser({...refreshedUser,isAuthenticated:true}));
-       }
-     } catch (error:unknown) {
-     if(error instanceof AxiosError){
-      console.error(error.message);
-     }
-     console.log(error);
-      
-     }
-        
-    }
-    console.log(error.message);
-    return Promise.reject(error?.message);
-  }
+    return Promise.reject({
+      status: error.response?.status,
+      message: error.response?.data?.message ?? "Request failed",
+    });
+  },
 );
 
 export const queryClient = new QueryClient({
