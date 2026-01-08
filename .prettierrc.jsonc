@@ -1,0 +1,28 @@
+{
+  "printWidth": 100, // wrap lines at 100 characters
+  "tabWidth": 2, // 2 spaces per tab
+  "useTabs": false, // use spaces, not tabs
+  "semi": true, // add semicolons
+  "singleQuote": true, // single quotes in JS/TS
+  "jsxSingleQuote": false, // double quotes in JSX
+  "trailingComma": "es5", // trailing commas where valid in ES5
+  "bracketSpacing": true, // spaces between brackets { like this }
+  "jsxBracketSameLine": false, // put closing > on a new line for JSX
+  "arrowParens": "always", // always include parentheses in arrow functions
+  "endOfLine": "lf", // consistent line endings
+  "overrides": [
+    {
+      "files": "*.ts",
+      "options": {
+        "singleQuote": true,
+      },
+    },
+    {
+      "files": "*.tsx",
+      "options": {
+        "singleQuote": false,
+        "jsxSingleQuote": false,
+      },
+    },
+  ],
+}
