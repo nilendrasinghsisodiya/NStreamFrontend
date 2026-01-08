@@ -1,20 +1,20 @@
-import { selectUser } from "./../contexts/auth/authSlice";
+import { selectUser, setUser } from "./../contexts/auth/authSlice";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { apiClient, queryClient } from "./ApiClient";
 import { handleResponse } from "@/utils";
-import {  AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
 
 export interface ICreateUserBody {
   fullname: string;
-  description:string;
+  description: string;
   avatar: File;
   coverImage?: File;
 }
 
 export const useCreateUser = () => {
-  const {accessToken} = useSelector(selectUser);
   const {
     isError,
     data,
@@ -23,23 +23,14 @@ export const useCreateUser = () => {
     mutateAsync: createUser,
   } = useMutation<IUser, AxiosError, ICreateUserBody>({
     mutationFn: async (params: ICreateUserBody) => {
-      
-
       const response = await apiClient.put<ApiResponse<IUser>>(
         `/user/create`,
         params,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization:`Bearer ${accessToken}`
-          },
-          withCredentials: true,
-        }
       );
 
       return handleResponse<IUser>(
         response,
-        "Failed to create user. Try again later."
+        "Failed to create user. Try again later.",
       );
     },
     onError: (error) => {
@@ -47,7 +38,7 @@ export const useCreateUser = () => {
     },
   });
 
-  return { isError, data, error, isPending,createUser };
+  return { isError, data, error, isPending, createUser };
 };
 export interface IUpdateUserBody {
   email?: string;
@@ -55,36 +46,36 @@ export interface IUpdateUserBody {
   fullname?: string;
 }
 export const useUpdateUser = () => {
-  const { accessToken } = useSelector(selectUser);
-
+  const { _id } = useSelector(selectUser);
   const {
     isError,
     isPending,
     error,
     data,
     mutateAsync: updateUser,
-  } = useMutation<IUser,AxiosError,IUpdateUserBody>({
-    mutationKey: ["UserUpdate", accessToken],
-    mutationFn:  async (props: IUpdateUserBody) => {
-    const response = await apiClient.patch<ApiResponse<IUser>>("/user/update-account", props, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  } = useMutation<IUser, AxiosError, IUpdateUserBody>({
+    mutationKey: ["UserUpdate", _id],
+    mutationFn: async (props: IUpdateUserBody) => {
+      const response = await apiClient.patch<ApiResponse<IUser>>(
+        "/user/update-account",
+        props,
+      );
 
-     return handleResponse(response,"failed to update the user");
-  },
+      return handleResponse(response, "failed to update the user");
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["User", accessToken] });
+      queryClient.invalidateQueries({ queryKey: ["User", _id] });
     },
     onError: (error) => {
       console.log(error.message);
     },
   });
 
-  return { isError, error, data, updateUser ,isPending};
+  return { isError, error, data, updateUser, isPending };
 };
 
 export const useDeleteUser = () => {
-  const { accessToken } = useSelector(selectUser);
+  const { _id } = useSelector(selectUser);
 
   const deleteUserFuntion = async () => {
     const response = await apiClient.delete<ApiResponse<unknown>>("/user/");
@@ -98,73 +89,13 @@ export const useDeleteUser = () => {
   } = useMutation<unknown, Error, void>({
     mutationFn: deleteUserFuntion,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["User", accessToken] });
+      queryClient.invalidateQueries({ queryKey: ["User", _id] });
     },
     onError: (error) => {
       console.log(error.message);
     },
   });
   return { isError, error, deleteUser };
-};
-
-interface ILoginUserBody {
-  email: string;
-  password: string;
-}
-
-export const useLoginUser = () => {
-  const {
-    isError,
-    data,
-    isPending,
-    isSuccess,
-    mutateAsync: loginUser,
-  } = useMutation<IUser, AxiosError, ILoginUserBody>({
-    mutationFn: async (formData: ILoginUserBody) => {
-      const response = await apiClient.post<ApiResponse<IUser>>(
-        "user/login",
-        formData
-      );
-      return handleResponse<IUser>(response, "failed to login user");
-    },
-    onError: (error) => {
-      console.log(error.message);
-    },
-  });
-
-  return { isError, data, isSuccess, isPending,loginUser };
-};
-
-interface IRegisterUserBody {
-  email: string;
-  password: string;
-  username: string;
-}
-type RegisterDataType = Pick<
-  IUser,
-  "_id" | "email" | "createdAt" | "accessToken" | "username"
->;
-export const useRegisterUser = () => {
-  const {
-    isError,
-    data,
-    isSuccess,
-    isPending,
-    mutateAsync: RegisterUser,
-  } = useMutation<RegisterDataType, AxiosError, IRegisterUserBody>({
-    mutationFn: async (formData: IRegisterUserBody) => {
-      const response = await apiClient.post<ApiResponse<RegisterDataType>>(
-        "/user/register",
-        formData
-      );
-      return handleResponse<RegisterDataType>(response, "failed to login user");
-    },
-    onError: (error) => {
-      console.log(error.message);
-    },
-  });
-
-  return { isError, data, isSuccess, RegisterUser,isPending };
 };
 
 export const useUserRecommendation = () => {
@@ -178,7 +109,10 @@ export const useUserRecommendation = () => {
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<IVideo[]>>(
         "/user/recommendations",
-        { withCredentials: true,headers:{optional:"true"} }
+        {
+          withCredentials: true,
+          headers: { optional: "true" },
+        },
       );
       return handleResponse(response, "failed to get recommendations");
     },
@@ -193,29 +127,6 @@ export const useUserRecommendation = () => {
   return { isError, isLoading, isSuccess, data };
 };
 
-export const useLogoutUser = () => {
-  const { accessToken } = useSelector(selectUser);
-  console.log(accessToken);
-  const {
-    mutateAsync: logout,
-    isError,
-    isSuccess,
-  } = useMutation<undefined, AxiosError>({
-    mutationKey: ["userLogout"],
-    mutationFn: async () => {
-      const response = await apiClient.post<ApiResponse<undefined>>(
-        "/user/logout",
-        { withCredentials: true },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
-      return handleResponse<undefined>(response, "failed to logout");
-    },
-    onSuccess: () => {
-      console.log("logout querry ranned sucessfully");
-    },
-  });
-  return { logout, isError, isSuccess };
-};
 type getUserPlaylistData = {
   playlists: Pick<IPlaylist, "_id" | "name" | "view" | "cover">[];
 };
@@ -236,11 +147,11 @@ export const useGetUserPlaylists = ({
     queryKey: ["userPlaylists", username],
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<getUserPlaylistData>>(
-        `/user/playlists?username=${username}`
+        `/user/playlists?username=${username}`,
       );
       return handleResponse<getUserPlaylistData>(
         response,
-        "failed to fetch user playlist"
+        "failed to fetch user playlist",
       );
     },
     enabled: isOpen,
@@ -250,16 +161,18 @@ export const useGetUserPlaylists = ({
 };
 export const useGetUserWatchHistory = (isActive: boolean) => {
   const { _id: userId } = useSelector(selectUser);
-  const query = useQuery<IWatchHistory[],AxiosError>({
+  const query = useQuery<IWatchHistory[], AxiosError>({
     queryKey: ["watch histroy", userId],
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<IWatchHistory[]>>(
         `/user/history`,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        },
       );
       return handleResponse<IWatchHistory[]>(
         response,
-        "failed to get user watch history"
+        "failed to get user watch history",
       );
     },
     enabled: isActive,
@@ -280,11 +193,13 @@ export const useToggleSubscribed = () => {
       >("/user/subscribe", { targetId });
       return handleResponse<{ subscribersCount: number; flag: boolean }>(
         response,
-        "failed to toggle subscribe"
+        "failed to toggle subscribe",
       );
     },
     onError: (error) => {
-      toast.error("failed to subscribe please try later.");
+      toast.error("failed to subscribe please try later.", {
+        toasterId: "global",
+      });
       console.error(error.message);
     },
   });
@@ -296,25 +211,17 @@ type userStats = {
   mostPopularVideos: IVideo[];
   subsInLast30Days: number;
   subsInLast7Days: number;
-  subsInLast24Hrs:number;
-  viewsInLast24Hrs:number;
-  viewsInLast7Days:number;
-  viewsInLast30Days:number;
+  subsInLast24Hrs: number;
+  viewsInLast24Hrs: number;
+  viewsInLast7Days: number;
+  viewsInLast30Days: number;
 };
 export const useGetUserDashboard = () => {
-  const { accessToken } = useSelector(selectUser);
   const query = useQuery<userStats, AxiosError>({
     queryKey: ["Dashboard"],
     queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<userStats>>(
-        "dashboard/stats",
-        {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response =
+        await apiClient.get<ApiResponse<userStats>>("dashboard/stats");
       return handleResponse(response, "failed to fetch user dashboard");
     },
     refetchInterval: 20 * 1000,
@@ -323,15 +230,29 @@ export const useGetUserDashboard = () => {
   return { ...query };
 };
 type updateUserAvatarBody = {
-  avatar:File;
-}
-export const useUpdateUserAvatar = ()=>{
-  const mutation = useMutation<IUser,AxiosError,updateUserAvatarBody>({
-    mutationKey:["updateAvatar"],
-    mutationFn:async({avatar})=>{
-      const response = await apiClient.patch<ApiResponse<IUser>>("/user/avatar",{avatar:avatar});
-      return handleResponse(response,"failed to update avatar");
+  avatar: File;
+};
+export const useUpdateUserAvatar = () => {
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const mutation = useMutation<IUser, AxiosError, updateUserAvatarBody>({
+    mutationKey: ["updateAvatar"],
+    mutationFn: async ({ avatar }) => {
+      console.log("avatar",avatar);
+      const response = await apiClient.patch<ApiResponse<IUser>>(
+        "/user/avatar",
+        {
+          avatar: avatar,
+        },
+        {headers:{
+          "Content-Type":"multipart/form-data"
+        }}
+      );
+      return handleResponse(response, "failed to update avatar");
+    },
+    onSuccess:({avatar})=>{
+    dispatch(setUser({...user,avatar:avatar}));
     }
   });
-  return {...mutation};
-}
+  return { ...mutation };
+};
