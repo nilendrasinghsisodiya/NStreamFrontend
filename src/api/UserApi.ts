@@ -238,21 +238,23 @@ export const useUpdateUserAvatar = () => {
   const mutation = useMutation<IUser, AxiosError, updateUserAvatarBody>({
     mutationKey: ["updateAvatar"],
     mutationFn: async ({ avatar }) => {
-      console.log("avatar",avatar);
+      console.log("avatar", avatar);
       const response = await apiClient.patch<ApiResponse<IUser>>(
         "/user/avatar",
         {
           avatar: avatar,
         },
-        {headers:{
-          "Content-Type":"multipart/form-data"
-        }}
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
       );
       return handleResponse(response, "failed to update avatar");
     },
-    onSuccess:({avatar})=>{
-    dispatch(setUser({...user,avatar:avatar}));
-    }
+    onSuccess: ({ avatar }) => {
+      dispatch(setUser({ ...user, avatar: avatar }));
+    },
   });
   return { ...mutation };
 };

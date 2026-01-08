@@ -1,9 +1,9 @@
-import { useMutation  } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "./ApiClient";
 import { handleResponse } from "@/utils";
 import { AxiosError } from "axios";
 import { useDispatch } from "react-redux";
-import {reset} from "@/contexts/auth/authSlice"
+import { reset } from "@/contexts/auth/authSlice";
 import { toast } from "sonner";
 
 interface ILoginUserBody {
@@ -19,7 +19,7 @@ export const useLoginUser = () => {
     isSuccess,
     mutateAsync: loginUser,
   } = useMutation<IUser, AxiosError, ILoginUserBody>({
-    mutationKey:["User"],
+    mutationKey: ["User"],
     mutationFn: async (formData: ILoginUserBody) => {
       const response = await apiClient.post<ApiResponse<IUser>>(
         "auth/login",
@@ -28,7 +28,7 @@ export const useLoginUser = () => {
       return handleResponse<IUser>(response, "failed to login user");
     },
     onError: () => {
-			toast.error("failed to Log In",{toasterId:"global"});
+      toast.error("failed to Log In", { toasterId: "global" });
     },
   });
 
@@ -54,20 +54,23 @@ export const useRegisterUser = () => {
         "/auth/register",
         formData,
       );
-      return handleResponse<RegisterDataType>(response, "failed to login user",201);
+      return handleResponse<RegisterDataType>(
+        response,
+        "failed to login user",
+        201,
+      );
     },
     onError: () => {
-      toast.error("failed to Register User ",{toasterId:"global"});
+      toast.error("failed to Register User ", { toasterId: "global" });
     },
   });
 
   return { isError, data, isSuccess, RegisterUser, isPending };
 };
 
-
 export const useLogoutUser = () => {
   const dispatch = useDispatch();
-	const {
+  const {
     mutateAsync: logout,
     isError,
     isSuccess,
@@ -76,10 +79,15 @@ export const useLogoutUser = () => {
     mutationFn: async () => {
       const response =
         await apiClient.post<ApiResponse<undefined>>("/auth/logout");
-      return handleResponse<undefined>(response, "failed to logout",204,false);
+      return handleResponse<undefined>(
+        response,
+        "failed to logout",
+        204,
+        false,
+      );
     },
     onSuccess: () => {
-			dispatch(reset());
+      dispatch(reset());
     },
   });
   return { logout, isError, isSuccess };
