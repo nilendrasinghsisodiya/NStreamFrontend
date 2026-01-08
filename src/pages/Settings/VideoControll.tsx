@@ -25,7 +25,7 @@ import {
   FormDescription,
   FormMessage,
 } from "@/components/ui/form";
-import { TagInput } from "@/components/TagInputComponent";
+import { TagInput } from "@/components/ui/TagInputComponent";
 import { toast } from "sonner";
 import { ConfirmationToast } from "@/components/ConfirmationToast";
 import { useDeleteVideo, useEditVideo } from "@/api/VideoApi";
@@ -317,15 +317,16 @@ const VideoControllOption = ({
           message={"Do you want to delete this video?"}
           handleConfirmation={async () => {
             console.warn("video delete triggered");
-            console.log("videoId",videoId)
+            console.log("videoId", videoId);
             await deleteVideo({ videoId: videoId });
             queryClient.refetchQueries({ queryKey: ["channelVideos"] });
-            toast.success("Video deleted sucessfully!");
-            
+            toast.success("Video deleted sucessfully!", {
+              toasterId: "global",
+            });
           }}
         />
       ),
-      { duration: Infinity, toasterId: "confirmation-center" }
+      { duration: Infinity, toasterId: "conformation" },
     );
   };
   const onClickEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -344,18 +345,25 @@ const VideoControllOption = ({
       },
     });
   };
-  const [thumbnailFile, setThumbnailFile] = useState<File|null>(null);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const handleSubmit = async (formData: videoEditSchemaType) => {
-    if (formData ) {
-      if(thumbnailFile instanceof File){
-        await updateVideo({...formData,thumbnail:thumbnailFile,videoId:videoId});
-      }else{
-        await updateVideo({title:formData.title,tags:formData.tags,videoId});
+    if (formData) {
+      if (thumbnailFile instanceof File) {
+        await updateVideo({
+          ...formData,
+          thumbnail: thumbnailFile,
+          videoId: videoId,
+        });
+      } else {
+        await updateVideo({
+          title: formData.title,
+          tags: formData.tags,
+          videoId,
+        });
       }
       SetEditContext(InitialEditContext);
       console.log("video update triggered");
-      toast.success("Video Updated Sucessfully!");
-      
+      toast.success("Video Updated Sucessfully!", { toasterId: "global" });
     }
   };
   return (
@@ -454,7 +462,6 @@ export const VideoControlPage = () => {
           fetchNextPage={fetchNextPage}
           isLoading={isLoading}
           isSuccess={isSuccess}
-          
           itemClassName="flex gap-3 w-full   min-h-[200px] overflow-hidden max-h-[250px] justify-evenly px-2"
           videos={fetchedVideos}
           Child={VideoControllOption}
