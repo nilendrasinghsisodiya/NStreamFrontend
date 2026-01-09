@@ -5,7 +5,7 @@ import { VideoPlayer } from "./VideoPlayer";
 import { useState, useEffect } from "react";
 import { ChannelAvatarBar } from "@/components/avatar/Avatars";
 import { ThumbsUp } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useToggleVideoLike } from "@/api/LikeApi";
 import { AxiosError } from "axios";
 import { queryClient } from "@/api/ApiClient";

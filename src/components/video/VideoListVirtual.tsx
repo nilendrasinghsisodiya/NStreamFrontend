@@ -3,7 +3,7 @@ import { GridComponents, VirtuosoGrid } from "react-virtuoso";
 
 import { ListVideoCard } from "./VideoCard";
 import { ErrorScreen } from "../ErrorComponent";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // flex flex-col w-full md:flex-row flex-wrap  justify-center contain-content gap-4
 const List: GridComponents["List"] = React.forwardRef(

@@ -6,7 +6,7 @@ import {
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuItem,
-} from "../ui/sidebar";
+} from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
 
 const items = [

@@ -1,5 +1,5 @@
 import { Send } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useCreateComment } from "@/api/CommentApi";
 import { FormEvent, useRef } from "react";
 

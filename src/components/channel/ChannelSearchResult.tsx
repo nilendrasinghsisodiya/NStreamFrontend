@@ -1,8 +1,8 @@
 import { GridComponents, VirtuosoGrid } from "react-virtuoso";
-import { SafeAvatar } from "../avatar/Avatars";
-import { ErrorScreen } from "../ErrorComponent";
+import { SafeAvatar } from "@/components/avatar/Avatars";
+import { ErrorScreen } from "@/components/ErrorComponent";
 import React from "react";
-import { SubscribeButton } from "../SubscribeButton";
+import { SubscribeButton } from "@/components/ui/SubscribeButton";
 
 type props = {
   avatar: string;
@@ -27,7 +27,6 @@ export const ChannelSearchCard = ({
         to={`/channel/home?username=${username}`}
         username={username}
         failLink="#"
-       
       />
       <div className="flex flex-col w-1/3 h-fit">
         <span>{username}</span>
@@ -38,7 +37,6 @@ export const ChannelSearchCard = ({
         targetId={userId}
         username={username}
         className="w-1/4"
-
       />
     </div>
   );
@@ -55,7 +53,7 @@ const List: GridComponents["List"] = React.forwardRef(
     >
       {children}
     </div>
-  )
+  ),
 );
 
 const Item: GridComponents["Item"] = React.forwardRef(
@@ -63,7 +61,7 @@ const Item: GridComponents["Item"] = React.forwardRef(
     <div ref={ref} {...props} className="h-fit w-full">
       {children}
     </div>
-  )
+  ),
 );
 
 export interface UserWIthSubscriptionFlag extends IUser {

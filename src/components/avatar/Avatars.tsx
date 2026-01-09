@@ -1,19 +1,18 @@
-import { Avatar, AvatarFallback } from "../ui/avatar";
-import { AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { AvatarImage } from "@/components/ui/avatar";
 import { generateSrcSet, toKBMS } from "@/utils";
 import { User } from "lucide-react";
 import { CSSProperties } from "react";
-import { Link } from "react-router";
-import { SubscribeButton } from "../SubscribeButton";
+import { Link } from "react-router-dom";
+import { SubscribeButton } from "@/components/ui/SubscribeButton";
 type avatarProps = {
   avatar?: string;
   username?: string;
   to: string;
   noLazy?: boolean;
-  noNavigate?:boolean;
+  noNavigate?: boolean;
   failLink?: string;
   propagate?: boolean;
-  
 };
 const SafeAvatar = ({
   avatar,
@@ -22,8 +21,7 @@ const SafeAvatar = ({
   noLazy,
   noNavigate = false,
   failLink,
-  propagate=true,
-  
+  propagate = true,
 }: avatarProps) => {
   const handleNoPropagation = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.stopPropagation();
@@ -31,55 +29,68 @@ const SafeAvatar = ({
 
   return (
     <span>
-      {!noNavigate?(avatar && username ? (
-        <Link
-          to={to || `/channel/home?username=${username}`}
+      {!noNavigate ? (
+        avatar && username ? (
+          <Link
+            to={to || `/channel/home?username=${username}`}
+            onClick={propagate ? () => {} : handleNoPropagation}
+          >
+            <Avatar
+              className={`border-2 border-rounded border-foreground/80 w-full h-full`}
+            >
+              <AvatarImage
+                src={avatar}
+                srcSet={generateSrcSet(avatar)}
+                loading={noLazy ? "eager" : "lazy"}
+                alt={`${username}'s avatar`}
+                aria-label="user avatar"
+              />
+              <AvatarFallback className="h-full w-full font-extrabold text-foreground/80 text-xl">
+                {username[0].toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
+        ) : (
+          <Link
+            to={failLink || "/auth"}
+            aria-disabled={failLink === "#"}
+            onClick={
+              propagate
+                ? (e) => {
+                    if (failLink === "#") e.preventDefault();
+                  }
+                : handleNoPropagation
+            }
+          >
+            <Avatar className="border-2 border-foreground/80 w-full h-full">
+              <User className="text-foreground/80" />
+            </Avatar>
+          </Link>
+        )
+      ) : avatar && username ? (
+        <Avatar
+          className="border-2 border-rounded border-foreground/80  "
           onClick={propagate ? () => {} : handleNoPropagation}
         >
-          <Avatar className={`border-2 border-rounded border-foreground/80 w-full h-full` }>
-            <AvatarImage
-              src={avatar}
-              srcSet={generateSrcSet(avatar)}
-              loading={noLazy ? "eager" : "lazy"}
-              alt={`${username}'s avatar`}
-              aria-label="user avatar"
-            />
-            <AvatarFallback className="h-full w-full font-extrabold text-foreground/80 text-xl">
-              {username[0].toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        </Link>
+          <AvatarImage
+            src={avatar}
+            srcSet={generateSrcSet(avatar)}
+            loading={noLazy ? "eager" : "lazy"}
+            alt={`${username}'s avatar`}
+            aria-label="user avatar"
+          />
+          <AvatarFallback className="h-full w-full font-extrabold text-foreground/80 text-xl">
+            {username[0].toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
       ) : (
-        <Link
-          to={failLink || "/auth"}
+        <Avatar
+          className="border-2 border-foreground/80 w-full h-full"
           onClick={propagate ? () => {} : handleNoPropagation}
         >
-          <Avatar className="border-2 border-foreground/80 w-full h-full">
-            <User className="text-foreground/80" />
-          </Avatar>
-        </Link>
-      )):(avatar && username ? (
-        
-          <Avatar className="border-2 border-rounded border-foreground/80  " onClick={propagate ? () => {} : handleNoPropagation}>
-            <AvatarImage
-              src={avatar}
-              srcSet={generateSrcSet(avatar)}
-              loading={noLazy ? "eager" : "lazy"}
-              alt={`${username}'s avatar`}
-              aria-label="user avatar"
-            />
-            <AvatarFallback className="h-full w-full font-extrabold text-foreground/80 text-xl">
-              {username[0].toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-       
-      ) : (
-       
-          <Avatar className="border-2 border-foreground/80 w-full h-full" onClick={propagate ? () => {} : handleNoPropagation}>
-            <User className="text-foreground/80" />
-          </Avatar>
-        
-      ))}
+          <User className="text-foreground/80" />
+        </Avatar>
+      )}
     </span>
   );
 };
@@ -91,7 +102,7 @@ type Props = {
   channelId: string;
   isSubscribed: boolean;
   videoId?: string;
-  navigateOnAvatarClick?:boolean;
+  navigateOnAvatarClick?: boolean;
 };
 
 const ChannelAvatarBar = ({
@@ -104,17 +115,15 @@ const ChannelAvatarBar = ({
   navigateOnAvatarClick = true,
 }: Props) => {
   return (
-    <div className="flex gap-3  justify-between items-center  -400 px-1 max-w-full">
-      <div className="flex gap-3">
-        {" "}
-        <span className="flex  items-center ">
+    <div className="flex gap-4  justify-between items-center  -400 px-1 max-w-full">
+      <div className="flex gap-x-2 w-full ">
+        <span className="flex w-12 m-2  items-center ">
           <SafeAvatar
             avatar={avatar}
             to={`/channel/home?username=${username}`}
             username={username}
             failLink="#"
             noNavigate={!navigateOnAvatarClick} // if navigationOnAvatarClick === false then this will be true
-            
           />
         </span>
         <span className="flex flex-col ">
@@ -122,7 +131,7 @@ const ChannelAvatarBar = ({
             {username}
           </span>
           <span className="text-xs text-secondary-foreground">
-            {toKBMS(subscriberCount)}
+            {toKBMS(subscriberCount) + " subscribers"}
           </span>
         </span>
       </div>
@@ -144,7 +153,7 @@ type VideoAvatarStripProps = {
   style?: CSSProperties;
   className?: string;
   videoTitle: string;
-  views:number;
+  views: number;
   navigateOnAvatarClick?: boolean;
 };
 const VideoAvatarStrip = ({
@@ -161,21 +170,23 @@ const VideoAvatarStrip = ({
     return <p>missing</p>;
   }
 
-
   return (
     <div className={className} style={style}>
-      <span className="flex flex-col w-full">
-        <span className=" text-[14px] wrap-break-word  tracking-tighter text-start  font-semibold line-clamp-2 w-full">{videoTitle}</span>
-        <span className="text-xs text-accent-foreground/76 ml-6">{toKBMS(views)}</span>
+      <span className="flex flex-col w-full gap-0.5">
+        <span className=" text-[14px] wrap-break-word  tracking-tighter text-start  font-semibold line-clamp-2 w-full">
+          {videoTitle}
+        </span>
+        <span className="text-xs text-accent-foreground/76 ml-6">
+          {toKBMS(views) + " views"}
+        </span>
       </span>
-      <div className="flex w-full max-w-full ">
+      <div className="flex w-full max-w-full gap-1 ">
         <span className="flex    justify-center items-center  w-1/6">
           <SafeAvatar
             avatar={avatar}
             username={username}
             to={`/channel/home?username=${username}`}
             failLink="#"
-            
             propagate={!navigateOnAvatarClick}
             noNavigate={!navigateOnAvatarClick}
           />
@@ -184,18 +195,18 @@ const VideoAvatarStrip = ({
           {navigateOnAvatarClick ? (
             <Link
               to={`/channel/home?username=${username}`}
-              className="flex flex-col justify-start items-start p-2"
+              className="flex flex-col justify-start items-start p-2 gap-0.5"
             >
               <span className="text-xs tracking-tight">{username}</span>
               <span className="text-foreground/60 text-xs/tight">
-                {toKBMS(subscribersCount)}
+                {toKBMS(subscribersCount) + " subscribers"}
               </span>
             </Link>
           ) : (
             <div className="flex flex-col justify-start items-start p-2 cursor-default">
               <span className="text-xs tracking-tight">{username}</span>
               <span className="text-foreground/60 text-xs/tight">
-                {toKBMS(subscribersCount)}
+                {toKBMS(subscribersCount) + " subscribers"}
               </span>
             </div>
           )}

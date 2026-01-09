@@ -1,6 +1,6 @@
 import { useGetUserWatchHistory } from "@/api/UserApi";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { generateSrcSet } from "@/utils";
 import { VideoAvatarStrip } from "../avatar/Avatars";
