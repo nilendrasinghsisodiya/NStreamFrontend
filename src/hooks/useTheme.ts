@@ -1,5 +1,9 @@
 import { useDispatch } from "react-redux";
-import { setTheme, ThemeType, selectTheme } from "./../contexts/theme/themeSlices";
+import {
+  setTheme,
+  ThemeType,
+  selectTheme,
+} from "./../contexts/theme/themeSlices";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
@@ -11,7 +15,7 @@ const useTheme = () => {
   // Load the saved theme from localStorage on mount
   useEffect(() => {
     const savedTheme = localStorage.getItem(storageKey) as ThemeType | null;
-    console.log("savedTheme",savedTheme)
+    console.log("savedTheme", savedTheme);
     if (savedTheme) {
       dispatch(setTheme(savedTheme));
     }
@@ -22,9 +26,10 @@ const useTheme = () => {
     root.classList.remove("light", "dark");
 
     const applyTheme = (currentTheme: ThemeType) => {
-      console.log("currentTheme",currentTheme);
+      console.log("currentTheme", currentTheme);
       if (currentTheme === "system") {
-        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+          .matches
           ? "dark"
           : "light";
         root.classList.add(systemTheme);
@@ -39,7 +44,7 @@ const useTheme = () => {
     // **Handle system preference changes**
     if (theme === "system") {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-      console.log("mediaquery",mediaQuery);
+      console.log("mediaquery", mediaQuery);
       const handleSystemThemeChange = () => {
         applyTheme("system"); // Re-apply the system theme logic
       };
