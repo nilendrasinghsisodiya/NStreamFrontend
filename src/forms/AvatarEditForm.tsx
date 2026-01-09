@@ -16,8 +16,10 @@ import { setUser } from "@/contexts/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
+import { useState } from "react";
+import { PreviewBox } from "@/components/ui/previewBox";
 
-const allowedType = ["image/png", "image/jpeg","image/webp" ];
+const allowedType = ["image/png", "image/jpeg", "image/webp"];
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const userProfileSchema = z.object({
   avatar: z
@@ -35,8 +37,10 @@ type formDataType = z.infer<typeof userProfileSchema>;
 type props = {
   onSave: (formData: formDataType) => void;
   isPending: boolean;
+
+  setPreview: React.Dispatch<React.SetStateAction<string>>;
 };
-const AvatarEditForm = ({ isPending, onSave }: props) => {
+const AvatarEditForm = ({ isPending, onSave, setPreview }: props) => {
   const form = useForm<formDataType>({
     defaultValues: {
       avatar: undefined,
@@ -45,11 +49,12 @@ const AvatarEditForm = ({ isPending, onSave }: props) => {
     reValidateMode: "onChange",
     mode: "all",
   });
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSave)}
-        className="flex flex-col w-1/2 justify-center m-auto mt-16 rounded-xl gap-3  border-2 border-accent h-fit p-5"
+        className="flex flex-col w-full justify-center  rounded-xl gap-3  border-none  h-fit p-5"
       >
         <FormField
           control={form.control}
@@ -59,16 +64,18 @@ const AvatarEditForm = ({ isPending, onSave }: props) => {
               <FormLabel>Avatar</FormLabel>
               <FormControl>
                 <input
-                onBlur={field.onBlur}
-                name={field.name}
-                disabled={field.disabled}
-                ref={field.ref}
-                className="custom_input"
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  disabled={field.disabled}
+                  ref={field.ref}
+                  className="custom_input"
                   type="file"
                   accept="image/*"
                   onChange={(e) => {
                     if (e.target.files?.[0]) {
                       field.onChange(e.target.files[0]);
+                      const avatarUrl = URL.createObjectURL(e.target.files[0]);
+                      setPreview(avatarUrl);
                     }
                   }}
                 />
@@ -88,11 +95,15 @@ const AvatarEditForm = ({ isPending, onSave }: props) => {
     </Form>
   );
 };
+
 export const AvatarEdit = () => {
   const { mutateAsync, isPending, data } = useUpdateUserAvatar();
+  const [avatar_preview, setAvatarPreview] = useState<string>("");
   const dispatch = useDispatch();
   const handleSumbit = async (formData: formDataType) => {
     try {
+      console.log(formData);
+
       await mutateAsync(formData);
       if (data) {
         dispatch(setUser({ ...data, isAuthenticated: true }));
@@ -104,5 +115,14 @@ export const AvatarEdit = () => {
       }
     }
   };
-  return <AvatarEditForm isPending={isPending} onSave={handleSumbit} />;
+  return (
+    <div className=" w-full   flex flex-col sm:flex-row  justify-center items-center contain-content border-2 border-accent rounded-lg m-auto p-3">
+      <PreviewBox url={avatar_preview} classname="w-45 h-40 m-auto" />
+      <AvatarEditForm
+        isPending={isPending}
+        onSave={handleSumbit}
+        setPreview={setAvatarPreview}
+      />
+    </div>
+  );
 };
