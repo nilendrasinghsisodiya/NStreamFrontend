@@ -1,6 +1,6 @@
 import { usePopularVideo } from "@/api/VideoApi";
 
-import React, {  useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { VirtuosoGrid, GridComponents } from "react-virtuoso";
 
 import { VideoCard } from "./VideoCard";
@@ -10,14 +10,14 @@ import { useUserRecommendation } from "@/api/UserApi";
 const GridList: GridComponents["List"] = React.forwardRef(
   ({ style, children, ...props }, ref) => (
     <div
-      style={{ ...style }}
+      style={{ height: "100%", ...style }}
       {...props}
       ref={ref}
-      className=" grid gird-cols-1 sm:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4  place-items-center gap-y-1 sm:gap-y-2 md:gap-y-3 gap-x-1 p-0 mt-2 xl:gap-y-3 "
+      className=" grid gird-cols-1 md:grid-cols-2  lg:grid-cols-3 2xl:grid-cols-4  place-items-center  gap-x-2 gap-y-2"
     >
       {children}
     </div>
-  )
+  ),
 );
 const GridItem: GridComponents["Item"] = React.forwardRef(
   ({ style, children, ...props }, ref) => (
@@ -29,7 +29,7 @@ const GridItem: GridComponents["Item"] = React.forwardRef(
     >
       {children}
     </div>
-  )
+  ),
 );
 
 const PopularVideos = () => {
@@ -58,8 +58,6 @@ const PopularVideos = () => {
     }
   }, [data, recommendedAdded, RecommendedVideos]);
 
-  
-
   return (
     <>
       <VirtuosoGrid
@@ -81,7 +79,6 @@ const PopularVideos = () => {
             viewsCount={data.views}
             isSuccess={isSuccess}
             lazyLoading={true}
-            
           />
         )}
         endReached={() => {
