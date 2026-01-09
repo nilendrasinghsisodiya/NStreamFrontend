@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TagInput } from "@/components/TagInputComponent";
+import { TagInput } from "@/components/ui/TagInputComponent";
 import { Upload } from "lucide-react";
 import { useUploadVideo } from "@/api/VideoApi";
 import { toast } from "sonner";
@@ -24,7 +24,6 @@ import { VideoUploadsList } from "@/components/videoUpload/VideoUpload";
 import { AxiosError } from "axios";
 
 const maxThumbnailSize = 5 * 1024 * 1024;
-
 
 const maxVideoSize = 25 * 1024 * 1024;
 
@@ -67,17 +66,14 @@ type formDataType = z.infer<typeof videoUploadSchema>;
 export const VideoUploadForm = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
-  const {
-    mutateAsync: uploadVideo,
-    isPending,
-  } = useUploadVideo();
+  const { mutateAsync: uploadVideo, isPending } = useUploadVideo();
   const handleSubmit = async (data: formDataType) => {
     console.log(data);
     try {
       for (const [key, value] of Object.entries(data)) {
         console.log(`${key} → ${value}`);
         if (!value) {
-          toast.error("invalid form enteries");
+          toast.error("invalid form enteries", { toasterId: "global" });
           console.log("invalid entries");
           return;
         }
@@ -87,13 +83,15 @@ export const VideoUploadForm = () => {
           id: `${data.title}+${user._id}`,
           title: data.title,
           uploader: user._id,
-        })
+        }),
       );
       const formData = new FormData();
       appendFormData(formData, data);
       uploadVideo(formData);
     } catch (error: unknown) {
-      if(error instanceof AxiosError){console.error(`video upload: ${error.message}`);}
+      if (error instanceof AxiosError) {
+        console.error(`video upload: ${error.message}`);
+      }
       console.error(error);
     }
   };
@@ -119,7 +117,9 @@ export const VideoUploadForm = () => {
             {/* <legend className="text-xl text-foreground tracking-wide capitalize font-extrabold ">
               Video Upload
             </legend> */}
-            <h3 className="text-foreground tracking-wide  text-center font-extrabold text-xl">Video Upload</h3>
+            <h3 className="text-foreground tracking-wide  text-center font-extrabold text-xl">
+              Video Upload
+            </h3>
             <FormField
               name="title"
               control={form.control}
@@ -127,7 +127,11 @@ export const VideoUploadForm = () => {
                 <FormItem className="p-3">
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <input className="custom_input" {...field}  placeholder="add title...." />
+                    <input
+                      className="custom_input"
+                      {...field}
+                      placeholder="add title...."
+                    />
                   </FormControl>
                   <FormDescription className="text-right text-xs">
                     this is your video's title in 100 characters max.
@@ -136,19 +140,18 @@ export const VideoUploadForm = () => {
                 </FormItem>
               )}
             />
-           
 
             <FormField
               name="thumbnail"
               control={form.control}
-              render={({ field: { onChange, name, disabled, onBlur} }) => (
+              render={({ field: { onChange, name, disabled, onBlur } }) => (
                 <FormItem>
                   <FormLabel>Thumbnail</FormLabel>
                   <FormControl>
-                    <input className="custom_input"
+                    <input
+                      className="custom_input"
                       type="file"
                       max={1}
-                      
                       name={name}
                       min={1}
                       onBlur={onBlur}
@@ -171,14 +174,14 @@ export const VideoUploadForm = () => {
             <FormField
               name="videoFile"
               control={form.control}
-              render={({ field: { onChange, name, disabled,onBlur } }) => (
+              render={({ field: { onChange, name, disabled, onBlur } }) => (
                 <FormItem>
                   <FormLabel>Video</FormLabel>
                   <FormControl>
-                    <input className="custom_input"
+                    <input
+                      className="custom_input"
                       type="file"
                       max={1}
-                      
                       name={name}
                       min={1}
                       disabled={disabled}
@@ -187,7 +190,6 @@ export const VideoUploadForm = () => {
                         if (files && files[0]) {
                           onChange(files[0]);
                         }
-                        
                       }}
                       onBlur={onBlur}
                     />
@@ -205,21 +207,18 @@ export const VideoUploadForm = () => {
               name="tags"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel >Tags</FormLabel>
-                 
-                    <TagInput
-                      value={field.value || []}
-                      onChange={field.onChange}
-                      name={field.name}
-                      disabled={field.disabled}
-                      
+                  <FormLabel>Tags</FormLabel>
 
+                  <TagInput
+                    value={field.value || []}
+                    onChange={field.onChange}
+                    name={field.name}
+                    disabled={field.disabled}
+                  />
 
-                    />
-                 
                   <FormDescription className="text-xs text-center justify-end ext-wrap line-clamp-2  ">
-                    tags to make the
-                    search and ranking of video better max 20 tags allowed
+                    tags to make the search and ranking of video better max 20
+                    tags allowed
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -235,7 +234,7 @@ export const VideoUploadForm = () => {
           </fieldset>
         </form>
       </Form>
-    <VideoUploadsList className="flex flex-col h-full w-full border-2 border-accent rounded-xl row-span-1 p-3 overflow-scroll" /> 
+      <VideoUploadsList className="flex flex-col h-full w-full border-2 border-accent rounded-xl row-span-1 p-3 overflow-scroll" />
     </div>
   );
 };

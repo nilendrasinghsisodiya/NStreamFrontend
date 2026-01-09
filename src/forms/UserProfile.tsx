@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useCreateUser } from "@/api/UserApi";
 import { selectUser, setUser } from "@/contexts/auth/authSlice";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -34,7 +34,7 @@ const userProfileSchema = z.object({
       if (!value) return;
       return value.size <= MAX_FILE_SIZE;
     }, "Maximun file size allowed 5MB."),
-  
+
   description: z.string().trim().min(1, "description can not be empty"),
 });
 type formDataType = z.infer<typeof userProfileSchema>;
@@ -66,7 +66,7 @@ const UserProfileForm = ({ isPending, onSave }: props) => {
             <FormItem>
               <FormLabel>Full Name</FormLabel>
               <FormControl>
-                <input className="custom_input" {...field}  />
+                <input className="custom_input" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -79,7 +79,8 @@ const UserProfileForm = ({ isPending, onSave }: props) => {
             <FormItem>
               <FormLabel>Avatar</FormLabel>
               <FormControl>
-                <input className="custom_input"
+                <input
+                  className="custom_input"
                   type="file"
                   accept="image/*"
                   onChange={(e) => {
@@ -87,7 +88,6 @@ const UserProfileForm = ({ isPending, onSave }: props) => {
                       onChange(e.target.files[0]);
                     }
                   }}
-                  
                 />
               </FormControl>
               <FormMessage />
@@ -98,7 +98,6 @@ const UserProfileForm = ({ isPending, onSave }: props) => {
           )}
         />
 
-       
         <FormField
           control={form.control}
           name="description"
@@ -106,7 +105,7 @@ const UserProfileForm = ({ isPending, onSave }: props) => {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <textarea className="custom_textarea" {...field}  />
+                <textarea className="custom_textarea" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

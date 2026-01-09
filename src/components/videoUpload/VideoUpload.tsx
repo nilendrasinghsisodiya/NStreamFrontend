@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { ErrorUploadsTable } from "./ErrorTable";
 import { PendingUploadsTable } from "./Pendingtable";
 import { SuccessfullUploadsTable } from "./SuccessfullTable";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
 
 export const VideoUploadsList = ({ className }: { className: string }) => {
   const [errorTab, setErrorTab] = useState<boolean>(false);

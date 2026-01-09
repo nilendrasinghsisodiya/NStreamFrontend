@@ -1,6 +1,6 @@
 import { Home, Layers, Video } from "lucide-react";
 import { memo } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 const Footer = () => {
   const items = [
     { title: "Home", url: "/", icon: Home, Link: true },
@@ -27,14 +27,13 @@ const Footer = () => {
         >
           {item.Link ? (
             <Link to={item.url}>
-              <item.icon to='#'className=" self-center justify-self-center" />
+              <item.icon to="#" className=" self-center justify-self-center" />
               <span className="text-center text-[10px] text-seconadry-foreground">
                 {item.title}
               </span>
             </Link>
           ) : (
             <>
-              
               <item.icon
                 className=" self-center justify-self-center"
                 to="/auth"

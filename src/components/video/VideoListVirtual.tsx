@@ -1,10 +1,7 @@
 import React from "react";
-import {
-  GridComponents,
-  VirtuosoGrid,
-} from "react-virtuoso";
+import { GridComponents, VirtuosoGrid } from "react-virtuoso";
 
-import { ListVideoCard} from "./VideoCard";
+import { ListVideoCard } from "./VideoCard";
 import { ErrorScreen } from "../ErrorComponent";
 import { Skeleton } from "../ui/skeleton";
 
@@ -19,33 +16,33 @@ const List: GridComponents["List"] = React.forwardRef(
     >
       {children}
     </div>
-  )
+  ),
 );
 
-const ScrollSeekPlaceholder = ({className}:{className:string;})=>{
-  return <div className={ `p-0 m-0 border-2  gap-2 h-fit  ${className}`}>
-    <Skeleton className="aspect-video w-2/5"/>
-    <Skeleton className="w-3/5 flex-1 aspect-[3/1]"></Skeleton>
-  </div>
-
-}
+const ScrollSeekPlaceholder = ({ className }: { className: string }) => {
+  return (
+    <div className={`p-0 m-0 border-2  gap-2 h-fit  ${className}`}>
+      <Skeleton className="aspect-video w-2/5" />
+      <Skeleton className="w-3/5 flex-1 aspect-[3/1]"></Skeleton>
+    </div>
+  );
+};
 
 type props = {
   videos: IVideo[];
-  useWindowScroll?:boolean;
+  useWindowScroll?: boolean;
   isLoading: boolean;
   hasNextPage?: boolean;
   isSuccess: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fetchNextPage: any;
   itemClassName: string;
-  header?:GridComponents['Header'];
+  header?: GridComponents["Header"];
 };
-
 
 export const VirtualVideoList = ({
   videos,
-  useWindowScroll=true,
+  useWindowScroll = true,
   fetchNextPage,
   isLoading,
   isSuccess,
@@ -62,10 +59,10 @@ export const VirtualVideoList = ({
           components={{
             List: List,
             Header: header,
-            ScrollSeekPlaceholder:()=><ScrollSeekPlaceholder className={itemClassName}/>,
-            
+            ScrollSeekPlaceholder: () => (
+              <ScrollSeekPlaceholder className={itemClassName} />
+            ),
           }}
-          
           itemContent={(_, data) => (
             <ListVideoCard
               className={itemClassName}
@@ -78,7 +75,7 @@ export const VirtualVideoList = ({
               viewsCount={data.views}
               isSuccess={isSuccess}
               lazyLoading={true}
-              avatarClassName=" flex flex-col  justify-center  w-3/5 "
+              avatarClassName=" flex flex-col  justify-center  w-3/5 text-[12px]  "
             />
           )}
           endReached={() => {
@@ -96,9 +93,7 @@ export const VirtualVideoList = ({
           // isScrolling={(val) => console.log(val, "scrolling")}
         />
       ) : (
-        <ErrorScreen
-          mainMessage="no videos found"
-        />
+        <ErrorScreen mainMessage="no videos found" />
       )}
     </>
   );

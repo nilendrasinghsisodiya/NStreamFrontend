@@ -42,15 +42,14 @@ const Video = ({ videoId, style, className }: Props) => {
   }, [data, setVideoUrl]);
   console.log(data);
   const handleLike = async () => {
-  try {
-    await toggleLike({targetId:videoId});
-    setIsLiked((prev)=>!prev);
-    refetch();
-    queryClient.invalidateQueries({queryKey:["likedVideos"]});
-  } catch (error:unknown) {
-    if(error instanceof AxiosError)
-      toast.error("failed to like video");
-  }    
+    try {
+      await toggleLike({ targetId: videoId });
+      setIsLiked((prev) => !prev);
+      refetch();
+      queryClient.invalidateQueries({ queryKey: ["likedVideos"] });
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) toast.error("failed to like video");
+    }
   };
   return (
     <>

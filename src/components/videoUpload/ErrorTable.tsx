@@ -35,20 +35,26 @@ export const ErrorUploadsTable = () => {
           <TableHead className="text-right">Option</TableHead>
         </TableRow>
       </TableHeader>
-        {errorUploads.length > 0 ? (
-      <TableBody className="h-full w-full ">{
-          errorUploads.map((ele) => (
+      {errorUploads.length > 0 ? (
+        <TableBody className="h-full w-full ">
+          {errorUploads.map((ele) => (
             <TableRow key={ele.id}>
-              <TableCell className="font-medium w-2/3" >{ele.title}</TableCell>
+              <TableCell className="font-medium w-2/3">{ele.title}</TableCell>
               <TableCell>{ele.state}</TableCell>
               <TableCell>{ele.progress}</TableCell>
               <TableCell className="text-right">{100}</TableCell>
             </TableRow>
-          ))
-        }</TableBody>
-        ) : (
-          <TableBody ><TableRow><TableCell className="text-center text-2xl p-10">no uploads yet</TableCell></TableRow></TableBody>
-        )}
+          ))}
+        </TableBody>
+      ) : (
+        <TableBody>
+          <TableRow>
+            <TableCell className="text-center text-2xl p-10">
+              no uploads yet
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      )}
     </Table>
   );
 };

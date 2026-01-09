@@ -33,12 +33,10 @@ export default FormDataType;
 type Props = {
   className?: string;
   onSave: (FormData: FormDataType) => void;
-  isPending:boolean;
+  isPending: boolean;
 };
 
-const SignUp = ({ className, onSave ,isPending}: Props) => {
-  
-
+const SignUp = ({ className, onSave, isPending }: Props) => {
   const form = useForm<FormDataType>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -48,7 +46,7 @@ const SignUp = ({ className, onSave ,isPending}: Props) => {
       passwordAgain: "",
     },
     reValidateMode: "onChange",
-    
+
     mode: "all",
   });
 
@@ -63,14 +61,10 @@ const SignUp = ({ className, onSave ,isPending}: Props) => {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <input
-                className="custom_input"
-                  {...field}
-                  
-                  
-                />
+                <input className="custom_input" {...field} />
               </FormControl>
-              <FormMessage/>    </FormItem>
+              <FormMessage />{" "}
+            </FormItem>
           )}
         />
         <FormField
@@ -80,7 +74,7 @@ const SignUp = ({ className, onSave ,isPending}: Props) => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <input className="custom_input" {...field}  />
+                <input className="custom_input" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -94,12 +88,7 @@ const SignUp = ({ className, onSave ,isPending}: Props) => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <input className="custom_input"
-                  {...field}
-                  type="password"
-                  
-               
-                />
+                <input className="custom_input" {...field} type="password" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -112,20 +101,20 @@ const SignUp = ({ className, onSave ,isPending}: Props) => {
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <input className="custom_input"
-                  {...field}
-                  type="password"
-                  
-                 
-                />
+                <input className="custom_input" {...field} type="password" />
               </FormControl>
-              <FormMessage/>
+              <FormMessage />
             </FormItem>
           )}
         />
         <div className="w-full flex gap-2 p-2">
-          <Button type="submit" disabled={isPending} className="w-1/2"> Submit</Button>
-          <Button type="reset" className="w-1/2">Reset</Button>
+          <Button type="submit" disabled={isPending} className="w-1/2">
+            {" "}
+            Submit
+          </Button>
+          <Button type="reset" className="w-1/2">
+            Reset
+          </Button>
         </div>
       </form>
     </Form>

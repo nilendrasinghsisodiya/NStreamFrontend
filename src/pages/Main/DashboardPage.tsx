@@ -87,11 +87,13 @@ export const Dashboard = () => {
           ))}
       </div>
       <div className="w-full h-fit flex flex-col justify-center items-center gap-3">
-       <div className="w-full h-full flex flex-col justify-center items-center">
-         <span className="text-xl font-bold tracking-tight">
-          Most Popular Videos
-        </span>
-        <span className="text-xs text-accent-foreground/50 tracking-tight">Your top 5 most popular video</span>
+        <div className="w-full h-full flex flex-col justify-center items-center">
+          <span className="text-xl font-bold tracking-tight">
+            Most Popular Videos
+          </span>
+          <span className="text-xs text-accent-foreground/50 tracking-tight">
+            Your top 5 most popular video
+          </span>
         </div>
         <VideoList
           data={populrVideos}

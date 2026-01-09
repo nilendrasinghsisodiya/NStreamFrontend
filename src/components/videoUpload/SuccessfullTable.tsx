@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 
 export const SuccessfullUploadsTable = () => {
   const [successfullUploads, setSuccessFullUploads] = useState<IUpload[] | []>(
-    []
+    [],
   );
   const { uploads } = useSelector(selectVideoUpload);
   useEffect(() => {

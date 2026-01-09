@@ -21,11 +21,10 @@ const CommentInput = ({ videoId, commentId }: props) => {
       console.log(content);
       if (content && content.length !== 0) {
         if (commentId) {
-          console.log(videoId)
+          console.log(videoId);
           createComment({ content, videoId, commentId });
-        } else
-        {
-          console.log(videoId)
+        } else {
+          console.log(videoId);
           createComment({ content, videoId });
         }
       }
@@ -33,19 +32,20 @@ const CommentInput = ({ videoId, commentId }: props) => {
   };
   return (
     <>
-      <form className="flex my-3 gap-1 w-full h-fit p-3" ref={formRef} onSubmit={handleSend}>
-        <label htmlFor="comment" className="hidden fixed"></label><input 
+      <form
+        className="flex my-3 gap-1 w-full h-fit p-3"
+        ref={formRef}
+        onSubmit={handleSend}
+      >
+        <label htmlFor="comment" className="hidden fixed"></label>
+        <input
           type="text"
           id="comment"
           className="flex-1 w-11/12 z-10 hit-fit custom_input"
           name="comment"
           placeholder="add comment here....."
         />
-        <Button
-          type="submit"
-          variant="ghost"
-          className=" h-full "
-        >
+        <Button type="submit" variant="ghost" className=" h-full ">
           <Send className="icons-s md:icons-m xl:icons-lg" />
         </Button>
       </form>

@@ -1,6 +1,6 @@
 import { useGetPlaylist } from "@/api/PlaylistApi";
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router";
+import { useSearchParams } from "react-router-dom";
 import { AddVideosToPlaylist } from "@/components/comment/AddVideosToPlaylists";
 import { selectUser } from "@/contexts/auth/authSlice";
 import { useSelector } from "react-redux";

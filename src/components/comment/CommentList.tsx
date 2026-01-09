@@ -11,11 +11,14 @@ const Item: GridComponents["Item"] = React.forwardRef(
     <div ref={ref} {...props} style={{ ...style }} className="  h-fit w-full">
       {children}
     </div>
-  )
+  ),
 );
 const CommentList = ({ videoId }: { videoId: string; className?: string }) => {
   const { data, fetchNextPage, refetch, hasNextPage, isError, error } =
-    useGetVideoComments({ videoId, limit: 20 });
+    useGetVideoComments({
+      videoId,
+      limit: 20,
+    });
   const [comments, setComments] = useState<IComment[]>([]);
 
   useEffect(() => {

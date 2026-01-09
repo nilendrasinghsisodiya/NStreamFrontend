@@ -7,7 +7,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "../ui/sidebar";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 const items = [
   { title: "Home", url: "/", icon: Home },
@@ -18,8 +18,7 @@ const items = [
     url: "/liked-videos",
     icon: () => <ThumbsUp className="fill-foreground" />,
   },
-  {title:"Subscription",url:"/subscriptions",icon:Layers}
- 
+  { title: "Subscription", url: "/subscriptions", icon: Layers },
 ];
 
 const AppSidebar = () => {
@@ -40,7 +39,9 @@ const AppSidebar = () => {
                     className="flex flex-col items-center gap-2 text-sm font-medium"
                   >
                     <item.icon className="w-5 h-5" strokeWidth="2" />
-                    <span className="text-xs text-center w-fit overflow-ellipsis line-clamp-2 m-0 p-0">{item.title}</span>
+                    <span className="text-xs text-center w-fit overflow-ellipsis line-clamp-2 m-0 p-0">
+                      {item.title}
+                    </span>
                   </Link>
                 </SidebarMenuItem>
               ))}

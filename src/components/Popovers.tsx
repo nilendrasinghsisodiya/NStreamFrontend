@@ -37,16 +37,15 @@ export const AddToPlaylistPopover = ({
   });
   const addPlaylists = useAddVideoToPlaylist();
   const handleAdd = async ({ targetId }: { targetId: string }) => {
-   try {
-     await addPlaylists.add({ playlistId: targetId, videoIds: [videoId] });
-       toast.success("video added to playlists successfully");
-       queryClient.invalidateQueries({queryKey:["playlist",targetId]});
-   } catch (error:unknown) {
-    if(error instanceof AxiosError){
-      toast.error("failed to add video to playlist")
+    try {
+      await addPlaylists.add({ playlistId: targetId, videoIds: [videoId] });
+      toast.success("video added to playlists successfully");
+      queryClient.invalidateQueries({ queryKey: ["playlist", targetId] });
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        toast.error("failed to add video to playlist");
+      }
     }
-    
-   }
   };
 
   return (
@@ -100,7 +99,7 @@ export const AddToPlaylistPopover = ({
 
 export const CreatePlaylist = ({ videoId }: { videoId?: string }) => {
   const { create } = useCreatePlaylist();
-  const {_id:userId} = useSelector(selectUser);
+  const { _id: userId } = useSelector(selectUser);
   const addPlaylists = useAddVideoToPlaylist();
   const nameRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
@@ -117,7 +116,7 @@ export const CreatePlaylist = ({ videoId }: { videoId?: string }) => {
         await addPlaylists.add({ playlistId: val._id, videoIds: [videoId] });
       }
       toast.success(`videoAdded to ${val.name} successfully!`);
-      queryClient.invalidateQueries({queryKey:["userPlaylists",userId]})
+      queryClient.invalidateQueries({ queryKey: ["userPlaylists", userId] });
     }
   };
   return (

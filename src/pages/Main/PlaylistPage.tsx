@@ -7,7 +7,7 @@ import { generateSrcSet } from "@/utils";
 import { CircleOff } from "lucide-react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   className?: string;
@@ -102,40 +102,40 @@ const PlaylistPage = () => {
     <>
       <div className="h-full w-full flex flex-col gap-3 justify-center items-center">
         <span className="flex gap-2 w-fit h-fit items-center justify-center">
-          <span className="text-md tracking-tight">Create playlist</span><CreatePlaylist />
-          </span>
-       <div>
-        
-       {Array.isArray(playlists?.playlists) && playlists.playlists.length > 0
-          ? playlists.playlists.map((ele, index) => {
-            console.log("playlists: ", playlists);
-            return (
-              <PlaylistCard
-              noHover
-              lazyLoading
-              cover={ele.cover}
-              key={index}
-              className="w-full"
-              name={ele.name}
-              isLoading={isLoading}
-              isSuccess={isSuccess}
-              playlistId={ele._id}
-              />
-            );
-          })
-          : (isSuccess && (
-            <>
-                {/* <div className="w-full h-fit p-3">
+          <span className="text-md tracking-tight">Create playlist</span>
+          <CreatePlaylist />
+        </span>
+        <div>
+          {Array.isArray(playlists?.playlists) && playlists.playlists.length > 0
+            ? playlists.playlists.map((ele, index) => {
+                console.log("playlists: ", playlists);
+                return (
+                  <PlaylistCard
+                    noHover
+                    lazyLoading
+                    cover={ele.cover}
+                    key={index}
+                    className="w-full"
+                    name={ele.name}
+                    isLoading={isLoading}
+                    isSuccess={isSuccess}
+                    playlistId={ele._id}
+                  />
+                );
+              })
+            : (isSuccess && (
+                <>
+                  {/* <div className="w-full h-fit p-3">
                   <span>create playlists</span> <CreatePlaylist />
                 </div> */}
-                <ErrorScreen
-                  mainMessage="no playlist found "
-                  secondaryMessage="please create one"
+                  <ErrorScreen
+                    mainMessage="no playlist found "
+                    secondaryMessage="please create one"
                   />
-              </>
-            )) ||
-            (isError && <ErrorScreen mainMessage="something went wrong" />)}
-            </div>
+                </>
+              )) ||
+              (isError && <ErrorScreen mainMessage="something went wrong" />)}
+        </div>
       </div>
     </>
   );

@@ -31,8 +31,8 @@ export const AddVideoOption = ({
   return (
     <span
       className={className}
-      onClick={(e) =>
-      {e.stopPropagation();
+      onClick={(e) => {
+        e.stopPropagation();
         setVideosToAdd((prev) => {
           let value = "";
           if (inputRef && inputRef.current) {
@@ -40,7 +40,7 @@ export const AddVideoOption = ({
             inputRef.current.checked = !inputRef.current.checked;
           }
           return [...prev, value];
-        })
+        });
       }}
     >
       <img
@@ -49,14 +49,13 @@ export const AddVideoOption = ({
         className="aspect-video h-full w-full min-h-[50px] min-w-[100px] max-h-[80px] max-w-[160px]"
       />
       <VideoAvatarStrip
-      views={ele.views}
+        views={ele.views}
         avatar={ele.owner.avatar}
         username={ele.owner.username}
         subscribersCount={ele.owner.subscribersCount}
         videoTitle={ele.title}
         className="w-full"
         navigateOnAvatarClick={false}
-        
       />
       <span>
         <label htmlFor={`videoSelectOption_${ele._id}`} className="sr-only">

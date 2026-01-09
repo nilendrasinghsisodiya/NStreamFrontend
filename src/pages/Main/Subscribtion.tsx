@@ -1,19 +1,21 @@
-import {  useSubscribedVideos } from "@/api/ChannelApi"
+import { useSubscribedVideos } from "@/api/ChannelApi";
 import { ErrorScreen } from "@/components/ErrorComponent";
-import { VirtualVideoList } from "@/components/video/VideoListVirtual"
+import { VirtualVideoList } from "@/components/video/VideoListVirtual";
 import { useMemo } from "react";
 
-export const SubscribptionPage = ()=>{
+export const SubscribptionPage = () => {
+  const { data, hasNextPage, isLoading, isSuccess, fetchNextPage } =
+    useSubscribedVideos({
+      limit: 10,
+    });
+  const fetchedVids = useMemo<IVideo[]>(() => {
+    if (data && data.pages) {
+      return data.pages.flatMap((page) => page.Videos);
+    } else {
+      return [];
+    }
+  }, [data]);
 
-    const { data, hasNextPage, isLoading, isSuccess, fetchNextPage } =
-    useSubscribedVideos({limit:10});
-     const fetchedVids = useMemo<IVideo[]>(()=>{
-     if (data && data.pages) {
-      return data.pages.flatMap((page) => page.Videos);}else{
-        return [];
-      }
-  },[data]);
- 
   return (
     <>
       {fetchedVids.length > 0 ? (
@@ -33,4 +35,4 @@ export const SubscribptionPage = ()=>{
       )}
     </>
   );
-}
+};

@@ -2,7 +2,7 @@ import { VideoCardSkeleton } from "./VideoCardSkeleton";
 import { generateSrcSet, toHms } from "@/utils";
 import { VideoAvatarStrip } from "../avatar/Avatars";
 import { memo } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { VideoOptions } from "./VideoOptions";
 import { CircleSlash } from "lucide-react";
 
@@ -73,22 +73,23 @@ const VideoCard = ({
               videoTitle={title}
               views={viewsCount}
               navigateOnAvatarClick
-              
-              className={`flex flex-col w-full   px-2  ${avatarClassName}`}
+              className={`flex flex-col w-full gap-y-2   px-2  ${avatarClassName}`}
             />
 
             <VideoOptions videoId={videoId} />
           </div>
         </>
       ) : (
-        <span className="p-1 border-2  sm:rounded-md md:round-lg lg:round-xl gap-2 w-full h-full text-center text-md ">something went wrong</span>
+        <span className="p-1 border-2  sm:rounded-md md:round-lg lg:round-xl gap-y-2 w-full h-full text-center text-md ">
+          something went wrong
+        </span>
       )}
     </div>
   );
 };
 export interface ListVideoCardProps extends IVideoCardProps {
   avatarClassName: string;
-  className:string;
+  className: string;
 }
 const ListVideoCard = ({
   thumbnail,
@@ -114,13 +115,13 @@ const ListVideoCard = ({
         navigate(`/watch?videoId=${videoId}`);
       }}
       //className={`flex flex-col cursor-pointer p-1 w-full h-full border-2 md:rounded-xl gap-2   ${className}`}
-      className={`  p-0 m-0 border-2  gap-2 ${className}`}
+      className={`  p-0 m-0 border-2  gap-2 items-center  ${className}`}
     >
       {!isLoading ? (
         isSuccess ? (
           <>
             {thumbnail.length > 0 ? (
-              <span className="relative w-2/5   aspect-video shrink-0">
+              <span className="relative w-2/5  aspect-video shrink-0">
                 <img
                   src={thumbnail}
                   alt={`${title}'s thumbnail`}
@@ -139,21 +140,23 @@ const ListVideoCard = ({
                 <CircleSlash className="h-1/2 w-1/2" />
               </span>
             )}
-            <div className="flex w-full items-center justify-center">
+            <div className="flex ws-full items-center justify-center">
               <VideoAvatarStrip
                 avatar={owner.avatar}
                 subscribersCount={owner.subscribersCount}
                 username={owner.username}
                 videoTitle={title}
                 views={viewsCount}
-                className={`${avatarClassName}`}
+                className={`${avatarClassName} `}
               />
 
               <VideoOptions videoId={videoId} />
             </div>
           </>
         ) : (
-          <span className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">something went wrong</span>
+          <span className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
+            something went wrong
+          </span>
         )
       ) : (
         <VideoCardSkeleton />
@@ -161,10 +164,6 @@ const ListVideoCard = ({
     </div>
   );
 };
-
-
-
-
 
 export const MemoVideoCard = memo(VideoCard);
 

@@ -14,26 +14,26 @@ import { Button } from "@/components/ui/button";
 const loginFormSchema = z.object({
   email: z
     .string()
-    .trim().nonempty()
+    .trim()
+    .nonempty()
     .email("not a valid email")
     .min(3, "email cant be  empty"),
- 
+
   password: z.string().trim().min(1, "password cant be empty"),
 });
 type FormDataType = z.infer<typeof loginFormSchema>;
 export default FormDataType;
 type Props = {
   className?: string;
-isPending:boolean;
+  isPending: boolean;
   onSave: (formData: FormDataType) => void;
 };
 
-const LogInForm = ({ className, onSave,isPending }: Props) => {
-  const form= useForm<FormDataType>({
+const LogInForm = ({ className, onSave, isPending }: Props) => {
+  const form = useForm<FormDataType>({
     defaultValues: {
       email: "",
       password: "",
-     
     },
     mode: "all",
     reValidateMode: "onChange",
@@ -41,7 +41,7 @@ const LogInForm = ({ className, onSave,isPending }: Props) => {
   });
 
   return (
-    <Form {...form} >
+    <Form {...form}>
       <form className={`${className}`} onSubmit={form.handleSubmit(onSave)}>
         <h2 className="text-xl font-bold">Log In</h2>
 
@@ -52,7 +52,11 @@ const LogInForm = ({ className, onSave,isPending }: Props) => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <input {...field}  autoComplete="email" className="custom_input" />
+                <input
+                  {...field}
+                  autoComplete="email"
+                  className="custom_input"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -65,13 +69,20 @@ const LogInForm = ({ className, onSave,isPending }: Props) => {
             <FormItem>
               <FormLabel>password</FormLabel>
               <FormControl>
-                <input {...field} type="password" className="custom_input" autoComplete="current-password"/>
+                <input
+                  {...field}
+                  type="password"
+                  className="custom_input"
+                  autoComplete="current-password"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending} >Log In</Button>
+        <Button type="submit" disabled={isPending}>
+          Log In
+        </Button>
       </form>
     </Form>
   );
