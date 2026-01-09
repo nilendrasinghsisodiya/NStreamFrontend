@@ -2,8 +2,6 @@
 import { AxiosResponse } from "axios";
 import { apiClient } from "./api/ApiClient";
 
-
-
 /**
  * Handles an API response and extracts data if successful.
  * on status code 493 (access token expired) it make an request to refresh the token and keeps the user logged.
@@ -17,12 +15,16 @@ import { apiClient } from "./api/ApiClient";
  */
 export const handleResponse = <T>(
   res: AxiosResponse<ApiResponse<T>>,
-  errMessage: string
+  errMessage: string,
+  expectedStatusCode: number = 200,
+  doesHaveData: boolean = true,
 ): T => {
-  console.log("running resHandler")
-  if (res.status === 200 && res.data) {
-    console.log(res.data.data);
-    return res.data.data;
+  console.log("running resHandler");
+  if (res.status === expectedStatusCode) {
+    if (doesHaveData) {
+      return res.data.data;
+    }
+    return {} as T;
   }
   throw new Error(res.data?.message || errMessage);
 };
@@ -35,14 +37,14 @@ export const handleResponse = <T>(
 export const refreshAccessToken = async (): Promise<IUser> => {
   try {
     const res = await apiClient.post<ApiResponse<IUser>>(
-      "/user/refresh-token",
+      "/auth/refresh-token",
       {},
       {
         withCredentials: true,
         headers: {
           Optional: "true", // assuming your backend checks this header
         },
-      }
+      },
     );
 
     if (res.status === 200) {
@@ -125,14 +127,14 @@ export const generateSrcSet = (url: string): string => {
   const sizes = [360, 480, 720, 1080];
 
   return sizes
-    .map((w) =>
-      url.replace("/upload/", `/upload/w_${w},f_auto,q_auto/`) + ` ${w}w`
+    .map(
+      (w) =>
+        url.replace("/upload/", `/upload/w_${w},f_auto,q_auto/`) + ` ${w}w`,
     )
     .join(", ");
 };
 
-export const getHomeUrl=()=>("http:://localhost:5173");
-
+export const getHomeUrl = () => "http:://localhost:5173";
 
 let navigateFunction: (path: string) => void;
 
@@ -144,12 +146,15 @@ export const navigateGlobal = (path: string) => {
   if (navigateFunction) navigateFunction(path);
   else console.error("Navigate function not initialized!");
 };
-export function appendFormData<T extends Record<string, any>>(formData: FormData, data: T): void {
+export function appendFormData<T extends Record<string, any>>(
+  formData: FormData,
+  data: T,
+): void {
   for (const key in data) {
-    const value:any = data[key];
+    const value: any = data[key];
     if (Array.isArray(value)) {
       value.forEach((v) => formData.append(`${key}[]`, v));
-    } else if (value && value instanceof File|| typeof value === 'string') {
+    } else if ((value && value instanceof File) || typeof value === "string") {
       formData.append(key, value);
     }
   }
@@ -210,5 +215,3 @@ export const allowedVideoType = [
   "video/avi",
   "video/avi",
 ];
-
-
