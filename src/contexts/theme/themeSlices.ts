@@ -3,14 +3,14 @@ import { RootState } from "@/ContextStore";
 
 export type ThemeType = "light" | "dark" | "system";
 
-const initialState:ThemeType = "system" as ThemeType;
+const initialState: ThemeType = "system" as ThemeType;
 
 const themeSlice = createSlice({
   name: "theme",
-  initialState:initialState,
+  initialState: initialState,
   reducers: {
     setTheme: (_state, action: PayloadAction<ThemeType>) => {
-      return action.payload ; // Returning the new state
+      return action.payload; // Returning the new state
     },
     reset: () => {
       return "light" as ThemeType; // Returning default state

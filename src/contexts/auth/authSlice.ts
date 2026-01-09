@@ -1,14 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/ContextStore";
 import { useSelector } from "react-redux";
-export interface IAuthState extends IUser {isAuthenticated:boolean;}
-const initialState:IAuthState   =   {
-  accessToken: "",
-  isAuthenticated:false,
+export interface IAuthState extends IUser {
+  isAuthenticated: boolean;
+  isEmailVerfied: boolean;
+}
+const initialState: IAuthState = {
+  isAuthenticated: false,
   _id: "",
   username: "",
   avatar: "",
-  coverImage: "",
+  isEmailVerfied: false,
   description: "",
   createdAt: "",
   updated_at: "",
@@ -24,28 +26,29 @@ const authSlice = createSlice({
     setUser: (state, user: PayloadAction<IAuthState>) => {
       Object.assign(state, user.payload);
     },
-    resetIsAuthenticated: (state)=>{
+    resetIsAuthenticated: (state) => {
       state.isAuthenticated = false;
-
     },
-    setIsAuthenticated:(state)=>{state.isAuthenticated = true;},
+    setIsAuthenticated: (state) => {
+      state.isAuthenticated = true;
+    },
     setRegistration: (
       state,
       action: PayloadAction<{
         _id: string;
         email: string;
         createdAt: string;
-        accessToken?: string;
         username: string;
-        isAuthenticated:boolean;
-      }>
+        isAuthenticated: boolean;
+        isEmailVerfied: boolean;
+      }>,
     ) => {
-    state.username = action.payload.username;
-    state._id = action.payload._id;
-    state.accessToken = action.payload.accessToken;
-    state.coverImage = action.payload.createdAt;
-    state.email = action.payload.email;
-    state.isAuthenticated = action.payload.isAuthenticated;
+      state.username = action.payload.username;
+      state._id = action.payload._id;
+      state.createdAt = action.payload.createdAt;
+      state.email = action.payload.email;
+      state.isAuthenticated = action.payload.isAuthenticated;
+      state.isEmailVerfied = action.payload.isEmailVerfied;
     },
     reset: (state) => {
       Object.assign(state, initialState);
@@ -53,13 +56,18 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, reset, setRegistration ,resetIsAuthenticated,setIsAuthenticated} = authSlice.actions;
+export const {
+  setUser,
+  reset,
+  setRegistration,
+  resetIsAuthenticated,
+  setIsAuthenticated,
+} = authSlice.actions;
 
 export const selectUser = (state: RootState) => state.auth;
 export default authSlice.reducer;
 
-
-export const useIsAuthenticated = ()=>{
-  const {isAuthenticated} = useSelector(selectUser);
+export const useIsAuthenticated = () => {
+  const { isAuthenticated } = useSelector(selectUser);
   return isAuthenticated;
-}
+};

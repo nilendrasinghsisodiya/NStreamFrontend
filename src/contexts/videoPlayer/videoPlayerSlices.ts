@@ -9,8 +9,8 @@ export interface videoPlayStateType {
   playbackSpeed: number;
   volume: number;
   avalQuality: Quality[] | [];
-  isFullScreen:boolean;
-  controls:boolean;
+  isFullScreen: boolean;
+  controls: boolean;
 }
 const initialState: videoPlayStateType = {
   currentTime: 0.0,
@@ -20,9 +20,8 @@ const initialState: videoPlayStateType = {
   playbackSpeed: 1,
   volume: 0.5,
   avalQuality: [],
-  isFullScreen:false,
-  controls:true
-
+  isFullScreen: false,
+  controls: true,
 };
 const VideoPlayerSlice = createSlice({
   name: "videoPlayerSlice",
@@ -62,18 +61,16 @@ const VideoPlayerSlice = createSlice({
       });
     },
 
-    toggleFullScreen:(state)=>{
-     state.isFullScreen = !state.isFullScreen;
+    toggleFullScreen: (state) => {
+      state.isFullScreen = !state.isFullScreen;
     },
-    toggleControls:(state)=>{
+    toggleControls: (state) => {
       state.controls = !state.controls;
     },
-    reset:(state)=>{
-      Object.assign(state,initialState);
-    }
-  
+    reset: (state) => {
+      Object.assign(state, initialState);
+    },
   },
-  
 });
 
 export const {
@@ -86,8 +83,7 @@ export const {
   setAvalQuality,
   toggleControls,
   toggleFullScreen,
-  reset
+  reset,
 } = VideoPlayerSlice.actions;
-export const selectVideoPlayer = (state: RootState) =>
-  state.videoPlayer;
+export const selectVideoPlayer = (state: RootState) => state.videoPlayer;
 export default VideoPlayerSlice.reducer;

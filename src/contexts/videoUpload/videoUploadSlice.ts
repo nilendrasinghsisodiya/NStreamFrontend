@@ -17,7 +17,7 @@ const uploadsSlice = createSlice({
   reducers: {
     startUpload: (
       state,
-      action: PayloadAction<{ id: string; title: string; uploader: string }>
+      action: PayloadAction<{ id: string; title: string; uploader: string }>,
     ) => {
       console.log("inside add reducer");
       if (Array.isArray(state.uploads)) {
@@ -35,7 +35,7 @@ const uploadsSlice = createSlice({
 
     setProgress: (
       state,
-      action: PayloadAction<{ id: string; progress: number }>
+      action: PayloadAction<{ id: string; progress: number }>,
     ) => {
       const upload = state.uploads.find((u) => u.id === action.payload.id);
       if (upload) upload.progress = action.payload.progress;
