@@ -1,5 +1,6 @@
 import { Layout } from "./layouts/Layout";
-import { Routes, Route, useNavigate } from "react-router";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { VideoPage } from "./pages/Video/VideoPage";
 import { AuthPage } from "./pages/Auth/AuthPage";
 import { HomePage } from "./pages/Main/HomePage";
@@ -28,7 +29,6 @@ const AppRoutes = () => {
   }, [navigate]);
   return (
     <Routes>
-
       {/** main routes */}
       <Route
         path="/"
@@ -38,30 +38,31 @@ const AppRoutes = () => {
           </Layout>
         }
       />
-      <Route
-        path="watch-history"
-        element={
-          <Layout>
-            <WatchHistoryPage />
-          </Layout>
-        }
-      />{" "}
-      <Route
-        path="liked-videos"
-        element={
-          <Layout>
-            <LikedVideoPage />
-          </Layout>
-        }
-      />
-      <Route
-        path="user-playlists"
-        element={
-          <Layout>
-            <MainPlaylistPage />
-          </Layout>
-        }
-      />
+      <Route element={<ProtectedRoute />}>
+        <Route
+          path="watch-history"
+          element={
+            <Layout>
+              <WatchHistoryPage />
+            </Layout>
+          }
+        />
+        <Route
+          path="liked-videos"
+          element={
+            <Layout>
+              <LikedVideoPage />
+            </Layout>
+          }
+        />
+        <Route
+          path="user-playlists"
+          element={
+            <Layout>
+              <MainPlaylistPage />
+            </Layout>
+          }
+        />
         <Route
           path="playlist"
           element={
@@ -70,14 +71,57 @@ const AppRoutes = () => {
             </Layout>
           }
         />
-      <Route
-        path="dashboard"
-        element={
-          <Layout>
-            <Dashboard />
-          </Layout>
-        }
-      />
+        <Route
+          path="dashboard"
+          element={
+            <Layout>
+              <Dashboard />
+            </Layout>
+          }
+        />
+        <Route
+          path="/settings/video"
+          element={
+            <Layout>
+              <VideoControlPage />
+            </Layout>
+          }
+        />
+        {/*Video Routes */}
+        <Route
+          path="upload-video"
+          element={
+            <Layout>
+              <VideoUploadForm />
+            </Layout>
+          }
+        />
+        <Route
+          path="user-reg-profile"
+          element={
+            <Layout hideFooter>
+              <ProfileForm />
+            </Layout>
+          }
+        />
+        <Route
+          path="subscriptions"
+          element={
+            <Layout>
+              <SubscribptionPage />
+            </Layout>
+          }
+        />
+        {/* Controll routes*/}
+        <Route
+          path="/settings/channel"
+          element={
+            <Layout>
+              <ProfileEditPage />
+            </Layout>
+          }
+        />
+      </Route>
       <Route
         path="watch"
         element={
@@ -102,18 +146,6 @@ const AppRoutes = () => {
           </Layout>
         }
       />
-      <Route
-        path="user-reg-profile"
-        element={
-          <Layout hideFooter>
-            <ProfileForm />
-          </Layout>
-        }
-      />
-
-   <Route path="subscriptions" element={<Layout>
-    <SubscribptionPage />
-   </Layout>} />
 
       {/* Channel routes */}
       <Route
@@ -128,34 +160,6 @@ const AppRoutes = () => {
         <Route path="playlists" element={<ChannelPlaylistPage />} />
         <Route path="videos" element={<ChannelVideoPage />} />
       </Route>
-
-      {/* Controll routes*/}
-      <Route
-        path="/settings/channel"
-        element={
-          <Layout>
-            <ProfileEditPage />
-          </Layout>
-        }
-      />
-      <Route
-        path="/settings/video"
-        element={
-          <Layout>
-            <VideoControlPage />
-          </Layout>
-        }
-      />
-
-      {/*Video Routes */}
-        <Route
-          path="upload-video"
-          element={
-            <Layout>
-              <VideoUploadForm />
-            </Layout>
-          }
-        />
 
       {/* golbal routes */}
       <Route
