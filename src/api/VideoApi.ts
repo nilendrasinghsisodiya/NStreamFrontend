@@ -24,15 +24,19 @@ const useUploadVideo = () => {
             setUploadProgress(Math.round(ProgressEvent.loaded * 100) / 100);
             console.log(Math.round(ProgressEvent.loaded * 100) / 100);
           },
-        }
+        },
       );
       return handleResponse<IVideo>(response, "Failed to upload a video");
     },
     onSuccess: (variables) => {
-      toast.success(`video upload for ${variables.title} just completed`);
+      toast.success(`video upload for ${variables.title} just completed`, {
+        toasterId: "global",
+      });
     },
     onError: (error, variables) => {
-      toast.error(`video upload for ${variables.get("title")} failed`);
+      toast.error(`video upload for ${variables.get("title")} failed`, {
+        toasterId: "global",
+      });
       console.error(`Video Upload:${error.message}`);
     },
   });
@@ -61,11 +65,11 @@ const useAllVideos = ({
     queryKey: ["videos", userId, limit, page, sortBy, sortType], // 🔹 Pass parameters here
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<IPaginatedVideos>>(
-        `/video/all?userId=${userId}&limit=${limit}&page=${page}&sortBy=${sortBy}&sortType=${sortType}`
+        `/video/all?userId=${userId}&limit=${limit}&page=${page}&sortBy=${sortBy}&sortType=${sortType}`,
       );
       return handleResponse(
         response,
-        "Failed to fetch all videos for the channel"
+        "Failed to fetch all videos for the channel",
       );
     },
     initialPageParam: 1,
@@ -81,7 +85,6 @@ const useAllVideos = ({
 };
 
 const useGetVideo = (videoId: string) => {
-  const { accessToken } = useSelector(selectUser);
   const getVideoQuery = useQuery<IVideo, AxiosError>({
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<IVideo>>(
@@ -89,9 +92,8 @@ const useGetVideo = (videoId: string) => {
         {
           headers: {
             Optional: "true",
-            Authorization: accessToken ? `Bearer ${accessToken}` : "",
           },
-        }
+        },
       );
       return handleResponse<IVideo>(response, "failed to fetch channel");
     },
@@ -112,7 +114,7 @@ const usePopularVideo = ({ limit }: GetPopularVideoParams) => {
     queryKey: ["popularVideos", limit],
     queryFn: async ({ pageParam = 1 }) => {
       const response = await apiClient.get<ApiResponse<IPaginatedVideos>>(
-        `/video/popular?page=${pageParam}&limit=${limit}`
+        `/video/popular?page=${pageParam}&limit=${limit}`,
       );
       return handleResponse(response, "failed to fetch video comment");
     },
@@ -142,7 +144,7 @@ export const useRelatedVideos = ({
     queryKey: ["relatedVideo", videoId, limit],
     queryFn: async ({ pageParam = 1 }) => {
       const response = await apiClient.get<ApiResponse<IPaginatedVideos>>(
-        `video/related?videoId=${videoId}&page=${pageParam}&limit=${limit}`
+        `video/related?videoId=${videoId}&page=${pageParam}&limit=${limit}`,
       );
       return handleResponse(response, "failed to fetch related videos");
     },
@@ -167,32 +169,31 @@ export type searchQueryParams = {
   query: string;
   type?: searchType;
   limit: number;
-  isActive:boolean;
+  isActive: boolean;
 };
 export const useSearchVideo = ({
   limit,
   sortBy,
   sortType,
   query,
-  isActive
-  
+  isActive,
 }: searchQueryParams) => {
   const searchQuery = useInfiniteQuery<IPaginatedVideos, AxiosError>({
-    queryKey: ["VideoSearch" ],
+    queryKey: ["VideoSearch", query, limit, sortBy, sortType],
     queryFn: async ({ pageParam = 1 }) => {
       const response = await apiClient.get<ApiResponse<IPaginatedVideos>>(
-        `/video/search?query=${query}&page=${pageParam}&limit=${limit}&sortBy=${sortBy}&sortType=${sortType}`
+        `/video/search?query=${query}&page=${pageParam}&limit=${limit}&sortBy=${sortBy}&sortType=${sortType}`,
       );
       return handleResponse<IPaginatedVideos>(
         response,
-        "something went wrong while search"
+        "something went wrong while search",
       );
     },
     initialPageParam: 1,
     staleTime: 2 * 60 * 1000,
     getNextPageParam: (lastPage) =>
       lastPage.hasNextPage ? lastPage.nextPage : undefined,
-    enabled:isActive,
+    enabled: isActive,
 
     getPreviousPageParam: (lastPage) =>
       lastPage.hasPrevPage ? lastPage.prevPage : undefined,
@@ -205,11 +206,13 @@ const useGetLikedVideos = () => {
     queryFn: async () => {
       const respone = await apiClient.get<ApiResponse<IVideo[]>>(
         "/user/liked-videos",
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        },
       );
       return handleResponse(
         respone,
-        "something went wrong when fetching liked Videos"
+        "something went wrong when fetching liked Videos",
       );
     },
   });
@@ -221,11 +224,11 @@ const useDeleteVideo = () => {
     mutationKey: ["videoDelete"],
     mutationFn: async ({ videoId }) => {
       const response = await apiClient.delete<ApiResponse<unknown>>(
-        `/video?videoId=${videoId}`
+        `/video?videoId=${videoId}`,
       );
       return handleResponse(
         response,
-        "something went wront while deleting the video"
+        "something went wront while deleting the video",
       );
     },
   });
@@ -236,12 +239,17 @@ const useEditVideo = () => {
   const mutation = useMutation<
     IVideo,
     AxiosError,
-    { videoId:string;title?: string; tags?:string[]; thumbnail?: File }
+    { videoId: string; title?: string; tags?: string[]; thumbnail?: File }
   >({
-    mutationFn: async ({videoId, title, tags, thumbnail }) => {
+    mutationFn: async ({ videoId, title, tags, thumbnail }) => {
       const response = await apiClient.patch<ApiResponse<IVideo>>(
         "/video/update",
-        { videoId,title, tags, thumbnail }
+        {
+          videoId,
+          title,
+          tags,
+          thumbnail,
+        },
       );
       return handleResponse(response, "failed to Edit Video");
     },
@@ -251,7 +259,6 @@ const useEditVideo = () => {
   return { ...mutation };
 };
 
-
 export {
   useUploadVideo,
   useAllVideos,
@@ -260,5 +267,4 @@ export {
   useGetLikedVideos,
   useDeleteVideo,
   useEditVideo,
- 
 };

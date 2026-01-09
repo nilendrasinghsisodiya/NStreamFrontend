@@ -10,7 +10,6 @@ type createPlaylistBody = {
 };
 
 export const useCreatePlaylist = () => {
-  const { accessToken } = useSelector(selectUser);
   const {
     isError,
     isSuccess,
@@ -21,12 +20,10 @@ export const useCreatePlaylist = () => {
     mutationFn: async ({ name, description }: createPlaylistBody) => {
       const response = await apiClient.post<ApiResponse<IPlaylist>>(
         "/playlist/createPlaylist",
-        { name, description },
         {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+          name,
+          description,
+        },
       );
       return handleResponse<IPlaylist>(response, "failed to create playlist");
     },
@@ -39,7 +36,6 @@ type addVideoToPlaylistBody = {
   playlistId: string;
 };
 export const useAddVideoToPlaylist = () => {
-  const { accessToken } = useSelector(selectUser);
   const {
     isError,
     error,
@@ -49,17 +45,14 @@ export const useAddVideoToPlaylist = () => {
     mutationFn: async ({ videoIds, playlistId }) => {
       const response = await apiClient.patch<ApiResponse<unknown>>(
         "/playlist/addVideos",
-        { videoIds, playlistId },
         {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          withCredentials: true,
-        }
+          videoIds,
+          playlistId,
+        },
       );
       return handleResponse<unknown>(
         response,
-        "failed to add videos in playlsit"
+        "failed to add videos in playlsit",
       );
     },
   });
@@ -73,7 +66,6 @@ type updatePlaylistBody = {
   description?: string;
 };
 export const useUpdatePlaylist = () => {
-  const { accessToken } = useSelector(selectUser);
   const {
     isError,
     error,
@@ -83,17 +75,15 @@ export const useUpdatePlaylist = () => {
     mutationFn: async ({ name, description, playlistId }) => {
       const response = await apiClient.patch<ApiResponse<IPlaylist>>(
         "/playlist/addVideos",
-        { playlistId, name, description: description && description },
         {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          withCredentials: true,
-        }
+          playlistId,
+          name,
+          description: description && description,
+        },
       );
       return handleResponse<IPlaylist>(
         response,
-        "failed to add videos in playlsit"
+        "failed to add videos in playlsit",
       );
     },
   });
@@ -101,14 +91,13 @@ export const useUpdatePlaylist = () => {
   return { update, isError, isSuccess, error };
 };
 interface IPaginatedPlaylist extends IPaginatedBase {
-  playlist:IPlaylist;
+  playlist: IPlaylist;
 }
 type getPlaylistBody = {
   playlistId: string;
   limit: number;
 };
 export const useGetPlaylist = ({ playlistId, limit }: getPlaylistBody) => {
-  const { accessToken } = useSelector(selectUser);
   const playlistQuery = useInfiniteQuery<IPaginatedPlaylist, AxiosError>({
     queryKey: ["playlist", playlistId],
     queryFn: async ({ pageParam = 1 }) => {
@@ -116,14 +105,13 @@ export const useGetPlaylist = ({ playlistId, limit }: getPlaylistBody) => {
         `playlist?playlistId=${playlistId}&page=${pageParam}&limit=${limit}`,
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
             optional: true,
           },
-        }
+        },
       );
       return handleResponse<IPaginatedPlaylist>(
         response,
-        "failed to get playlist"
+        "failed to get playlist",
       );
     },
     initialPageParam: 1,
@@ -142,7 +130,6 @@ type removeVideosFromPlaylistBody = {
   playlistId: string;
 };
 export const useRemoveVideoFromPlaylist = () => {
-  const { accessToken } = useSelector(selectUser);
   const {
     isError,
     error,
@@ -152,17 +139,14 @@ export const useRemoveVideoFromPlaylist = () => {
     mutationFn: async ({ videoIds, playlistId }) => {
       const response = await apiClient.patch<ApiResponse<IPlaylist>>(
         "/playlist/removeVideos",
-        { videoIds, playlistId },
         {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          withCredentials: true,
-        }
+          videoIds,
+          playlistId,
+        },
       );
       return handleResponse<IPlaylist>(
         response,
-        "failed to remove videos in playlsit"
+        "failed to remove videos in playlsit",
       );
     },
   });
@@ -175,7 +159,6 @@ type deletePlaylistBody = {
 };
 
 export const useDeletePlaylistVideo = () => {
-  const { accessToken } = useSelector(selectUser);
   const {
     isError,
     mutateAsync: deletePlaylist,
@@ -185,11 +168,6 @@ export const useDeletePlaylistVideo = () => {
     mutationFn: async ({ playlistId }: deletePlaylistBody) => {
       const response = await apiClient.delete<ApiResponse<unknown>>(
         `playlist/delete?playlistId=${playlistId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
       );
       return handleResponse<unknown>(response, "failed to delete playlist");
     },
