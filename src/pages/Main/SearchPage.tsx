@@ -1,82 +1,58 @@
 import { useChannelSearch } from "@/api/ChannelApi";
-import {
-  
-  searchType,
-  sortBy,
-  sortType,
-  useSearchVideo,
+import type {
+  searchType as ISearchType,
+  sortBy as ISortBy,
+  sortType as ISortType,
 } from "@/api/VideoApi";
-import { UserListVirtual, UserWIthSubscriptionFlag } from "@/components/channel/ChannelSearchResult";
+import { useSearchVideo } from "@/api/VideoApi";
+import {
+  UserListVirtual,
+  UserWIthSubscriptionFlag,
+} from "@/components/channel/ChannelSearchResult";
 import { ErrorScreen } from "@/components/ErrorComponent";
 import { VirtualVideoList } from "@/components/video/VideoListVirtual";
-import { resetSearch, selectSearch, setSearch } from "@/contexts/search/searchSlice";
-import { useEffect, useMemo } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { useSearchParams } from "react-router";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
- 
-  const dispatch = useDispatch();
-   
- 
-  useEffect(() => {
-    
-    if (searchParams) {
-      dispatch(
-        setSearch({
-          query: searchParams.get("query") as string,
-          type: searchParams.get("type") as searchType,
-          sortBy:searchParams.get("sortBy") as sortBy,
-          sortType:searchParams.get("sorttype") as sortType,
-          limit:Number(searchParams.get("limit"))
-        })
-      );
-     
-    }
-  }, [searchParams, dispatch]);
+  const limit = 15;
+  const query = searchParams.get("query") ?? "";
+  const searchType = (searchParams.get("type") as ISearchType) ?? "vid";
+  const sortBy = (searchParams.get("sortBy") as ISortBy) ?? "views";
+  const sortType = (searchParams.get("sortType") as ISortType) ?? "asc";
 
-  useEffect(()=>{
-    return ()=>{
-      dispatch(resetSearch());
-    }
-  },[dispatch]);
-
-   const {sortBy,sortType,query,type,limit} = useSelector(selectSearch)
   const channelSearchQuery = useChannelSearch({
     limit: limit,
     query: query,
     // sortType: params.sortType,
     // sortBy: params.sortBy === "createdAt" ? "createdAt" : "",
-    isActive: type === "chnl",
+    isActive: searchType === "chnl",
   });
-
   const fetchedUsers = useMemo<UserWIthSubscriptionFlag[]>(() => {
     if (channelSearchQuery.data && channelSearchQuery.data.pages) {
       return channelSearchQuery.data.pages.flatMap((page) => page.Channels);
     } else {
       return [];
     }
-  }, [channelSearchQuery]);
+  }, [channelSearchQuery.data]);
 
-  const { data, hasNextPage, isLoading, isSuccess, fetchNextPage } =
-    useSearchVideo({
-      limit: limit,
-      query:query as string,
-      sortBy:sortBy,
-      sortType: sortType,
-      isActive: type === "vid",
-    });
+  const videoSearchQuery = useSearchVideo({
+    limit: limit,
+    query: query,
+    sortBy: sortBy,
+    sortType: sortType,
+    isActive: searchType === "vid",
+  });
   const fetchedVids = useMemo<IVideo[]>(() => {
-    if (data && data.pages) {
-      return data.pages.flatMap((page) => page.Videos);
+    if (videoSearchQuery.data && videoSearchQuery.data.pages) {
+      return videoSearchQuery.data.pages.flatMap((page) => page.Videos);
     } else {
       return [];
     }
-  }, [data]);
+  }, [videoSearchQuery.data]);
 
-  if (type === "chnl") {
+  if (searchType === "chnl") {
     return (
       <UserListVirtual
         fetchNextPage={channelSearchQuery.fetchNextPage}
@@ -91,11 +67,11 @@ const SearchPage = () => {
     <>
       {fetchedVids.length > 0 ? (
         <VirtualVideoList
-          fetchNextPage={fetchNextPage}
+          fetchNextPage={videoSearchQuery.fetchNextPage}
           itemClassName="flex flex-row items-center  h-fit p-2 justify-evenly boder-x-0"
-          hasNextPage={hasNextPage}
-          isLoading={isLoading}
-          isSuccess={isSuccess}
+          hasNextPage={videoSearchQuery.hasNextPage}
+          isLoading={videoSearchQuery.isLoading}
+          isSuccess={videoSearchQuery.isSuccess}
           videos={fetchedVids}
         />
       ) : (

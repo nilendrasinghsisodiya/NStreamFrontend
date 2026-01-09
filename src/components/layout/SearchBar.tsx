@@ -1,8 +1,12 @@
 "use client";
 
-import { searchType } from "@/api/VideoApi";
+import {
+  searchType as ISearchType,
+  sortType as SortOrder,
+  sortBy as SortByType,
+  searchType,
+} from "@/api/VideoApi";
 import { Button } from "@/components/ui/button";
-import { setSearch as setReduxSearch } from "@/contexts/search/searchSlice";
 import {
   Popover,
   PopoverTrigger,
@@ -15,63 +19,45 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import {  selectSearch } from "@/contexts/search/searchSlice";
 
 import { Search, SlidersHorizontal } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { createSearchParams, useNavigate } from "react-router";
-import { queryClient } from "@/api/ApiClient";
-
-type SortByType = "views" | "createdAt";
-type SortOrder = "asc" | "desc";
+import { useNavigate } from "react-router-dom";
+import { createSearchParams, useSearchParams } from "react-router-dom";
 
 export const SearchBarDesktop: React.FC = () => {
-  const { type, query } = useSelector(selectSearch);
   const [active, setActive] = useState<boolean>(false);
-  const [searchType, setSearchType] = useState<searchType>("vid");
+  const [searchType, setSearchType] = useState<ISearchType>("vid");
   const [sortBy, setSortBy] = useState<SortByType>("views");
   const [sortType, setSortType] = useState<SortOrder>("asc");
-  const [search, setSearch] = useState<string>(query);
-  
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState<string>(
+    (searchParams.get("query") as string) ?? "",
+  );
   const inputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   useEffect(() => {
-    setSearch(query);
-    setSearchType(type as searchType);
-  }, [query, type]);
-  const dispatch = useDispatch();
+    setSearch(searchParams.get("query") ?? "");
+    setSearchType((searchParams.get("type") as ISearchType) ?? "vid");
+    setSortBy((searchParams.get("sortBy") as SortByType) ?? "views");
+    setSortType((searchParams.get("sortType") as SortOrder) ?? "asc");
+  }, [searchParams]);
 
- const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
- 
-  
-  if (!search.trim()) return inputRef.current?.focus();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
 
-  dispatch(
-        setReduxSearch({
-          query: search,
-          type: searchType,
-          sortBy: sortBy,
-          sortType:sortType,
-          limit:10,
-        })
-      );
+    if (!search.trim()) return inputRef.current?.focus();
 
-      queryClient.refetchQueries({queryKey:["ChannelSearch"]});
-      queryClient.refetchQueries({queryKey:["VideoSearch"]})
-
-  navigate({
-    pathname: "/search",
-    search: createSearchParams({
-      query: search,
-      type: searchType,
-      sortBy,
-      sortType,
-    }).toString(),
-  });
-};
+    navigate({
+      pathname: "/search",
+      search: createSearchParams({
+        query: search,
+        type: searchType,
+        sortBy,
+        sortType,
+      }).toString(),
+    });
+  };
   return (
     <form
       onFocusCapture={() => setActive(true)}
@@ -81,7 +67,9 @@ export const SearchBarDesktop: React.FC = () => {
     >
       {/* Text input className="custom_input" */}
       <span className="h-full w-5/6 relative">
-      <label htmlFor="searchText" className="sr-only">searchText</label>
+        <label htmlFor="searchText" className="sr-only">
+          searchText
+        </label>
         <input
           tabIndex={0}
           id="searchText"
@@ -103,23 +91,17 @@ export const SearchBarDesktop: React.FC = () => {
         <Popover
           onOpenChange={(open) => console.log("Popover open state:", open)}
         >
-          <PopoverTrigger className="h-7 w-7 border-2 border-transparent rounded-lg self-center absolute right-0.5 " >
+          <PopoverTrigger className="h-7 w-7 border-2 border-transparent rounded-lg self-center absolute right-0.5 ">
             <Button
-            asChild
-            variant={"ghost"}
-            className="h-full w-full p-0 bg-transparent"
+              asChild
+              variant={"ghost"}
+              className="h-full w-full p-0 bg-transparent my-3 -mx-1"
               tabIndex={0}
-              
-              
             >
               <SlidersHorizontal className="fill-foreground w-full h-full" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent
-          
-            
-            className="w-fit space-y-3 h-fit bg-accent "
-          >
+          <PopoverContent className="w-fit space-y-3 h-fit bg-accent ">
             {/* Type Selector */}
             <div className="space-y-1">
               <label className="text-sm font-medium">Type</label>
@@ -138,21 +120,23 @@ export const SearchBarDesktop: React.FC = () => {
             </div>
 
             {/* Sort By Selector */}
-           { searchType === "vid"&& <div className="space-y-1">
-              <label className="text-sm font-medium">Sort By</label>
-              <Select
-                value={sortBy}
-                onValueChange={(value: SortByType) => setSortBy(value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Sort By" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="views">Views</SelectItem>
-                  <SelectItem value="createdAt">Created At</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>}
+            {searchType === "vid" && (
+              <div className="space-y-1">
+                <label className="text-sm font-medium">Sort By</label>
+                <Select
+                  value={sortBy}
+                  onValueChange={(value: SortByType) => setSortBy(value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sort By" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="views">Views</SelectItem>
+                    <SelectItem value="createdAt">Created At</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             {/* Sort Type Selector */}
             <div className="space-y-1">
@@ -175,7 +159,7 @@ export const SearchBarDesktop: React.FC = () => {
       </span>
 
       {/* Hidden Inputs for Filter Params */}
-      <input type="hidden" name="type" value={type} />
+      <input type="hidden" name="type" value={searchType} />
       <input type="hidden" name="sortBy" value={sortBy} />
       <input type="hidden" name="sortType" value={sortType} />
 
@@ -197,18 +181,21 @@ export const SearchBarDesktop: React.FC = () => {
   );
 };
 
-
-export const SearchBarMobile =()=>{
-  return <>
-    <Popover>
-      <PopoverTrigger className="h-fit w-fit">
-        <Button asChild variant={"ghost"} className="bg-transparent h-5 w-5"><Search className="h-full w-full text-foreground hover:text-accent" /></Button>
-      </PopoverTrigger>
-      <PopoverContent className="h-fit w-[360px] sm:w-fit p-3">
-        <span className="h-fit w-fit">
-          <SearchBarDesktop/>
-        </span>
-      </PopoverContent>
-    </Popover>
-  </>
-}
+export const SearchBarMobile = () => {
+  return (
+    <>
+      <Popover>
+        <PopoverTrigger className="h-fit w-fit">
+          <Button asChild variant={"ghost"} className="bg-transparent h-5 w-5">
+            <Search className="h-full w-full text-foreground hover:text-accent" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="h-fit w-[360px] sm:w-fit p-3">
+          <span className="h-fit w-fit">
+            <SearchBarDesktop />
+          </span>
+        </PopoverContent>
+      </Popover>
+    </>
+  );
+};
