@@ -3,7 +3,6 @@ import themeReducers from "./contexts/theme/themeSlices";
 import authReducers from "./contexts/auth/authSlice";
 import videoPlayerReducers from "./contexts/videoPlayer/videoPlayerSlices";
 import videoUpload from "@/contexts/videoUpload/videoUploadSlice";
-import serachReducers from "@/contexts/search/searchSlice";
 import {
   persistStore,
   persistReducer,
@@ -22,8 +21,8 @@ const presistConfig = {
 };
 const presistedAuthReducers = persistReducer(presistConfig, authReducers);
 const presistedVideoUploadReducers = persistReducer(
-  { key: "nStreamPresist/videoUpload", storage ,serialize:false},
-  videoUpload
+  { key: "nStreamPresist/videoUpload", storage, serialize: false },
+  videoUpload,
 );
 
 const rootReducers = combineReducers({
@@ -31,7 +30,6 @@ const rootReducers = combineReducers({
   theme: themeReducers,
   videoPlayer: videoPlayerReducers,
   uploads: presistedVideoUploadReducers,
-  search: serachReducers,
 });
 
 const store = configureStore({
