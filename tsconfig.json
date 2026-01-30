@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "paths": {
+    "esModuleInterop":true,
+		"jsx":"react-jsx",
+		"paths": {
       "@/*": ["src/*"]
     },
     "skipLibCheck": true
