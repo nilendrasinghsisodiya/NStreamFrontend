@@ -37,7 +37,7 @@ export const handleResponse = <T>(
 export const refreshAccessToken = async (): Promise<IUser> => {
   try {
     const res = await apiClient.post<ApiResponse<IUser>>(
-      "/auth/refresh-token",
+      "/auth/refresh-access-token",
       {},
       {
         withCredentials: true,

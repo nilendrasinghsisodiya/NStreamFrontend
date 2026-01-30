@@ -7,6 +7,8 @@ import { HomePage } from "./pages/Main/HomePage";
 import { ProfileForm } from "./forms/UserProfile";
 import { ChannelPage } from "./pages/Channel/ChannelPage";
 import { PlaylistPage } from "./pages/Playlist/PlaylistPage";
+
+import { OtpVerificationPage } from "./pages/Main/OtpVerificationPage";
 import { PlaylistPage as MainPlaylistPage } from "./pages/Main/PlaylistPage";
 import { ChannelVideoPage } from "./pages/Channel/ChannelVideoPage";
 import { ChannelHomePage } from "./pages/Channel/ChannelHomePage";
@@ -22,6 +24,7 @@ import { LikedVideoPage } from "./pages/Main/LikedVideoPage";
 import { ProfileEditPage } from "./pages/Settings/ProfileEdit";
 import { VideoControlPage } from "./pages/Settings/VideoControll";
 import { SubscribptionPage } from "./pages/Main/Subscribtion";
+import { VerificationTokenLandingPage } from "./pages/Main/VerificationTokenLandingPage";
 const AppRoutes = () => {
   const navigate = useNavigate();
   useEffect(() => {
@@ -160,18 +163,33 @@ const AppRoutes = () => {
         <Route path="playlists" element={<ChannelPlaylistPage />} />
         <Route path="videos" element={<ChannelVideoPage />} />
       </Route>
-
+      <Route
+        path="otp"
+        element={
+          <Layout hideFooter hideSideBar>
+            <OtpVerificationPage />
+          </Layout>
+        }
+      />
+      <Route
+        path="token"
+        element={
+          <Layout hideFooter hideSideBar>
+            <VerificationTokenLandingPage />{" "}
+          </Layout>
+        }
+      />
       {/* golbal routes */}
       <Route
         path="*"
         element={
-          <div className="h-screen w-screen">
+          <Layout hideSideBar hideFooter>
             <ErrorScreen
               mainMessage="ERROR:404 NOT FOUND"
               secondaryMessage="this page does not exist"
               isError
             />
-          </div>
+          </Layout>
         }
       />
     </Routes>

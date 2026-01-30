@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-
+import { Link } from "react-router-dom";
 const loginFormSchema = z.object({
   email: z
     .string()
@@ -80,6 +80,9 @@ const LogInForm = ({ className, onSave, isPending }: Props) => {
             </FormItem>
           )}
         />
+        <Link to={"/pass-reset-init"} replace className="text-blue-300">
+          forgot password ?
+        </Link>
         <Button type="submit" disabled={isPending}>
           Log In
         </Button>

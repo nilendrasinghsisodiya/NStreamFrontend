@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 
 import Hls from "hls.js";
-import "plyr-react/plyr.css";
 import {
   Quality,
   selectVideoPlayer,
@@ -22,8 +21,7 @@ import {
   togglePlay,
   toggleControls,
   toggleFullScreen,
-  reset
-  
+  reset,
 } from "@/contexts/videoPlayer/videoPlayerSlices";
 import { useSelector } from "react-redux";
 import {
@@ -66,7 +64,7 @@ const VideoPlayer = ({ url, style, className }: Props) => {
   useEffect(() => {
     if (videoRef.current && Hls.isSupported()) {
       const hls = new Hls();
-      dispatch(reset())
+      dispatch(reset());
       hls.loadSource(url);
       hls.attachMedia(videoRef.current);
       hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
@@ -202,7 +200,8 @@ const VideoPlayer = ({ url, style, className }: Props) => {
         tabIndex={0}
         className=" relative flex justify-center contain-content items-center aspect-video"
       >
-        <video tabIndex={0}
+        <video
+          tabIndex={0}
           ref={videoRef}
           className="
         flex-1 z-10  contain-content  aspect-video max-h-full"
@@ -211,124 +210,135 @@ const VideoPlayer = ({ url, style, className }: Props) => {
 
         {controls && (
           <div className="absolute bottom-0 z-20 flex flex-col w-full pb-1 max-w-full">
-            
-                  <div className="flex items-basline justify-end gap-0.5 px-2 -mb-1.5">
-                <button onClick={handleVolumeClick} tabIndex={0}>
-                  {volume === 0 ? (
-                    <VolumeOff className=" h-3 xl:h-6" />
-                  ) : (
-                    <Volume2 className=" h-3 xl:h-6" />
-                  )}
-                </button>
-                <input
+            <div className="flex items-basline justify-end gap-0.5 px-2 -mb-1.5">
+              <button onClick={handleVolumeClick} tabIndex={0}>
+                {volume === 0 ? (
+                  <VolumeOff className=" h-3 xl:h-6" />
+                ) : (
+                  <Volume2 className=" h-3 xl:h-6" />
+                )}
+              </button>
+              <input
                 tabIndex={0}
-                  className="slider bg-foreground h-0.5 rounded-2xl max-w-12 xl:max-w-15 p-0 self-end m-1 "
-                  type="range"
-                  name="volume"
-                  min={0}
-                  max={100}
-                  step={5}
-                  onChange={handleVolumeChange}
-                  value={volume}
-                />
-              
+                className="slider bg-foreground h-0.5 rounded-2xl max-w-12 xl:max-w-15 p-0 self-end m-1 "
+                type="range"
+                name="volume"
+                min={0}
+                max={100}
+                step={5}
+                onChange={handleVolumeChange}
+                value={volume}
+              />
 
-            
-              
-             
-                <span className="text-[.5rem]">{toHms(currentTime)}/</span>
-                <span className="text-[.5rem]">{toHms(totalTime)}</span>
-                <button
+              <span className="text-[.5rem]">{toHms(currentTime)}/</span>
+              <span className="text-[.5rem]">{toHms(totalTime)}</span>
+              <button
                 tabIndex={0}
                 className="bg-transparent"
-                  onClick={() => {
-                    if (videoRef.current) {
-                      videoRef.current.requestFullscreen();
-                      dispatch(toggleFullScreen());
-                    }
-                  }}
-                >
-                  <Maximize className="h-3 xl:h-6" />
-                </button>
-                 
-                <DropdownMenu >
-                  <DropdownMenuTrigger asChild>
-                    <button className="bg-transparent " tabIndex={0}><Settings className="h-3 xl:h-6" /></button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="min-w-20">
-                    <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                onClick={() => {
+                  if (videoRef.current) {
+                    videoRef.current.requestFullscreen();
+                    dispatch(toggleFullScreen());
+                  }
+                }}
+              >
+                <Maximize className="h-3 xl:h-6" />
+              </button>
 
-                    <DropdownMenuGroup>
-                      <DropdownMenuSub>
-                        <DropdownMenuSubTrigger>
-                          <div className="flex justify-between p-0 gap-3 items-center">
-                            <span>Quality</span>
-                            <span className="text-secondary-foreground" tabIndex={0}>
-                              {quality}
-                            </span>
-                          </div>
-                        </DropdownMenuSubTrigger>
-                        <DropdownMenuSubContent>
-                          {avalQuality ? (
-                            avalQuality.map((qual: Quality, index) => (
-                              <DropdownMenuItem key={index}
-                              >
-                                <Button tabIndex={0} variant="ghost" onClick={() => {
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="bg-transparent " tabIndex={0}>
+                    <Settings className="h-3 xl:h-6" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="min-w-20">
+                  <DropdownMenuLabel>Settings</DropdownMenuLabel>
+
+                  <DropdownMenuGroup>
+                    <DropdownMenuSub>
+                      <DropdownMenuSubTrigger>
+                        <div className="flex justify-between p-0 gap-3 items-center">
+                          <span>Quality</span>
+                          <span
+                            className="text-secondary-foreground"
+                            tabIndex={0}
+                          >
+                            {quality}
+                          </span>
+                        </div>
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuSubContent>
+                        {avalQuality ? (
+                          avalQuality.map((qual: Quality, index) => (
+                            <DropdownMenuItem key={index}>
+                              <Button
+                                tabIndex={0}
+                                variant="ghost"
+                                onClick={() => {
                                   dispatch(setQuality(qual));
                                 }}
-                                key={index}>
+                                key={index}
+                              >
                                 {qual}
-                                </Button>
-                              </DropdownMenuItem>
-                            ))
-                          ) : (
-                            <span>error</span>
-                          )}
-                        </DropdownMenuSubContent>
-                      </DropdownMenuSub>
-                    </DropdownMenuGroup>
-                    <DropdownMenuGroup>
-                      <DropdownMenuSub>
-                        <DropdownMenuSubTrigger>
-                          <div className="flex justify-between p-0 gap-3 items-center">
-                            <span>Speed</span>
-                            <span className="text-secondary-foreground" tabIndex={0}>
-                              {playbackSpeed}x
-                            </span>
-                          </div>
-                        </DropdownMenuSubTrigger>
-                        <DropdownMenuSubContent>
-                          {PlayBackOptions.map((opt, index) => (
-                            <DropdownMenuItem
-                              onClick={() => handlePlaybackSpeed(opt)}
-                              key={index}
-                            >
-                              <Button variant={"ghost"} className="w-full" tabIndex={0}>
-                                {opt}x
                               </Button>
                             </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuSubContent>
-                      </DropdownMenuSub>
-                    </DropdownMenuGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              
-              </div>
-           
+                          ))
+                        ) : (
+                          <span>error</span>
+                        )}
+                      </DropdownMenuSubContent>
+                    </DropdownMenuSub>
+                  </DropdownMenuGroup>
+                  <DropdownMenuGroup>
+                    <DropdownMenuSub>
+                      <DropdownMenuSubTrigger>
+                        <div className="flex justify-between p-0 gap-3 items-center">
+                          <span>Speed</span>
+                          <span
+                            className="text-secondary-foreground"
+                            tabIndex={0}
+                          >
+                            {playbackSpeed}x
+                          </span>
+                        </div>
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuSubContent>
+                        {PlayBackOptions.map((opt, index) => (
+                          <DropdownMenuItem
+                            onClick={() => handlePlaybackSpeed(opt)}
+                            key={index}
+                          >
+                            <Button
+                              variant={"ghost"}
+                              className="w-full"
+                              tabIndex={0}
+                            >
+                              {opt}x
+                            </Button>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuSubContent>
+                    </DropdownMenuSub>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
 
             <div className="flex max-w-full px-2 pb-0.5 items-center gap-2">
-              
-                <button className="text-foreground" onClick={handlePlayPause} tabIndex={0}>
-                  {isPlaying ? (
-                    <Pause className="h-3 xl:h-3" />
-                  ) : (
-                    <Play fill={"#fff"} className=" h-4 xl:h-6 " />
-                  )}
-                </button>
-            
+              <button
+                className="text-foreground"
+                onClick={handlePlayPause}
+                tabIndex={0}
+              >
+                {isPlaying ? (
+                  <Pause className="h-3 xl:h-3" />
+                ) : (
+                  <Play fill={"#fff"} className=" h-4 xl:h-6 " />
+                )}
+              </button>
+
               <input
-              tabIndex={0}
+                tabIndex={0}
                 name="progressBar"
                 className="slider bg-foreground h-[2px] flex-1 w-[90%]  border-[0.5px] border-foreground"
                 type="range"

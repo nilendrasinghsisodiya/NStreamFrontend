@@ -132,7 +132,7 @@ const useSubscribedVideos = ({ limit }: { limit: number }) => {
     queryKey: ["subscribedVideo"],
     queryFn: async ({ pageParam = 1 }) => {
       const response = await apiClient.get<ApiResponse<IPaginatedVideos>>(
-        `user/subscribedVideos?page=${pageParam}&limit=${limit}`,
+        `user/subscribed-videos?page=${pageParam}&limit=${limit}`,
       );
       return handleResponse(response, "failed to fetch related videos");
     },

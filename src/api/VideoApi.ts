@@ -3,8 +3,6 @@ import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { apiClient } from "./ApiClient";
 import { handleResponse } from "@/utils";
 import { AxiosError } from "axios";
-import { useSelector } from "react-redux";
-import { selectUser } from "@/contexts/auth/authSlice";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 

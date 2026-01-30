@@ -1,4 +1,3 @@
-
 import { lazy, Suspense } from "react";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 const MemoFooter = lazy(() => import("@/components/layout/Footer"));
@@ -9,15 +8,16 @@ import { useIsMobile } from "@/hooks/use-mobile";
 type Props = {
   children: React.ReactNode;
   hideFooter?: boolean;
+  hideSideBar?: boolean;
 };
 
-const Layout = ({ children, hideFooter }: Props) => {
+const Layout = ({ children, hideFooter, hideSideBar }: Props) => {
   const isMobile = useIsMobile();
   return (
     <SidebarProvider defaultOpen={false}>
       <div className="flex min-h-screen w-screen ">
         {/* Fixed Sidebar */}
-        {!isMobile && (
+        {!isMobile && !hideSideBar && (
           <div className="fixed top-0 left-0 h-screen w-16  z-40">
             <AppSidebar />
           </div>
@@ -29,7 +29,7 @@ const Layout = ({ children, hideFooter }: Props) => {
         >
           {/* Fixed Header */}
           <div
-            className={`fixed top-0 left-0 ${!isMobile ? "left-16" : ""} right-0 h-16 z-30 bg-background overflow-visible`}
+            className={`fixed top-0 left-0 ${!isMobile && !hideSideBar ? "left-16" : ""} right-0 h-16 z-30 bg-background overflow-visible`}
           >
             <Header />
           </div>

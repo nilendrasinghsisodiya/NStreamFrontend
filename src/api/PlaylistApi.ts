@@ -1,6 +1,4 @@
 import { useMutation, useInfiniteQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
-import { selectUser } from "@/contexts/auth/authSlice";
 import { apiClient } from "./ApiClient";
 import { handleResponse } from "@/utils";
 import { AxiosError } from "axios";
@@ -19,7 +17,7 @@ export const useCreatePlaylist = () => {
     mutationKey: ["playlist", name],
     mutationFn: async ({ name, description }: createPlaylistBody) => {
       const response = await apiClient.post<ApiResponse<IPlaylist>>(
-        "/playlist/createPlaylist",
+        "/playlist/create-playlist",
         {
           name,
           description,
@@ -44,7 +42,7 @@ export const useAddVideoToPlaylist = () => {
   } = useMutation<unknown, AxiosError, addVideoToPlaylistBody>({
     mutationFn: async ({ videoIds, playlistId }) => {
       const response = await apiClient.patch<ApiResponse<unknown>>(
-        "/playlist/addVideos",
+        "/playlist/add-videos",
         {
           videoIds,
           playlistId,
@@ -74,7 +72,7 @@ export const useUpdatePlaylist = () => {
   } = useMutation<IPlaylist, AxiosError, updatePlaylistBody>({
     mutationFn: async ({ name, description, playlistId }) => {
       const response = await apiClient.patch<ApiResponse<IPlaylist>>(
-        "/playlist/addVideos",
+        "/playlist/add-videos",
         {
           playlistId,
           name,
@@ -138,7 +136,7 @@ export const useRemoveVideoFromPlaylist = () => {
   } = useMutation<IPlaylist, AxiosError, removeVideosFromPlaylistBody>({
     mutationFn: async ({ videoIds, playlistId }) => {
       const response = await apiClient.patch<ApiResponse<IPlaylist>>(
-        "/playlist/removeVideos",
+        "/playlist/remove-videos",
         {
           videoIds,
           playlistId,

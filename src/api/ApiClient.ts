@@ -18,8 +18,12 @@ apiClient.interceptors.response.use(
     const ogRequest = error.config;
     const status = error.status;
     console.log(ogRequest, status);
-
-    if (status === 493 && !ogRequest._retry) {
+    if (status === 493) {
+      store.dispatch(resetUser());
+      navigateGlobal("/auth");
+      return Promise.reject(error);
+    }
+    if (status === 401 && !ogRequest._retry) {
       console.log("inside refresh token");
       ogRequest._retry = true;
       if (ogRequest.url?.includes("/auth/refresh")) {

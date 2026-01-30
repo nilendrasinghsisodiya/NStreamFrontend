@@ -11,10 +11,10 @@ export const ErrorScreen = ({
   secondaryMessage,
 }: errorScreenProps) => {
   return (
-    <div className="flex flex-col w-full h-full justify-start items-center ">
-      <div className="w-full h-1/3">
-        {isError && <CircleOff className="h-full w-full text-destructive" />}
-      </div>
+    <div className="flex flex-col w-full h-fit justify-center items-center gap-1 ">
+      {isError && (
+        <CircleOff className="h-1/3 w-1/3 aspect-square text-destructive" />
+      )}
       <span
         className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl capitalize  text-center font-extrabold  tracking-wide ${isError ? "text-destructive" : "text-foreground/50"}`}
       >

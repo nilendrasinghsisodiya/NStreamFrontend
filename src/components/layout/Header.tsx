@@ -1,7 +1,7 @@
 // import { ToggleTheme } from "./ToogleTheme";
 // import { SearchBarDesktop } from "./SearchBar";
 // import { memo } from "react";
-// import { Link } from "react-router";
+// import { Link } from "react-router-dom";
 // import { UserProfileTab } from "../UserProfile";
 // import { useSelector } from "react-redux";
 // import { selectUser } from "@/contexts/auth/authSlice";
@@ -43,12 +43,12 @@
 import { ToggleTheme } from "./ToogleTheme";
 import { SearchBarDesktop, SearchBarMobile } from "./SearchBar";
 import { memo } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { UserProfileTab } from "../UserProfile";
 import { Video } from "lucide-react";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 
 const Header = () => {
   const isMobile = useIsMobile();
@@ -67,10 +67,12 @@ const Header = () => {
 
           <Link
             to="/upload-video"
-            className="text-primary hover:text-muted-foreground"
+            className="text-primary hover:text-muted-foreground h-full w-fit items-center flex p-0"
           >
-            <Button variant={"ghost"} className="bg-transparent h-fit w-fit"><Video className="w-5 h-5" />
-          </Button></Link>
+            {/*<Button variant={"ghost"} className="bg-transparent h-full w-full ">*/}
+            <Video size={24} className=" p-0" />
+            {/*</Button>*/}
+          </Link>
 
           <ToggleTheme />
         </div>

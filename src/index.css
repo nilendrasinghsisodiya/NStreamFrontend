@@ -167,13 +167,6 @@
   box-sizing: border-box;
   transition: transform 0.4s ease-in-out;
 }
-.button_border {
-  border-radius: 5px;
-  border: 1px solid rgba(0, 0, 255, 0.2) !important;
-  border-bottom: 3px solid rgba(0, 0, 255, 0.5) !important;
-  background-color: magenta;
-  box-shadow: 1px 1px 1.5px rgba(0, 0, 255, 0.5);
-}
 
 @layer base {
   * {
