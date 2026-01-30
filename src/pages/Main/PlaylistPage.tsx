@@ -86,7 +86,7 @@ export const PlaylistCard = ({
   );
 };
 const PlaylistPage = () => {
-  const { username} = useSelector(selectUser);
+  const { username } = useSelector(selectUser);
   const { playlists, isLoading, isSuccess, isError } = useGetUserPlaylists({
     username,
     isOpen: true,

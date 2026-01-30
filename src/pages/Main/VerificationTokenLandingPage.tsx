@@ -51,7 +51,7 @@ export const VerificationTokenLandingPage = () => {
         break;
       }
     }
-  }, [action, token,navigate,deleteUser,verifyEmail]);
+  }, [action, token, navigate, deleteUser, verifyEmail]);
   if (!activeMutation) {
     return (
       <ErrorScreen

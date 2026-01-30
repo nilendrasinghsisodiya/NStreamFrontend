@@ -17,7 +17,7 @@ const CommentInput = ({ videoId, commentId }: props) => {
     if (formRef && formRef.current) {
       const formData = new FormData(formRef.current);
       const content = formData.get("comment") as string;
-      console.log(content)
+      console.log(content);
       if (content && content.length !== 0) {
         if (commentId) {
           console.log(videoId);

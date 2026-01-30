@@ -131,7 +131,7 @@ export const AddVideosToPlaylist = ({
 }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [videosToAdd, setVideosToAdd] = useState<string[]>([]);
-  const { data:videos, isError, isSuccess } = useGetUserWatchHistory(isActive);
+  const { data: videos, isError, isSuccess } = useGetUserWatchHistory(isActive);
   const addPlaylists = useAddVideoToPlaylist();
   const handleAdd = async () => {
     try {
