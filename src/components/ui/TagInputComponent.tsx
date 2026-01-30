@@ -1,4 +1,3 @@
-// components/TagInput.tsx
 import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
