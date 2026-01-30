@@ -16,9 +16,8 @@ const CommentInput = ({ videoId, commentId }: props) => {
     console.log("sent button clicked");
     if (formRef && formRef.current) {
       const formData = new FormData(formRef.current);
-      const data = Object.fromEntries(formData.entries());
-      const content = data.comment as string;
-      console.log(content);
+      const content = formData.get("comment") as string;
+      console.log(content)
       if (content && content.length !== 0) {
         if (commentId) {
           console.log(videoId);

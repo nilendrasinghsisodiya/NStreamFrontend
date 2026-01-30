@@ -11,7 +11,7 @@ import {
 } from "@/components/channel/ChannelSearchResult";
 import { ErrorScreen } from "@/components/ErrorComponent";
 import { VirtualVideoList } from "@/components/video/VideoListVirtual";
-import { useState, useMemo, useEffect } from "react";
+import {useMemo} from "react";
 import { useSearchParams } from "react-router-dom";
 
 const SearchPage = () => {

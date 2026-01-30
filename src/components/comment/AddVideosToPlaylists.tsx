@@ -1,5 +1,5 @@
 import { useGetUserWatchHistory } from "@/api/UserApi";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { generateSrcSet } from "@/utils";
@@ -131,14 +131,7 @@ export const AddVideosToPlaylist = ({
 }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [videosToAdd, setVideosToAdd] = useState<string[]>([]);
-  const [videos, setVideos] = useState<IWatchHistory[]>([]);
-  const { data, isError, isSuccess } = useGetUserWatchHistory(isActive);
-  useEffect(() => {
-    if (data) {
-      setVideos(data);
-    }
-    console.log("add to playlist video data", data);
-  }, [videos, setVideos, data]);
+  const { data:videos, isError, isSuccess } = useGetUserWatchHistory(isActive);
   const addPlaylists = useAddVideoToPlaylist();
   const handleAdd = async () => {
     try {

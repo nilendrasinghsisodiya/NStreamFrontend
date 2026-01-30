@@ -1,7 +1,7 @@
 import { useGetChannel } from "@/api/ChannelApi";
 import { SafeAvatar } from "../avatar/Avatars";
 import { getRelativeTime, toKBMS } from "@/utils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SubscribeButton } from "@/components/ui/SubscribeButton";
 
@@ -12,12 +12,6 @@ type props = {
 const ChannelPanel = ({ username, className }: props) => {
   const { data, isSuccess } = useGetChannel({ username });
   const [show, setShow] = useState<boolean>(false);
-  const [subscribersCount, setsubscribersCount] = useState<number>(0);
-  useEffect(() => {
-    if (data) {
-      setsubscribersCount(data.subscribersCount);
-    }
-  }, [data]);
   const handleAboutBox = () => {
     setShow((prev) => !prev);
   };
@@ -35,7 +29,7 @@ const ChannelPanel = ({ username, className }: props) => {
             </span>
             <span className="text-2xl tracking-wide">{data.username}</span>
             <span className="text-md text-accent-foreground/30  text-bold">
-              {toKBMS(subscribersCount)}
+              {toKBMS(data.subscribersCount)}
             </span>
             <SubscribeButton
               isSubscribed={data.isSubscribed}

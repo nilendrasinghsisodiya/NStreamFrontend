@@ -5,7 +5,6 @@ import { VideoCardSkeleton } from "@/components/video/VideoCardSkeleton";
 import { selectUser } from "@/contexts/auth/authSlice";
 import { generateSrcSet } from "@/utils";
 import { CircleOff } from "lucide-react";
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -87,13 +86,7 @@ export const PlaylistCard = ({
   );
 };
 const PlaylistPage = () => {
-  const { username, isAuthenticated } = useSelector(selectUser);
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/auth");
-    }
-  }, [isAuthenticated, navigate]);
+  const { username} = useSelector(selectUser);
   const { playlists, isLoading, isSuccess, isError } = useGetUserPlaylists({
     username,
     isOpen: true,

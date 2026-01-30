@@ -1,21 +1,14 @@
-import { useState, useEffect } from "react";
 import { useGetLikedVideos } from "@/api/VideoApi";
 import { ErrorScreen } from "@/components/ErrorComponent";
 import { VideoList } from "@/components/video/VideoList";
 
 export const LikedVideoPage = () => {
   const { data, isLoading, isError, isSuccess } = useGetLikedVideos();
-  const [videos, setVideos] = useState<IVideo[]>([]);
-  useEffect(() => {
-    if (data) {
-      setVideos(data);
-    }
-  }, [data]);
   return (
     <div className="h-full w-full m-auto p-4">
       {data ? (
         <VideoList
-          data={videos}
+          data={data}
           isError={isError}
           isLoading={isLoading}
           isSuccess={isSuccess}

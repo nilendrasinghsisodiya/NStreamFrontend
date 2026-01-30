@@ -3,14 +3,13 @@ import { Video } from "@/components/video/Video";
 import { CommentPanel } from "@/components/comment/CommentPanel";
 import { VirtualVideoList } from "@/components/video/VideoListVirtual";
 import { useRelatedVideos } from "@/api/VideoApi";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const VideoPage = () => {
   const [searchParams] = useSearchParams();
   const videoId = searchParams.get("videoId") as string;
   const isMobile = useIsMobile();
-  useEffect(() => {}, [isMobile]);
   const { data, fetchNextPage, hasNextPage, isLoading, isSuccess } =
     useRelatedVideos({
       videoId,
@@ -30,7 +29,7 @@ const VideoPage = () => {
       {/* Main Video */}
       <Video
         videoId={videoId}
-        className="h-fit w-fit min-w-[300px] col-span-1 row-span-1 col-start-1 col-end-2 row-start-1 row-end-2 -mx-2"
+        className="h-fit w-fit min-w-75 col-span-1 row-span-1 col-start-1 col-end-2 row-start-1 row-end-2 -mx-2"
       />
 
       {/* Related Videos Virtual List */}

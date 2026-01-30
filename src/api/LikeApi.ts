@@ -1,6 +1,4 @@
 import { useMutation } from "@tanstack/react-query";
-import { selectUser } from "@/contexts/auth/authSlice";
-import { useSelector } from "react-redux";
 import { AxiosError } from "axios";
 import { apiClient } from "./ApiClient";
 import { handleResponse } from "@/utils";
