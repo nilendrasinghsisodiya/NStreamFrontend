@@ -1,7 +1,7 @@
 import { useGetPlaylist } from "@/api/PlaylistApi";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { AddVideosToPlaylist } from "@/components/comment/AddVideosToPlaylists";
+import { AddVideosToPlaylist } from "@/components/video/AddVideosToPlaylists";
 import { selectUser } from "@/contexts/auth/authSlice";
 import { useSelector } from "react-redux";
 import { ErrorScreen } from "@/components/ErrorComponent";
