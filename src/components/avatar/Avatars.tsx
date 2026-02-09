@@ -172,11 +172,11 @@ const VideoAvatarStrip = ({
 
   return (
     <div className={className} style={style}>
-      <span className="flex flex-col w-full gap-0.5">
+      <span className="flex flex-col w-full ">
         <span className=" text-[14px] wrap-break-word  tracking-tighter text-start  font-semibold line-clamp-2 w-full">
           {videoTitle}
         </span>
-        <span className="text-xs text-accent-foreground/76 ml-6">
+        <span className="text-xs text-accent-foreground/76 ml-6 tracking-tighter">
           {toKBMS(views) + " views"}
         </span>
       </span>
@@ -198,7 +198,7 @@ const VideoAvatarStrip = ({
               className="flex flex-col justify-start items-start p-2 gap-0.5"
             >
               <span className="text-xs tracking-tight">{username}</span>
-              <span className="text-foreground/60 text-xs/tight">
+              <span className="text-foreground/60 text-xs tracking-tight">
                 {toKBMS(subscribersCount) + " subscribers"}
               </span>
             </Link>

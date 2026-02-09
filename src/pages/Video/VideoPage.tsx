@@ -25,7 +25,7 @@ const VideoPage = () => {
   }, [data]);
 
   return (
-    <div className="h-full w-full grid grid-cols-1 sm:grid-cols-2 grid-rows-5 sm:grid-rows-12 gap-1">
+    <div className="h-full w-full grid grid-cols-1 sm:grid-cols-2 grid-rows-5 sm:grid-rows-12 gap-4">
       {/* Main Video */}
       <Video
         videoId={videoId}
@@ -36,20 +36,21 @@ const VideoPage = () => {
       <div
         className="
      col-span-1 row-span-2 sm:row-span-12 sm:col-start-2 row-start-2 sm:row-start-1 sm:row-end-13 p-2
-    "
+sm:max-w-75     "
       >
         <span className="capitalize text-xs tracking-tighter">
           related videos
         </span>
         <VirtualVideoList
-          // className="flex-1 w-full h-full"
-          itemClassName="flex"
+          itemClassName="flex "
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage}
           videos={fetchedVids}
           isLoading={isLoading}
           isSuccess={isSuccess}
           useWindowScroll={false}
+					className="h-full"
+					avatarClassName=" h-full w-full p-0.5"
         />
       </div>
 
