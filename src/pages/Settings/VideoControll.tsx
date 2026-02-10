@@ -30,6 +30,7 @@ import { toast } from "sonner";
 import { ConfirmationToast } from "@/components/ConfirmationToast";
 import { useDeleteVideo, useEditVideo } from "@/api/VideoApi";
 import { queryClient } from "@/api/ApiClient";
+import { Input } from "@/components/ui/input";
 
 // flex flex-col w-full md:flex-row flex-wrap  justify-center contain-content gap-4
 
@@ -132,7 +133,7 @@ const ImageUploadPreview = ({
       )}
 
       {/* Hidden input */}
-      <input
+      <Input
         ref={inputRef}
         name={controllProps.name}
         id="thumbnail"
@@ -241,8 +242,7 @@ const VideoEditOption = ({
               <FormItem className="p-3">
                 <FormLabel htmlFor={field.name}>Title</FormLabel>
                 <FormControl>
-                  <input
-                    className="custom_input"
+                  <Input
                     {...field}
                     placeholder="add title...."
                     id={field.name}

@@ -18,6 +18,7 @@ import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useState } from "react";
 import { PreviewBox } from "@/components/ui/previewBox";
+import { Input } from "@/components/ui/input";
 
 const allowedType = ["image/png", "image/jpeg", "image/webp"];
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -63,12 +64,11 @@ const AvatarEditForm = ({ isPending, onSave, setPreview }: props) => {
             <FormItem>
               <FormLabel>Avatar</FormLabel>
               <FormControl>
-                <input
+                <Input
                   onBlur={field.onBlur}
                   name={field.name}
                   disabled={field.disabled}
                   ref={field.ref}
-                  className="custom_input"
                   type="file"
                   accept="image/*"
                   onChange={(e) => {
