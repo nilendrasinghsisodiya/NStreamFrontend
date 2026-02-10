@@ -3,7 +3,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export type Quality = "1080p" | "720p" | "480p" | "360p" | "240p";
 export interface videoPlayStateType {
 	totalTime: number;
-	isPlaying: boolean;
 	quality: Quality;
 	playbackSpeed: number;
 	volume: number;
@@ -12,7 +11,6 @@ export interface videoPlayStateType {
 }
 const initialState: videoPlayStateType = {
 	totalTime: 0.0,
-	isPlaying: false,
 	quality: "480p",
 	playbackSpeed: 1,
 	volume: 0.5,
@@ -39,9 +37,6 @@ const VideoPlayerSlice = createSlice({
 		setVolume: (state, action: PayloadAction<number>) => {
 			state.volume = Math.min(100, Math.max(0, action.payload));
 		},
-		togglePlay: (state) => {
-			state.isPlaying = !state.isPlaying;
-		},
 		setAvalQuality: (state, action: PayloadAction<Quality[]>) => {
 			const options: Quality[] = ["1080p", "720p", "480p", "360p", "240p"];
 			const params = action.payload;
@@ -64,15 +59,11 @@ const VideoPlayerSlice = createSlice({
 });
 
 export const {
-	togglePlay,
 	setVolume,
-	setCurrentTime,
 	setTotalTime,
 	setQuality,
 	setPlaybackSpeed,
 	setAvalQuality,
-	toggleControls,
-	setControls,
 	toggleFullScreen,
 	reset,
 } = VideoPlayerSlice.actions;

@@ -6,7 +6,7 @@ export function Slider({className, value, onChange, sliderTrackValue, ...props }
 			value={value}
 			onChange={onChange}
 			style={{
-				["--value" as any]: sliderTrackValue ? sliderTrackValue : value, // <── dynamic value injects into CSS
+				["--value" as any]: sliderTrackValue, 
 			}}
 			{...props}
 		/>

@@ -16,7 +16,6 @@ import {
 	setQuality,
 	setTotalTime,
 	setVolume,
-	togglePlay,
 	toggleFullScreen,
 	reset,
 	selectVideoPlayer,
@@ -39,21 +38,24 @@ import { useDispatch } from "react-redux";
 import { toHms } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Slider } from "../ui/slider";
+import { useThrottle } from "@/hooks/useThrottle";
 
 type Props = {
 	url: string;
 	style?: React.CSSProperties;
 	className?: string;
 };
-
+// better design would be using separate hooks for video state managment and hls 
 const VideoPlayer = ({ url, style, className }: Props) => {
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 	const dispatch = useDispatch();
-	const { volume, totalTime, quality, avalQuality, playbackSpeed, isPlaying } = useSelector(selectVideoPlayer);
+	const { volume, totalTime, quality, avalQuality, playbackSpeed } = useSelector(selectVideoPlayer);
 	const [currentTime, setCurrentTime] = useState<number>(0);
 	const [controls, setControls] = useState<boolean>(true);
+	const [isPlaying, setIsPlaying] = useState<boolean>(false);
 	useEffect(() => {
 		if (videoRef.current && Hls.isSupported()) {
+
 			const hls = new Hls();
 			console.log("inited HLS and reseting videoPlayer state");
 			dispatch(reset());
@@ -93,7 +95,7 @@ const VideoPlayer = ({ url, style, className }: Props) => {
 				const details = data.details;
 				if (data.details) {
 					console.log("deatails", details);
-					setCurrentTime(details.driftStartTime);
+					setCurrentTime(0);
 					dispatch(setTotalTime(details.totalduration));
 				}
 			});
@@ -103,15 +105,6 @@ const VideoPlayer = ({ url, style, className }: Props) => {
 			return () => hls.destroy();
 		}
 	}, [url, dispatch]);
-	useEffect(() => {
-		if (videoRef.current) {
-			const ele = videoRef.current;
-			// throttle or debounce this
-			const updateTime = () => setCurrentTime(ele.currentTime || 0);
-			videoRef.current.addEventListener("timeupdate", updateTime);
-			return () => ele.removeEventListener("timeupdate", updateTime);
-		}
-	}, [currentTime]);
 
 	const handlePlayPause = () => {
 		if (videoRef.current) {
@@ -120,26 +113,54 @@ const VideoPlayer = ({ url, style, className }: Props) => {
 			} else {
 				videoRef.current?.play();
 			}
-			dispatch(togglePlay());
+			setIsPlaying((prev) => !prev);
 		}
 	};
+	const throttledSetCurrentTime = useThrottle(() => {
+		const ele = videoRef.current;
+		console.log("change currentTime in throttledSetCurrentTime");
+		if (ele) {
+			setCurrentTime(ele.currentTime || 0);
+		}
+	}, 200);
 
 	useEffect(() => {
-		if (isPlaying && videoRef.current) {
-			const curTime = videoRef.current.currentTime;
-			setCurrentTime(curTime);
+		if (!videoRef.current) return;
+		const ele = videoRef.current;
+		const handler = () => throttledSetCurrentTime();
+		ele.addEventListener("timeupdate", handler);
+		return () => {
+			ele.removeEventListener("timeupdate", handler);
 		}
-	}, [isPlaying, currentTime]);
+	}, []);
+	useEffect(() => {
+		if (!isPlaying) return;
+
+		const timeout = setTimeout(() => {
+			setControls(false);
+		}, 3000);
+
+		return () => clearTimeout(timeout);
+	}, [isPlaying, controls]);
+
 
 	useEffect(() => {
-		if (isPlaying) {
-			setTimeout(() => {
-				if (controls) {
-					setControls((prev) => !prev);
-				}
-			}, 4500);
-		}
-	}, [dispatch, isPlaying, controls]);
+		const video = videoRef.current;
+		if (!video) return;
+
+		const onPlay = () => setIsPlaying(true);
+		const onPause = () => setIsPlaying(false);
+
+		video.addEventListener("play", onPlay);
+		video.addEventListener("pause", onPause);
+
+		return () => {
+			video.removeEventListener("play", onPlay);
+			video.removeEventListener("pause", onPause);
+		};
+	}, []);
+
+
 
 	const handleVolumeChange = (e: ChangeEvent<HTMLInputElement>) => {
 		if (e.target && videoRef.current) {
@@ -197,8 +218,8 @@ const VideoPlayer = ({ url, style, className }: Props) => {
 				/>
 
 				{controls && (
-					<div className="absolute bottom-0 z-20 flex flex-col w-full pb-1 max-w-full">
-						<div className="flex items-basline justify-end gap-0.5 px-2 -mb-1.5">
+					<div className="absolute bottom-0 z-20 flex flex-col w-full pb-1 gap-y-2.5 max-w-full">
+						<div className="flex items-basline justify-end gap-0.5 px-2 ">
 							<button onClick={handleVolumeClick} tabIndex={0}>
 								{volume === 0 ? (
 									<VolumeOff className=" h-3 xl:h-6" />
@@ -207,6 +228,7 @@ const VideoPlayer = ({ url, style, className }: Props) => {
 								)}
 							</button>
 							<Slider
+								sliderTrackValue={volume}
 								tabIndex={0}
 								className=" h-0.5 rounded-2xl slider max-w-12 xl:max-w-15 p-0 self-end m-1 "
 								name="volume"
@@ -326,11 +348,11 @@ const VideoPlayer = ({ url, style, className }: Props) => {
 
 							<Slider
 								tabIndex={0}
-								
+
 								name="progressBar"
 								className="appearance-none bg-accent h-1 rounded-full flex-1 w-[90%]  slider"
 								value={currentTime}
-								sliderTrackValue={(currentTime/ totalTime)*100}
+								sliderTrackValue={(currentTime / totalTime) * 100}
 								min={0.0}
 								max={totalTime}
 								step={totalTime > 600 ? 1 : 0.1}
