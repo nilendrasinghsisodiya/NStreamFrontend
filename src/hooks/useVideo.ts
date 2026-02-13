@@ -8,23 +8,24 @@ type props = {
 };
 export function useVideo({ videoUrl, videoRef }: props) {
 	// hooks
-	const { qualities, hlsRef, totalDuration } = useHls({ videoUrl });
+	const { qualities, hlsRef, totalDuration } = useHls({ videoUrl, videoRef });
 	// states
-	const [qual, setQual] = useState<Quality>(qualities[hlsRef.current.currentLevel]);
+	const [qual, setQual] = useState<Quality>(qualities ? qualities[0] : { q: "480p", index: 0 });
 	const [ps, setPs] = useState<number>(1.0);
 	const [curTime, setCurTime] = useState<number>(0);
 	const [vol, setVol] = useState<number>(0.5);
 	const [isMute, setIsMute] = useState<boolean>(false);
-	const [isPlaying, setIsPlaying] = useState<boolean>(true);
+	const [isPlaying, setIsPlaying] = useState<boolean>(false);
 	const [controls, setControls] = useState<boolean>(true);
 
 
 	const sct = () => {
 		if (videoRef && videoRef.current) {
+			console.log("updating current time")
 			setCurTime(videoRef.current.currentTime);
 		}
 	}
-	const throttledCurrentTime = useThrottle(sct, 200);
+	const throttledCurrentTime = useThrottle(sct, 80);
 
 	// utility functions
 	const setPlay = useCallback((b: boolean) => {
@@ -38,19 +39,21 @@ export function useVideo({ videoUrl, videoRef }: props) {
 	}, [videoRef]);
 	const togglePlayPause = useCallback(() => {
 		const video = videoRef.current;
-		if (isPlaying) {
-			video?.pause();
+		if (video.paused) {
+			video?.play();
 
 		} else {
-			video?.play();
+			video?.pause();
 		}
 
 	}, [videoRef]);
 	const setQuality = useCallback((q: Quality) => {
-		const hls = hlsRef.current;
-		const qNum = q.index;
-		hls.currentLevel = qNum;
-		setQual(q);
+		if (hlsRef && hlsRef.current) {
+			const hls = hlsRef.current;
+			const qNum = q.index;
+			hls.currentLevel = qNum;
+			setQual(q);
+		}
 	}, [hlsRef]);
 	const setVolume = useCallback((n: number) => {
 		const video = videoRef.current;
@@ -65,15 +68,14 @@ export function useVideo({ videoUrl, videoRef }: props) {
 	}, []);
 	const toggleMute = useCallback(() => {
 		const video = videoRef.current;
+		video.volume = 0;
 		video.muted = !video.muted;
-	}, [videoRef]);
-	const toggleFullScreen = useCallback(() => {
-		videoRef.current.requestFullscreen();
-	}, [videoRef]);
+	}, []);
 	const setSeek = useCallback((n: number) => {
 		videoRef.current.currentTime = n;
 	}, [videoRef]);
 
+	const setCtrls = (b: boolean) => setControls(b);
 
 	// effects
 
@@ -100,7 +102,7 @@ export function useVideo({ videoUrl, videoRef }: props) {
 		video.addEventListener("play", playHandler);
 		video.addEventListener("pause", pauseHandler)
 		video.addEventListener("volumechange", volHandler)
-		video.addEventListener("ratechangee", psHandler);
+		video.addEventListener("ratechange", psHandler);
 
 		// clean up
 		return () => {
@@ -112,23 +114,12 @@ export function useVideo({ videoUrl, videoRef }: props) {
 		}
 	}, [videoRef])
 
-	// load video source
-	useEffect(() => {
-		if (hlsRef && hlsRef.current) {
-			if (videoRef && videoRef.current) {
-				const hls = hlsRef.current;
-				hls.attachMedia(videoRef.current);
-			}
-		}
-
-	}, [hlsRef, videoRef])
 
 	return {
 		// togglers
 		toggleControls,
 		togglePlayPause,
 		toggleMute,
-		toggleFullScreen,
 
 		// setters
 		setPlay,
@@ -136,6 +127,7 @@ export function useVideo({ videoUrl, videoRef }: props) {
 		setVolume,
 		setSeek,
 		setPlaybackSpeed,
+		setControls: setCtrls,
 
 		// state
 		volume: vol,
