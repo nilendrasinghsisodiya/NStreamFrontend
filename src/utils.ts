@@ -14,19 +14,19 @@ import { apiClient } from "./api/ApiClient";
  * @throws An error with `errMessage` if the response status is not 200.
  */
 export const handleResponse = <T>(
-  res: AxiosResponse<ApiResponse<T>>,
-  errMessage: string,
-  expectedStatusCode: number = 200,
-  doesHaveData: boolean = true,
+	res: AxiosResponse<ApiResponse<T>>,
+	errMessage: string,
+	expectedStatusCode: number = 200,
+	doesHaveData: boolean = true,
 ): T => {
-  console.log("running resHandler");
-  if (res.status === expectedStatusCode) {
-    if (doesHaveData) {
-      return res.data.data;
-    }
-    return {} as T;
-  }
-  throw new Error(res.data?.message || errMessage);
+	console.log("running resHandler");
+	if (res.status === expectedStatusCode) {
+		if (doesHaveData) {
+			return res.data.data;
+		}
+		return {} as T;
+	}
+	throw new Error(res.data?.message || errMessage);
 };
 /**
  * refreshes access token by calling api.
@@ -35,31 +35,31 @@ export const handleResponse = <T>(
  * @returns Promise<IUser>
  */
 export const refreshAccessToken = async (): Promise<IUser> => {
-  try {
-    const res = await apiClient.post<ApiResponse<IUser>>(
-      "/auth/refresh-access-token",
-      {},
-      {
-        withCredentials: true,
-        headers: {
-          Optional: "true", // assuming your backend checks this header
-        },
-      },
-    );
+	try {
+		const res = await apiClient.post<ApiResponse<IUser>>(
+			"/auth/refresh-access-token",
+			{},
+			{
+				withCredentials: true,
+				headers: {
+					Optional: "true", // assuming your backend checks this header
+				},
+			},
+		);
 
-    if (res.status === 200) {
-      console.log("Token refreshed");
-      return res.data.data;
-    } else {
-      console.log("Refresh token failed with non-200 status");
-      navigateGlobal("/auth");
-      throw new Error("Refresh failed");
-    }
-  } catch (error) {
-    console.error("Refresh token request failed:", error);
-    navigateGlobal("/auth");
-    throw error; // propagate to caller
-  }
+		if (res.status === 200) {
+			console.log("Token refreshed");
+			return res.data.data;
+		} else {
+			console.log("Refresh token failed with non-200 status");
+			navigateGlobal("/auth");
+			throw new Error("Refresh failed");
+		}
+	} catch (error) {
+		console.error("Refresh token request failed:", error);
+		navigateGlobal("/auth");
+		throw error; // propagate to caller
+	}
 };
 
 /**
@@ -69,10 +69,10 @@ export const refreshAccessToken = async (): Promise<IUser> => {
  * @returns The modified URL with `sp_auto` and `.m3u8` extension.
  */
 export function convertToHLS(url: string): string {
-  return url
-    .replace(/\/v\d+\//, "/") // Remove versioning (e.g., /v1698765432/)
-    .replace("/upload/", "/upload/sp_auto/") // Add `sp_auto` for adaptive streaming
-    .replace(/\.[^.]+$/, ".m3u8"); // Change file extension to `.m3u8`
+	return url
+		.replace(/\/v\d+\//, "/") // Remove versioning (e.g., /v1698765432/)
+		.replace("/upload/", "/upload/sp_auto/") // Add `sp_auto` for adaptive streaming
+		.replace(/\.[^.]+$/, ".m3u8"); // Change file extension to `.m3u8`
 }
 
 /**
@@ -82,15 +82,15 @@ export function convertToHLS(url: string): string {
  * @returns A formatted string representing time in HH:MM:SS.
  */
 export const toHms = (time: number): string => {
-  const hours = Math.floor(time / 3600);
-  const minutes = Math.floor((time % 3600) / 60);
-  const seconds = Math.floor(time % 60);
+	const hours = Math.floor(time / 3600);
+	const minutes = Math.floor((time % 3600) / 60);
+	const seconds = Math.floor(time % 60);
 
-  return (
-    `${hours.toString().padStart(2, "0")}:` +
-    `${minutes.toString().padStart(2, "0")}:` +
-    `${seconds.toString().padStart(2, "0")}`
-  );
+	return (
+		`${hours.toString().padStart(2, "0")}:` +
+		`${minutes.toString().padStart(2, "0")}:` +
+		`${seconds.toString().padStart(2, "0")}`
+	);
 };
 
 const K = 1000;
@@ -111,27 +111,27 @@ const BILLION = MILLION * K;
  * ```
  */
 export const toKBMS = (num: number): string => {
-  if (num >= K && num < MILLION) {
-    return `${(num / K).toFixed(1)}K`; // Add `.toFixed(1)` for consistency
-  }
-  if (num >= MILLION && num < BILLION) {
-    return `${(num / MILLION).toFixed(1)}M`;
-  }
-  if (num >= BILLION) {
-    return `${(num / BILLION).toFixed(1)}B`;
-  }
-  return `${num}`;
+	if (num >= K && num < MILLION) {
+		return `${(num / K).toFixed(1)}K`; // Add `.toFixed(1)` for consistency
+	}
+	if (num >= MILLION && num < BILLION) {
+		return `${(num / MILLION).toFixed(1)}M`;
+	}
+	if (num >= BILLION) {
+		return `${(num / BILLION).toFixed(1)}B`;
+	}
+	return `${num}`;
 };
 
 export const generateSrcSet = (url: string): string => {
-  const sizes = [360, 480, 720, 1080];
+	const sizes = [360, 480, 720, 1080];
 
-  return sizes
-    .map(
-      (w) =>
-        url.replace("/upload/", `/upload/w_${w},f_auto,q_auto/`) + ` ${w}w`,
-    )
-    .join(", ");
+	return sizes
+		.map(
+			(w) =>
+				url.replace("/upload/", `/upload/w_${w},f_auto,q_auto/`) + ` ${w}w`,
+		)
+		.join(", ");
 };
 
 export const getHomeUrl = () => "http:://localhost:5173";
@@ -139,25 +139,25 @@ export const getHomeUrl = () => "http:://localhost:5173";
 let navigateFunction: (path: string) => void;
 
 export const setNavigateGlobal = (navFn: (path: string) => void) => {
-  navigateFunction = navFn;
+	navigateFunction = navFn;
 };
 
 export const navigateGlobal = (path: string) => {
-  if (navigateFunction) navigateFunction(path);
-  else console.error("Navigate function not initialized!");
+	if (navigateFunction) navigateFunction(path);
+	else console.error("Navigate function not initialized!");
 };
 export function appendFormData<T extends Record<string, any>>(
-  formData: FormData,
-  data: T,
+	formData: FormData,
+	data: T,
 ): void {
-  for (const key in data) {
-    const value: any = data[key];
-    if (Array.isArray(value)) {
-      value.forEach((v) => formData.append(`${key}[]`, v));
-    } else if ((value && value instanceof File) || typeof value === "string") {
-      formData.append(key, value);
-    }
-  }
+	for (const key in data) {
+		const value: any = data[key];
+		if (Array.isArray(value)) {
+			value.forEach((v) => formData.append(`${key}[]`, v));
+		} else if ((value && value instanceof File) || typeof value === "string") {
+			formData.append(key, value);
+		}
+	}
 }
 
 /**
@@ -168,50 +168,60 @@ export function appendFormData<T extends Record<string, any>>(
  * @returns A relative time string or "Invalid date" if input is not parseable
  */
 export function getRelativeTime(isoDateString: string): string {
-  const date = new Date(isoDateString);
+	const date = new Date(isoDateString);
 
-  if (isNaN(date.getTime())) {
-    return "Invalid date";
-  }
+	if (isNaN(date.getTime())) {
+		return "Invalid date";
+	}
 
-  const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+	const now = new Date();
+	const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-  if (diffInSeconds < 5) return "Just now";
+	if (diffInSeconds < 5) return "Just now";
 
-  const units: [number, string][] = [
-    [60, "second"],
-    [60, "minute"],
-    [24, "hour"],
-    [30, "day"],
-    [12, "month"],
-    [Infinity, "year"],
-  ];
+	const units: [number, string][] = [
+		[60, "second"],
+		[60, "minute"],
+		[24, "hour"],
+		[30, "day"],
+		[12, "month"],
+		[Infinity, "year"],
+	];
 
-  let value = diffInSeconds;
+	let value = diffInSeconds;
 
-  for (const [threshold, label] of units) {
-    if (value < threshold) {
-      const rounded = Math.floor(value);
-      return `${rounded} ${label}${rounded !== 1 ? "s" : ""} ago`;
-    }
-    value = value / threshold;
-  }
+	for (const [threshold, label] of units) {
+		if (value < threshold) {
+			const rounded = Math.floor(value);
+			return `${rounded} ${label}${rounded !== 1 ? "s" : ""} ago`;
+		}
+		value = value / threshold;
+	}
 
-  return "Some time ago";
+	return "Some time ago";
 }
 
 export const allowedImageType = [
-  "image/png",
-  "image/jpg",
-  "image/webp",
-  "image/jepg",
+	"image/png",
+	"image/jpg",
+	"image/webp",
+	"image/jepg",
 ];
 
 export const allowedVideoType = [
-  "video/mp4",
-  "video/x-msvideo",
-  "video/mpeg",
-  "video/avi",
-  "video/avi",
+	"video/mp4",
+	"video/x-msvideo",
+	"video/mpeg",
+	"video/avi",
+	"video/avi",
 ];
+
+const STANDARD_HEIGHTS: number[] = [720, 240, 360, 1080, 480, 1440, 2140];
+
+function normalizeHeight(height: number): number {
+	return STANDARD_HEIGHTS.reduce((prev, curr) => Math.abs(curr - height) < Math.abs(prev - height) ? curr : prev);
+}
+export function getQualityLabel(height: number): string {
+	const normalizedHeight = normalizeHeight(height);
+	return `${normalizedHeight}p`;
+} 
