@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const signUpSchema = z.object({
   email: z
@@ -61,7 +62,7 @@ const SignUp = ({ className, onSave, isPending }: Props) => {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <input className="custom_input" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />{" "}
             </FormItem>
@@ -74,7 +75,7 @@ const SignUp = ({ className, onSave, isPending }: Props) => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <input className="custom_input" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -88,7 +89,7 @@ const SignUp = ({ className, onSave, isPending }: Props) => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <input className="custom_input" {...field} type="password" />
+                <Input {...field} type="password" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -101,7 +102,7 @@ const SignUp = ({ className, onSave, isPending }: Props) => {
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <input className="custom_input" {...field} type="password" />
+                <Input {...field} type="password" />
               </FormControl>
               <FormMessage />
             </FormItem>

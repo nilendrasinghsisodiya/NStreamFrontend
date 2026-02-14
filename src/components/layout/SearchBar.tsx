@@ -24,6 +24,7 @@ import { Search, SlidersHorizontal } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createSearchParams, useSearchParams } from "react-router-dom";
+import { Input } from "../ui/input";
 
 export const SearchBarDesktop: React.FC = () => {
   const [active, setActive] = useState<boolean>(false);
@@ -72,7 +73,7 @@ export const SearchBarDesktop: React.FC = () => {
         <label htmlFor="searchText" className="sr-only">
           searchText
         </label>
-        <input
+        <Input
           tabIndex={0}
           id="searchText"
           value={search}
