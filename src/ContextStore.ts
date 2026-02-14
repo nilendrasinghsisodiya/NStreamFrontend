@@ -1,7 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import themeReducers from "./contexts/theme/themeSlices";
 import authReducers from "./contexts/auth/authSlice";
-import videoPlayerReducers from "./contexts/videoPlayer/videoPlayerSlices";
 import videoUpload from "@/contexts/videoUpload/videoUploadSlice";
 import {
   persistStore,
@@ -28,7 +27,6 @@ const presistedVideoUploadReducers = persistReducer(
 const rootReducers = combineReducers({
   auth: presistedAuthReducers,
   theme: themeReducers,
-  videoPlayer: videoPlayerReducers,
   uploads: presistedVideoUploadReducers,
 });
 
