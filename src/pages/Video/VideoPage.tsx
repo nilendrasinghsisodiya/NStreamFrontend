@@ -49,8 +49,8 @@ sm:max-w-75     "
           isLoading={isLoading}
           isSuccess={isSuccess}
           useWindowScroll={false}
-					className="h-full"
-					avatarClassName=" h-full w-full p-0.5"
+          className="h-full"
+          avatarClassName=" h-full w-full p-0.5"
         />
       </div>
 

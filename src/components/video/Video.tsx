@@ -53,7 +53,9 @@ const Video = ({ videoId, style, className }: Props) => {
       if (error instanceof AxiosError) toast.error("failed to like video");
     }
   };
-	if(isLoading){return <VideoSkeleton/>}
+  if (isLoading) {
+    return <VideoSkeleton />;
+  }
   return (
     <>
       {isLoading || !data ? (

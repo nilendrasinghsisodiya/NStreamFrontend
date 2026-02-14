@@ -116,19 +116,19 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
-	/* slider vars*/
+  /* slider vars*/
 
-	--slider-background:oklch(0.1623 0.0095 86);
-	--slider-buffer-color:oklch(0.8152 0.1624 86);
-	--slider-thumb-backgroud: var(--color-foreground);
-	--slider-height:6px;
-	--slider-width:100%;
-	--slider-thumb-width:12px;
-	--slider-thumb-heigth:12px;
-	--slider-border-radius:50%;
-	--slider-border-color:;
-	--slider-thumb-border-color:;
- --sllider-thumb-border-radius:50%;	
+  --slider-background: oklch(0.1623 0.0095 86);
+  --slider-buffer-color: oklch(0.8152 0.1624 86);
+  --slider-thumb-backgroud: var(--color-foreground);
+  --slider-height: 6px;
+  --slider-width: 100%;
+  --slider-thumb-width: 12px;
+  --slider-thumb-heigth: 12px;
+  --slider-border-radius: 50%;
+  --slider-border-color:;
+  --slider-thumb-border-color:;
+  --sllider-thumb-border-radius: 50%;
 }
 
 .slider {
@@ -137,10 +137,10 @@
   width: 100%;
   height: var(--slider-height);
   background: var(--track-background);
-	border-radius: 9999px;
+  border-radius: 9999px;
   outline: none;
-	padding:0;
-	margin:0;
+  padding: 0;
+  margin: 0;
 }
 .slider {
   --track-background: linear-gradient(
@@ -155,12 +155,12 @@
 .slider::-ms-track {
   width: 100%;
   cursor: pointer;
-  background:var(--slider-background);
-	height:var(--slider-height);
+  background: var(--slider-background);
+  height: var(--slider-height);
 }
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-	appearance:none;
+  appearance: none;
   border: 2px solid var(--slider-thumb-border-color);
   height: var(--slider-thumb-height);
   width: var(--slider-thumb-width);
@@ -171,20 +171,20 @@
 }
 
 /* firefox */
-.slider::-moz-range-track{
-width : var(--slider-width);
-cursor:pointer;
+.slider::-moz-range-track {
+  width: var(--slider-width);
+  cursor: pointer;
 }
 .slider::-moz-range-thumb {
   -webkit-appearance: none;
-	appearance:none;
+  appearance: none;
   border: 2px solid var(--slider-thumb-boder-color);
-  height:var(--slider-thumb-heigth);
+  height: var(--slider-thumb-heigth);
   width: var(--slider-thumb-width);
   border-radius: 50%;
   background: var(--slider-thumb-backgroud);
   cursor: pointer;
-  margin-top: calc((var(--slider-height) - var(--slider-thumb-heigth)) /2);
+  margin-top: calc((var(--slider-height) - var(--slider-thumb-heigth)) / 2);
 }
 .icons-m {
   width: 2rem !important;
