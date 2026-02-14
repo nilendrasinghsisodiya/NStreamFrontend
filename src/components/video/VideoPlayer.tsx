@@ -36,7 +36,7 @@ const VideoPlayer = ({ url, style, className }: Props) => {
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 	const videoWrapperRef = useRef<HTMLDivElement | null>(null);
 
-	const { setControls, isMute, isPlaying, controls, toggleMute, totalDuration, currentTime, toggleControls, togglePlayPause, setPlay, setSeek, setVolume, setQuality, setPlaybackSpeed, playbackSpeed, volume, quality, qualities } = useVideo({ videoUrl: url, videoRef });
+	const { setControls, isMute, isPlaying, controls, toggleMute, totalDuration, currentTime, togglePlayPause, setSeek, setVolume, setQuality, setPlaybackSpeed, playbackSpeed, volume, quality, qualities } = useVideo({ videoUrl: url, videoRef });
 
 	useEffect(() => {
 		if (!isPlaying) return;
@@ -48,9 +48,9 @@ const VideoPlayer = ({ url, style, className }: Props) => {
 		return () => clearTimeout(timeout);
 	}, [isPlaying, controls]);
 
- const toggleFullScreen = useCallback(()=>{
-videoWrapperRef.current.requestFullscreen();
- },[videoWrapperRef])
+	const toggleFullScreen = useCallback(() => {
+		videoWrapperRef.current.requestFullscreen();
+	}, [videoWrapperRef])
 	const handleVolumeChange = (e: ChangeEvent<HTMLInputElement>) => {
 		if (e.target) {
 			const vol = Number(e.target.value);
@@ -76,7 +76,7 @@ videoWrapperRef.current.requestFullscreen();
 		}
 	};
 
-	
+
 
 	const PlayBackOptions = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
 
@@ -85,7 +85,7 @@ videoWrapperRef.current.requestFullscreen();
 			className={` ${className}`}
 		>
 			<div
-		    ref={videoWrapperRef}
+				ref={videoWrapperRef}
 				tabIndex={0}
 				onMouseEnter={() => setControls(true)}
 				className=" relative flex justify-center items-center aspect-video"
@@ -110,7 +110,7 @@ videoWrapperRef.current.requestFullscreen();
 								)}
 							</button>
 							<Slider
-								sliderTrackValue={(volume *100)}
+								sliderTrackValue={(volume * 100)}
 								tabIndex={0}
 								className=" h-0.5 rounded-2xl slider max-w-12 xl:max-w-15 p-0 self-end m-1 "
 								name="volume"

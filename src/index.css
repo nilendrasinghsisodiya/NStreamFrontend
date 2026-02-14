@@ -118,8 +118,8 @@
 
 	/* slider vars*/
 
-	--slider-background: var(--color-accent-foreground);
-	--slider-buffer-color:var(--color-accent);
+	--slider-background:oklch(0.1623 0.0095 86);
+	--slider-buffer-color:oklch(0.8152 0.1624 86);
 	--slider-thumb-backgroud: var(--color-foreground);
 	--slider-height:6px;
 	--slider-width:100%;
