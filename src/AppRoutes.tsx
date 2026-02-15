@@ -1,3 +1,4 @@
+import { Suspense, useEffect, lazy } from "react";
 import { Layout } from "./layouts/Layout";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -12,7 +13,6 @@ import { OtpVerificationPage } from "./pages/Main/OtpVerificationPage";
 import { PlaylistPage as MainPlaylistPage } from "./pages/Main/PlaylistPage";
 import { ChannelVideoPage } from "./pages/Channel/ChannelVideoPage";
 import { ChannelHomePage } from "./pages/Channel/ChannelHomePage";
-import { useEffect } from "react";
 import { setNavigateGlobal } from "./utils";
 import { ChannelPlaylistPage } from "./pages/Channel/ChannelPlaylistPage";
 import { VideoUploadForm } from "./pages/Main/VideoUploadPage";
@@ -25,174 +25,197 @@ import { ProfileEditPage } from "./pages/Settings/ProfileEdit";
 import { VideoControlPage } from "./pages/Settings/VideoControll";
 import { SubscribptionPage } from "./pages/Main/Subscribtion";
 import { VerificationTokenLandingPage } from "./pages/Main/VerificationTokenLandingPage";
+import { PasswordResetForm } from "./forms/PasswordResetForm";
+const PasswordChangePage = lazy(
+  () => import("@/pages/Main/PasswordChangePage"),
+);
+const PasswordResetPage = lazy(() => import("@/pages/Main/PasswordResetPage"));
 const AppRoutes = () => {
   const navigate = useNavigate();
   useEffect(() => {
     setNavigateGlobal(navigate);
   }, [navigate]);
   return (
-    <Routes>
-      {/** main routes */}
-      <Route
-        path="/"
-        element={
-          <Layout>
-            <HomePage />
-          </Layout>
-        }
-      />
-      <Route element={<ProtectedRoute />}>
+    <Suspense fallback={<p>loading..</p>}>
+      <Routes>
+        {/** main routes */}
         <Route
-          path="watch-history"
+          path="/"
           element={
             <Layout>
-              <WatchHistoryPage />
+              <HomePage />
+            </Layout>
+          }
+        />
+        <Route element={<ProtectedRoute />}>
+          <Route
+            path="watch-history"
+            element={
+              <Layout>
+                <WatchHistoryPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="liked-videos"
+            element={
+              <Layout>
+                <LikedVideoPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="user-playlists"
+            element={
+              <Layout>
+                <MainPlaylistPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="playlist"
+            element={
+              <Layout>
+                <PlaylistPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="dashboard"
+            element={
+              <Layout>
+                <Dashboard />
+              </Layout>
+            }
+          />
+          <Route
+            path="/settings/video"
+            element={
+              <Layout>
+                <VideoControlPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/settings/change-password"
+            element={
+              <Layout hideSideBar hideFooter>
+                <PasswordChangePage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/setting/reset-password"
+            element={
+              <Layout hideSideBar hideFooter>
+                <PasswordResetPage />
+              </Layout>
+            }
+          />
+          {/*Video Routes */}
+          <Route
+            path="upload-video"
+            element={
+              <Layout>
+                <VideoUploadForm />
+              </Layout>
+            }
+          />
+          <Route
+            path="user-reg-profile"
+            element={
+              <Layout hideFooter>
+                <ProfileForm />
+              </Layout>
+            }
+          />
+          <Route
+            path="subscriptions"
+            element={
+              <Layout>
+                <SubscribptionPage />
+              </Layout>
+            }
+          />
+          {/* Controll routes*/}
+          <Route
+            path="/settings/channel"
+            element={
+              <Layout>
+                <ProfileEditPage />
+              </Layout>
+            }
+          />
+        </Route>
+        <Route
+          path="watch"
+          element={
+            <Layout>
+              <VideoPage />
             </Layout>
           }
         />
         <Route
-          path="liked-videos"
+          path="search"
           element={
             <Layout>
-              <LikedVideoPage />
+              <SearchPage />
             </Layout>
           }
         />
         <Route
-          path="user-playlists"
-          element={
-            <Layout>
-              <MainPlaylistPage />
-            </Layout>
-          }
-        />
-        <Route
-          path="playlist"
-          element={
-            <Layout>
-              <PlaylistPage />
-            </Layout>
-          }
-        />
-        <Route
-          path="dashboard"
-          element={
-            <Layout>
-              <Dashboard />
-            </Layout>
-          }
-        />
-        <Route
-          path="/settings/video"
-          element={
-            <Layout>
-              <VideoControlPage />
-            </Layout>
-          }
-        />
-        {/*Video Routes */}
-        <Route
-          path="upload-video"
-          element={
-            <Layout>
-              <VideoUploadForm />
-            </Layout>
-          }
-        />
-        <Route
-          path="user-reg-profile"
+          path="auth"
           element={
             <Layout hideFooter>
-              <ProfileForm />
+              <AuthPage />
             </Layout>
           }
         />
-        <Route
-          path="subscriptions"
-          element={
-            <Layout>
-              <SubscribptionPage />
-            </Layout>
-          }
-        />
-        {/* Controll routes*/}
-        <Route
-          path="/settings/channel"
-          element={
-            <Layout>
-              <ProfileEditPage />
-            </Layout>
-          }
-        />
-      </Route>
-      <Route
-        path="watch"
-        element={
-          <Layout>
-            <VideoPage />
-          </Layout>
-        }
-      />
-      <Route
-        path="search"
-        element={
-          <Layout>
-            <SearchPage />
-          </Layout>
-        }
-      />
-      <Route
-        path="auth"
-        element={
-          <Layout hideFooter>
-            <AuthPage />
-          </Layout>
-        }
-      />
 
-      {/* Channel routes */}
-      <Route
-        path="channel"
-        element={
-          <Layout>
-            <ChannelPage />
-          </Layout>
-        }
-      >
-        <Route path="home" element={<ChannelHomePage />} />
-        <Route path="playlists" element={<ChannelPlaylistPage />} />
-        <Route path="videos" element={<ChannelVideoPage />} />
-      </Route>
-      <Route
-        path="otp"
-        element={
-          <Layout hideFooter hideSideBar>
-            <OtpVerificationPage />
-          </Layout>
-        }
-      />
-      <Route
-        path="token"
-        element={
-          <Layout hideFooter hideSideBar>
-            <VerificationTokenLandingPage />{" "}
-          </Layout>
-        }
-      />
-      {/* golbal routes */}
-      <Route
-        path="*"
-        element={
-          <Layout hideSideBar hideFooter>
-            <ErrorScreen
-              mainMessage="ERROR:404 NOT FOUND"
-              secondaryMessage="this page does not exist"
-              isError
-            />
-          </Layout>
-        }
-      />
-    </Routes>
+        {/* Channel routes */}
+        <Route
+          path="channel"
+          element={
+            <Layout>
+              <ChannelPage />
+            </Layout>
+          }
+        >
+          <Route path="home" element={<ChannelHomePage />} />
+          <Route path="playlists" element={<ChannelPlaylistPage />} />
+          <Route path="videos" element={<ChannelVideoPage />} />
+        </Route>
+        <Route
+          path="otp"
+          element={
+            <Layout hideFooter hideSideBar>
+              <OtpVerificationPage />
+            </Layout>
+          }
+        />
+        <Route
+          path="token"
+          element={
+            <Layout hideFooter hideSideBar>
+              <VerificationTokenLandingPage />
+            </Layout>
+          }
+        />
+        {/* golbal routes */}
+        <Route
+          path="*"
+          element={
+            <Layout hideSideBar hideFooter>
+              <ErrorScreen
+                mainMessage="ERROR:404 NOT FOUND"
+                secondaryMessage="this page does not exist"
+                isError
+              />
+            </Layout>
+          }
+        />
+      </Routes>
+    </Suspense>
   );
 };
 

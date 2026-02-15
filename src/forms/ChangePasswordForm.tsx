@@ -12,27 +12,37 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-const changePasswordSchema = z.object({
-  oldPassword: z.string().trim().nonempty().nonoptional(),
-  newPassword: z.string().trim().nonempty().nonoptional(),
-  newPasswordAgain: z.string().trim().nonempty().nonoptional(),
-});
-changePasswordSchema.refine((d) => d.newPasswordAgain == d.newPassword, {
-  error: "passwords don't match",
-});
+const changePasswordSchema = z
+  .object({
+    oldPassword: z.string().trim().nonempty().nonoptional(),
+    newPassword: z.string().trim().nonempty().nonoptional(),
+    confirmPassword: z.string().trim().nonempty().nonoptional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.newPassword !== data.confirmPassword) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["confirmPassword"],
+        message: "Passwords do not match",
+      });
+    }
+  });
 export type ChangePasswordFormType = z.infer<typeof changePasswordSchema>;
 type props = {
   className?: string;
+  isPending: boolean;
   onSubmit: (forData: ChangePasswordFormType) => void;
-  errors: FieldErrors<ChangePasswordFormType>;
 };
-export const ChangePasswordForm = ({ className, onSubmit, errors }: props) => {
+export const ChangePasswordForm = ({
+  className,
+  onSubmit,
+  isPending,
+}: props) => {
   const form = useForm<ChangePasswordFormType>({
     resolver: zodResolver(changePasswordSchema),
-    defaultValues: { oldPassword: "", newPassword: "", newPasswordAgain: "" },
+    defaultValues: { oldPassword: "", newPassword: "", confirmPassword: "" },
     reValidateMode: "onChange",
     mode: "all",
-    errors,
   });
 
   return (
@@ -43,11 +53,11 @@ export const ChangePasswordForm = ({ className, onSubmit, errors }: props) => {
           control={form.control}
           render={({ field }) => (
             <FormItem>
+              <FormLabel htmlFor="oldPassword">old password</FormLabel>
               <FormControl>
-                <FormLabel htmlFor="oldPassword">old password</FormLabel>
                 <Input {...field} type="password" />
-                <FormMessage />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -56,29 +66,33 @@ export const ChangePasswordForm = ({ className, onSubmit, errors }: props) => {
           control={form.control}
           render={({ field }) => (
             <FormItem>
+              <FormLabel htmlFor="newPassword">new password</FormLabel>
               <FormControl>
-                <FormLabel htmlFor="newPassword">new password</FormLabel>
                 <Input {...field} type="password" />
-                <FormMessage />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
         <FormField
-          name="newPasswordAgain"
+          name="confirmPassword"
           control={form.control}
           render={({ field }) => (
             <FormItem>
+              <FormLabel htmlFor="confirmPassword">
+                confirm new password
+              </FormLabel>
               <FormControl>
-                <FormLabel htmlFor="newPasswordAgain">new password</FormLabel>
                 <Input {...field} type="password" />
-                <FormMessage />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">submit</Button>
-      </form>{" "}
+        <Button disabled={isPending} type="submit">
+          Change Password
+        </Button>
+      </form>
     </Form>
   );
 };

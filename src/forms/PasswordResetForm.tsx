@@ -14,24 +14,33 @@ import {
 
 const PasswordResetSchema = z.object({
   newPassword: z.string().trim().nonempty().nonoptional(),
-  newPasswordAgain: z.string().trim().nonempty().nonoptional(),
+  confirmPassword: z.string().trim().nonempty().nonoptional(),
 });
-PasswordResetSchema.refine((d) => d.newPassword === d.newPasswordAgain, {
-  error: "passwords don't match",
+PasswordResetSchema.superRefine((data, ctx) => {
+  if (data.newPassword !== data.confirmPassword) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Passwords do not match",
+      path: ["confirmPassword"],
+    });
+  }
 });
 export type PasswordResetFormType = z.infer<typeof PasswordResetSchema>;
 type props = {
   className?: string;
+  isPending: boolean;
   onSubmit: (forData: PasswordResetFormType) => void;
-  errors: FieldErrors<PasswordResetFormType>;
 };
-export const PasswordResetForm = ({ className, onSubmit, errors }: props) => {
+export const PasswordResetForm = ({
+  className,
+  isPending,
+  onSubmit,
+}: props) => {
   const form = useForm<PasswordResetFormType>({
     resolver: zodResolver(PasswordResetSchema),
-    defaultValues: { newPassword: "", newPasswordAgain: "" },
+    defaultValues: { newPassword: "", confirmPassword: "" },
     reValidateMode: "onChange",
     mode: "all",
-    errors: errors,
   });
 
   return (
@@ -42,28 +51,32 @@ export const PasswordResetForm = ({ className, onSubmit, errors }: props) => {
           control={form.control}
           render={({ field }) => (
             <FormItem>
+              <FormLabel htmlFor="newPassword">new password</FormLabel>
               <FormControl>
-                <FormLabel htmlFor="newPassword">new password</FormLabel>
                 <Input {...field} type="password" />
-                <FormMessage />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
         <FormField
-          name="newPasswordAgain"
+          name="confirmPassword"
           control={form.control}
           render={({ field }) => (
             <FormItem>
+              <FormLabel htmlFor="confirmPassword">
+                confirm new password
+              </FormLabel>
               <FormControl>
-                <FormLabel htmlFor="newPasswordAgain">new password</FormLabel>
                 <Input {...field} type="password" />
-                <FormMessage />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">submit</Button>
+        <Button type="submit" disabled={isPending}>
+          Reset Password
+        </Button>
       </form>
     </Form>
   );

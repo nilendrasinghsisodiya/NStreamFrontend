@@ -5,6 +5,7 @@ import { AxiosError } from "axios";
 import { useDispatch } from "react-redux";
 import { reset } from "@/contexts/auth/authSlice";
 import { toast } from "sonner";
+import { ChangePasswordForm } from "@/forms/ChangePasswordForm";
 
 interface ILoginUserBody {
   email: string;
@@ -91,4 +92,38 @@ export const useLogoutUser = () => {
     },
   });
   return { logout, isError, isSuccess };
+};
+interface IPasswordResetBody {
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export const usePasswordReset = () => {
+  const mutation = useMutation<void, AxiosError, IPasswordResetBody>({
+    mutationFn: async (data: IPasswordResetBody) => {
+      const response = await apiClient.post<ApiResponse<void>>("", data);
+      return handleResponse(response, "failed to reset password");
+    },
+    mutationKey: ["resetPassword"],
+    onError: () => {},
+    onSuccess: () => {},
+  });
+  return mutation;
+};
+
+interface IChangePasswordBody extends IPasswordResetBody {
+  oldPassword: string;
+}
+
+export const useChangePassword = () => {
+  const mutation = useMutation<void, AxiosError, IChangePasswordBody>({
+    mutationFn: async (data: IChangePasswordBody) => {
+      const response = await apiClient.post<ApiResponse<void>>("", data);
+      return handleResponse(response, "failed to reset password");
+    },
+    mutationKey: ["chagePassword"],
+    onSuccess: () => {},
+    onError: () => {},
+  });
+  return mutation;
 };
