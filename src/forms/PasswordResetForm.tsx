@@ -10,7 +10,6 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
 
 const PasswordResetSchema = z.object({
@@ -20,13 +19,13 @@ const PasswordResetSchema = z.object({
 PasswordResetSchema.refine((d) => d.newPassword === d.newPasswordAgain, {
   error: "passwords don't match",
 });
-type PasswordResetFormType = z.infer<typeof PasswordResetSchema>;
+export type PasswordResetFormType = z.infer<typeof PasswordResetSchema>;
 type props = {
   className?: string;
   onSubmit: (forData: PasswordResetFormType) => void;
   errors: FieldErrors<PasswordResetFormType>;
 };
-const PasswordResetForm = ({ className, onSubmit, errors }: props) => {
+export const PasswordResetForm = ({ className, onSubmit, errors }: props) => {
   const form = useForm<PasswordResetFormType>({
     resolver: zodResolver(PasswordResetSchema),
     defaultValues: { newPassword: "", newPasswordAgain: "" },
