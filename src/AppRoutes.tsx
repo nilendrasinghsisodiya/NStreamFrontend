@@ -25,10 +25,10 @@ import { ProfileEditPage } from "./pages/Settings/ProfileEdit";
 import { VideoControlPage } from "./pages/Settings/VideoControll";
 import { SubscribptionPage } from "./pages/Main/Subscribtion";
 import { VerificationTokenLandingPage } from "./pages/Main/VerificationTokenLandingPage";
-import { PasswordResetForm } from "./forms/PasswordResetForm";
 const PasswordChangePage = lazy(
   () => import("@/pages/Main/PasswordChangePage"),
 );
+const ForgetPasswordPage = lazy(() => import("@/pages/Main/GetOtpPage"));
 const PasswordResetPage = lazy(() => import("@/pages/Main/PasswordResetPage"));
 const AppRoutes = () => {
   const navigate = useNavigate();
@@ -44,6 +44,14 @@ const AppRoutes = () => {
           element={
             <Layout>
               <HomePage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <Layout hideFooter hideSideBar>
+              <ForgetPasswordPage />
             </Layout>
           }
         />
