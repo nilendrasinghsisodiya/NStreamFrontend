@@ -3,6 +3,8 @@ import { handleResponse } from "@/utils";
 import { apiClient } from "@/api/ApiClient";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
+import { useAppDispatch } from "@/hooks/contextHooks";
+import { reset } from "@/contexts/auth/authSlice";
 type tokenedRequestBody = { token: string };
 export const useRequestDelete = () => {
   const query = useQuery<void, AxiosError>({
@@ -18,6 +20,7 @@ export const useRequestDelete = () => {
 };
 
 export const useDeleteUser = () => {
+  const dispatch = useAppDispatch();
   const mutation = useMutation<void, AxiosError, tokenedRequestBody>({
     mutationKey: ["DeleteUser"],
     mutationFn: async ({ token }: tokenedRequestBody) => {
@@ -28,7 +31,8 @@ export const useDeleteUser = () => {
       return handleResponse(response, "failed to delete user");
     },
     onSuccess: () => {
-      toast.success("", { toasterId: "global" });
+      toast.success("userDeletedSuccessfully", { toasterId: "global" });
+      dispatch(reset());
     },
     onError: (error) => {
       toast.error(error.message, { toasterId: "global" });
