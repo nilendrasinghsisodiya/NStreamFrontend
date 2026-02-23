@@ -10,22 +10,15 @@ import {
 import { SafeAvatar } from "./avatar/Avatars";
 import { LogOut } from "lucide-react";
 import { useSelector } from "react-redux";
-import {
-  selectUser,
-  useIsAuthenticated,
-  reset as userReset,
-} from "@/contexts/auth/authSlice";
+import { selectUser, useIsAuthenticated } from "@/contexts/auth/authSlice";
 
 import { Button } from "./ui/button";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { useLogoutUser } from "@/api/AuthApi";
-import { presister } from "@/ContextStore";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const UserProfileTab = () => {
   const user = useSelector(selectUser);
-  const dispatch = useDispatch();
   const { logout } = useLogoutUser();
   const navigate = useNavigate();
   const isAuthenticated = useIsAuthenticated();
@@ -33,10 +26,6 @@ const UserProfileTab = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      console.log(user);
-      dispatch(userReset());
-
-      presister.purge();
       navigate("/");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {

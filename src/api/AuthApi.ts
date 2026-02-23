@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { reset } from "@/contexts/auth/authSlice";
 import { toast } from "sonner";
 import { ChangePasswordForm } from "@/forms/ChangePasswordForm";
+import { presister } from "@/ContextStore";
 
 interface ILoginUserBody {
   email: string;
@@ -87,8 +88,9 @@ export const useLogoutUser = () => {
         false,
       );
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       dispatch(reset());
+      await presister.purge();
     },
   });
   return { logout, isError, isSuccess };
