@@ -12,8 +12,12 @@ const AuthPage = () => {
   const { loginUser, isPending } = useLoginUser();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const handleRegistration = async (formData: signUpFormDataType) => {
-    const registrationData = await RegisterUser(formData);
+  const handleRegistration = async ({
+    password,
+    email,
+    username,
+  }: signUpFormDataType) => {
+    const registrationData = await RegisterUser({ password, username, email });
 
     dispatch(
       setRegistration({

@@ -76,7 +76,7 @@ const LogInForm = ({ className, onSave, isPending }: Props) => {
             </FormItem>
           )}
         />
-        <Link to={"/pass-reset-init"} replace className="text-blue-300">
+        <Link to={"/forgot-password"} replace className="text-blue-300">
           forgot password ?
         </Link>
         <Button type="submit" disabled={isPending}>
