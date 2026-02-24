@@ -11,6 +11,7 @@ export function useVideo({ videoUrl, videoRef }: props) {
   // hooks
   const { qualities, hlsRef, totalDuration } = useHls({ videoUrl, videoRef });
   // states
+  const [isReady, setIsReady] = useState<boolean>(false);
   const [qual, setQual] = useState<Quality | {}>({});
   const [ps, setPs] = useState<number>(1.0);
   const [curTime, setCurTime] = useState<number>(0);
@@ -96,6 +97,7 @@ export function useVideo({ videoUrl, videoRef }: props) {
     const video = videoRef.current;
 
     // handlers
+    const isReadyHandler = () => setIsReady(true);
     const currentTimeHandler = () => {
       throttledCurrentTime();
     };
@@ -119,6 +121,7 @@ export function useVideo({ videoUrl, videoRef }: props) {
     video.addEventListener("pause", pauseHandler);
     video.addEventListener("volumechange", volHandler);
     video.addEventListener("ratechange", psHandler);
+    video.addEventListener("loadedmetadata", isReadyHandler);
 
     // clean up
     return () => {
@@ -127,6 +130,7 @@ export function useVideo({ videoUrl, videoRef }: props) {
       video.removeEventListener("pause", pauseHandler);
       video.removeEventListener("ratechange", psHandler);
       video.removeEventListener("volumechange", volHandler);
+      video.removeEventListener("loadedmetadata", isReadyHandler);
     };
   }, [videoRef]);
 
@@ -169,6 +173,7 @@ export function useVideo({ videoUrl, videoRef }: props) {
     quality: qual,
     isMute,
     qualities,
+    isReady,
     totalDuration,
   };
 }

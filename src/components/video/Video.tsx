@@ -53,14 +53,9 @@ const Video = ({ videoId, style, className }: Props) => {
       if (error instanceof AxiosError) toast.error("failed to like video");
     }
   };
-  if (isLoading) {
-    return <VideoSkeleton />;
-  }
   return (
     <>
-      {isLoading || !data ? (
-        <VideoSkeleton />
-      ) : (
+      {data && (
         <div className={`${className}`}>
           <div
             className="flex flex-col w-full h-full gap-4   p-0"
@@ -74,7 +69,7 @@ const Video = ({ videoId, style, className }: Props) => {
               <div className="flex flex-col  w-full  py-2  items-center px-1 m-auto ">
                 <VideoPlayer
                   url={videoUrl}
-                  className=" w-fit main_shadow rounded-md sm:rounded-2xl border-2  contain-content border-transparent
+                  className=" w-full main_shadow rounded-md sm:rounded-2xl border-2  contain-content border-transparent
                  "
                 />
 

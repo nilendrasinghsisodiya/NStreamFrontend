@@ -25,6 +25,8 @@ import { toHms } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Slider } from "../ui/slider";
 import { useVideo } from "@/hooks/useVideo";
+import { VideoSkeleton } from "./VideoSkeleton";
+import { cn } from "@/lib/utils";
 
 type Props = {
   url: string;
@@ -53,6 +55,7 @@ const VideoPlayer = ({ url, style, className }: Props) => {
     volume,
     quality,
     qualities,
+    isReady,
   } = useVideo({ videoUrl: url, videoRef });
 
   useEffect(() => {
@@ -101,18 +104,21 @@ const VideoPlayer = ({ url, style, className }: Props) => {
         ref={videoWrapperRef}
         tabIndex={0}
         onMouseEnter={() => setControls(true)}
-        className=" relative flex justify-center items-center aspect-video"
+        className=" relative flex justify-center items-center aspect-video w-full"
       >
+        {!isReady && <VideoSkeleton />}
         <video
           tabIndex={0}
           ref={videoRef}
           autoPlay
-          className="
-        flex-1 z-10  contain-content  aspect-video max-h-full"
+          className={cn(
+            "flex-1 z-10  contain-content  aspect-video max-h-full",
+            !isReady && "hidden",
+          )}
           style={style}
         />
 
-        {controls && (
+        {controls && isReady && (
           <div className="absolute bottom-0 z-20 flex flex-col w-full pb-1 gap-y-2.5 max-w-full">
             <div className="flex items-basline justify-end gap-0.5 px-2 ">
               <button onClick={handleVolumeClick} tabIndex={0}>
